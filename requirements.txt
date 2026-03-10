@@ -1,0 +1,20 @@
+# Mesa Framework for Agent-Based Modeling (compatible version)
+mesa>=3.0.0
+
+# Web Framework for UI
+tornado>=6.0.0
+
+# Data Analysis and Visualization
+numpy>=1.20.0
+pandas>=1.3.0
+matplotlib>=3.5.0
+
+# AI and Language Models (optional)
+# langchain-community>=0.0.38
+# requests>=2.31.0
+
+# Utilities
+python-dateutil>=2.8.0
+
+# Solara for Mesa 3.x visualization (optional)
+solara>=1.0.0
