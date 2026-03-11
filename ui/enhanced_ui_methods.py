@@ -210,19 +210,19 @@ class EnhancedUIMethodsMixin:
                 if self.show_height and terrain_cell.height > 100:
                     height_text = f"{int(terrain_cell.height)}"
                     self.canvas.create_text((x1+x2)/2, y1+8, text=height_text, 
-                                          font=('Arial', 6), fill="black")
+                                          font=('Arial', 9), fill="black")
                 
                 # 显示障碍物
                 if terrain_cell.obstacle:
                     obstacle_symbol = get_obstacle_symbol(terrain_cell.obstacle)
                     self.canvas.create_text((x1+x2)/2, (y1+y2)/2-5, text=obstacle_symbol, 
-                                          font=('Arial', 12))
+                                          font=('Arial', 16))
                 
                 # 显示天气
                 if self.show_weather and terrain_cell.weather != WeatherCondition.CLEAR:
                     weather_symbol = get_weather_symbol(terrain_cell.weather)
                     self.canvas.create_text(x2-8, y1+8, text=weather_symbol, 
-                                          font=('Arial', 10))
+                                          font=('Arial', 14))
         
         # 绘制智能体
         for agent in self.model.custom_agents:
@@ -271,7 +271,7 @@ class EnhancedUIMethodsMixin:
             # 显示无人机ID
             drone_id = agent.unique_id.split('_')[-1]
             self.canvas.create_text((x1+x2)/2, (y1+y2)/2, text=drone_id, 
-                                  fill="white", font=('Arial', 8, 'bold'))
+                                  fill="white", font=('Arial', 12, 'bold'))
             
             # 显示路径规划
             if hasattr(agent, 'planned_path') and agent.planned_path:
@@ -282,11 +282,11 @@ class EnhancedUIMethodsMixin:
             self.canvas.create_rectangle(x1, y1, x2, y2, fill=color, outline="black")
             text = "✓" if agent.found else "S"
             self.canvas.create_text((x1+x2)/2, (y1+y2)/2, text=text, 
-                                  fill="white", font=('Arial', 8, 'bold'))
+                                  fill="white", font=('Arial', 12, 'bold'))
         
         elif isinstance(agent, SimpleChargingStationAgent):
             self.canvas.create_rectangle(x1, y1, x2, y2, fill="cyan", outline="black", width=2)
-            self.canvas.create_text((x1+x2)/2, (y1+y2)/2, text="⚡", font=('Arial', 12))
+            self.canvas.create_text((x1+x2)/2, (y1+y2)/2, text="⚡", font=('Arial', 16))
     
     def draw_planned_path(self, path, current_index):
         """绘制规划路径"""
@@ -327,7 +327,7 @@ class EnhancedUIMethodsMixin:
             self.reasoning_notebook.add(frame, text=f"🚁 {drone.unique_id}")
             
             # 创建滚动文本区域
-            text_widget = tk.Text(frame, height=15, width=60, font=('Courier', 8), wrap=tk.WORD)
+            text_widget = tk.Text(frame, height=15, width=60, font=('Courier', 11), wrap=tk.WORD)
             scrollbar = ttk.Scrollbar(frame, orient=tk.VERTICAL, command=text_widget.yview)
             text_widget.configure(yscrollcommand=scrollbar.set)
             

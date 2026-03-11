@@ -31,7 +31,7 @@ def create_legend(parent_frame):
         legend_text += f"■{terrain} "
     legend_text += "\n障碍: 🏢建筑 🌳树木 📡信号塔 🚗车辆 | 天气: ☀晴 🌧雨 💨风 🌫雾 ⛈暴雨"
     
-    ttk.Label(legend_frame, text=legend_text, font=('Arial', 8)).pack()
+    ttk.Label(legend_frame, text=legend_text, font=('Arial', 11)).pack()
 
 def create_control_panel(parent_frame, ui_instance):
     """创建控制面板"""
@@ -117,8 +117,8 @@ def create_enhanced_analysis_panel(parent_frame, ui_instance):
         frame = ttk.Frame(metrics_frame)
         frame.grid(row=i//3, column=i%3, padx=5, pady=2, sticky="w")
         
-        ttk.Label(frame, text=f"{metric}:", font=('Arial', 8, 'bold')).pack(side=tk.LEFT)
-        ui_instance.metrics_labels[metric] = ttk.Label(frame, text="0", font=('Arial', 8))
+        ttk.Label(frame, text=f"{metric}:", font=('Arial', 11, 'bold')).pack(side=tk.LEFT)
+        ui_instance.metrics_labels[metric] = ttk.Label(frame, text="0", font=('Arial', 11))
         ui_instance.metrics_labels[metric].pack(side=tk.LEFT, padx=(5, 0))
 
 def create_ai_reasoning_panel(parent_frame, ui_instance):
@@ -139,7 +139,7 @@ def create_terrain_analysis_panel(parent_frame, ui_instance):
     terrain_frame.pack(fill=tk.X, pady=(0, 10))
     
     # 地形统计
-    ui_instance.terrain_stats_text = tk.Text(terrain_frame, height=4, width=50, font=('Arial', 8))
+    ui_instance.terrain_stats_text = tk.Text(terrain_frame, height=4, width=50, font=('Arial', 11))
     ui_instance.terrain_stats_text.pack(fill=tk.X)
 
 def get_terrain_color(terrain_type, height=0, weather=None, obstacle=None):

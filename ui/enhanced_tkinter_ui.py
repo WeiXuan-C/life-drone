@@ -27,14 +27,28 @@ class EnhancedDroneUI(EnhancedUIMethodsMixin):
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("🚁 增强型自主无人机群指挥系统 - 复杂地形版")
-        self.root.geometry("1600x1000")
+        self.root.geometry("1800x1200")
+        
+        # 配置默认字体大小
+        self.root.option_add('*Font', 'Arial 12')
+        self.root.option_add('*Label.Font', 'Arial 12')
+        self.root.option_add('*Button.Font', 'Arial 12')
+        self.root.option_add('*Checkbutton.Font', 'Arial 12')
+        
+        # 配置ttk样式
+        style = ttk.Style()
+        style.configure('TLabel', font=('Arial', 12))
+        style.configure('TButton', font=('Arial', 12), padding=(10, 5))
+        style.configure('TCheckbutton', font=('Arial', 12))
+        style.configure('TLabelFrame.Label', font=('Arial', 14, 'bold'))
+        style.configure('Heading', font=('Arial', 12, 'bold'))
         
         # 模型和状态
         self.model = None
         self.auto_run = False
         self.selected_pos = (10, 10)
-        self.canvas_size = 700
-        self.cell_size = 35
+        self.canvas_size = 800  # 增大画布
+        self.cell_size = 40     # 增大网格单元
         self.show_terrain = True
         self.show_height = False
         self.show_weather = False
@@ -81,7 +95,7 @@ class EnhancedDroneUI(EnhancedUIMethodsMixin):
         
         # 地形信息显示
         self.terrain_info_label = ttk.Label(left_frame, text="地形信息: 点击网格查看详情", 
-                                           font=('Arial', 10))
+                                           font=('Arial', 12))
         self.terrain_info_label.pack(pady=5)
         
         # 图例
@@ -109,10 +123,10 @@ class EnhancedDroneUI(EnhancedUIMethodsMixin):
         self.status_tree = ttk.Treeview(table_frame, columns=columns, show="headings", height=6)
         
         # 设置列标题和宽度
-        column_widths = {"ID": 80, "电量": 60, "状态": 80, "位置": 60, "地形": 100, "目标": 60}
+        column_widths = {"ID": 100, "电量": 80, "状态": 100, "位置": 80, "地形": 120, "目标": 80}
         for col in columns:
             self.status_tree.heading(col, text=col)
-            self.status_tree.column(col, width=column_widths.get(col, 80))
+            self.status_tree.column(col, width=column_widths.get(col, 100))
         
         # 滚动条
         scrollbar = ttk.Scrollbar(table_frame, orient=tk.VERTICAL, command=self.status_tree.yview)
@@ -127,7 +141,7 @@ class EnhancedDroneUI(EnhancedUIMethodsMixin):
         log_frame.pack(fill=tk.BOTH, expand=True)
         
         self.log_text = scrolledtext.ScrolledText(log_frame, height=6, width=50, 
-                                                 font=('Courier', 8), wrap=tk.WORD)
+                                                 font=('Courier', 11), wrap=tk.WORD)
         self.log_text.pack(fill=tk.BOTH, expand=True)
     
     def update_analysis(self):
