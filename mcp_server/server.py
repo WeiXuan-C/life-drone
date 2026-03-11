@@ -36,7 +36,7 @@ except ImportError:
     FASTMCP_AVAILABLE = False
     print("Warning: FastMCP not available. Using mock server implementation.")
 
-from drone_tools import (
+from .drone_tools import (
     discover_drones,
     get_battery_status,
     move_to,
@@ -120,6 +120,9 @@ class DroneControlServer:
         """
         self.server_name = server_name
         
+        # Setup logging first
+        self._setup_logging()
+        
         # Initialize MCP server (FastMCP or mock)
         if FASTMCP_AVAILABLE:
             self.mcp = FastMCP(server_name)
@@ -128,9 +131,6 @@ class DroneControlServer:
         
         # Register all drone tools
         self._register_tools()
-        
-        # Setup logging
-        self._setup_logging()
     
     def _setup_logging(self):
         """Setup logging for the server."""
