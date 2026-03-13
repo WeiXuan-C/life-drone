@@ -25,8 +25,18 @@ try:
     from langchain_community.llms import Ollama
     from langchain_community.chat_models import ChatOllama
     LANGCHAIN_AVAILABLE = True
+    
+    # 尝试导入 LangGraph
+    try:
+        from .langgraph_workflow import LangGraphRescueWorkflow
+        LANGGRAPH_AVAILABLE = True
+    except ImportError:
+        LANGGRAPH_AVAILABLE = False
+        print("Warning: LangGraph workflow not available. Using basic ReAct pattern.")
+        
 except ImportError:
     LANGCHAIN_AVAILABLE = False
+    LANGGRAPH_AVAILABLE = False
     print("Warning: LangChain not available. Using direct Ollama API calls.")
 
 from .memory import MissionMemory
@@ -70,7 +80,8 @@ class RescueAgent:
     def __init__(self, 
                  model_name: str = "qwen2",
                  base_url: str = "http://localhost:11434",
-                 mcp_server_url: str = "http://localhost:8000"):
+                 mcp_server_url: str = "http://localhost:8000",
+                 use_langgraph: bool = True):
         """
         Initialize the rescue agent.
         
@@ -78,12 +89,28 @@ class RescueAgent:
             model_name: Ollama model name (default: qwen2)
             base_url: Ollama server URL
             mcp_server_url: MCP server URL for drone tools
+            use_langgraph: Whether to use LangGraph workflow (default: True)
         """
         self.model_name = model_name
         self.base_url = base_url
         self.mcp_server_url = mcp_server_url
         self.memory = MissionMemory()
         self.reasoning_history: List[ReasoningStep] = []
+        self.use_langgraph = use_langgraph and LANGGRAPH_AVAILABLE
+        
+        # Initialize LangGraph workflow if available
+        if self.use_langgraph:
+            try:
+                self.langgraph_workflow = LangGraphRescueWorkflow(model_name, base_url)
+                print("✅ LangGraph 工作流程已启用")
+            except Exception as e:
+                print(f"⚠️  LangGraph 初始化失败，使用基础 ReAct 模式: {e}")
+                self.use_langgraph = False
+                self.langgraph_workflow = None
+        else:
+            self.langgraph_workflow = None
+            if not LANGGRAPH_AVAILABLE:
+                print("ℹ️  LangGraph 不可用，使用基础 ReAct 模式")
         
         # Initialize LLM
         if LANGCHAIN_AVAILABLE:
@@ -415,7 +442,68 @@ Provide a prioritized list of actions in this format:
         """
         self.memory.add_event(event)
     
-    def execute_reasoning_cycle(self, goal: str) -> Dict[str, Any]:
+    def execute_mission_with_langgraph(self, goal: str) -> Dict[str, Any]:
+        """
+        使用 LangGraph 工作流程执行完整任务
+        
+        Args:
+            goal: 任务目标
+            
+        Returns:
+            任务执行结果
+        """
+        if not self.use_langgraph or not self.langgraph_workflow:
+            return {
+                "success": False,
+                "error": "LangGraph 工作流程不可用",
+                "fallback": "使用基础推理模式"
+            }
+        
+        print(f"\n🚀 使用 LangGraph 执行任务：{goal}")
+        
+        try:
+            result = self.langgraph_workflow.run_mission(goal)
+            
+            # 将结果同步到本地内存
+            if result.get("success"):
+                for message in result.get("messages", []):
+                    self.memory.add_event(f"LangGraph: {message}")
+            
+            return result
+        
+        except Exception as e:
+            error_msg = f"LangGraph 执行失败：{str(e)}"
+            self.memory.add_event(error_msg)
+            
+            return {
+                "success": False,
+                "error": error_msg,
+                "goal": goal
+            }
+    
+    def execute_reasoning_cycle(self, goal: str, use_langgraph: bool = None) -> Dict[str, Any]:
+        """
+        Execute a complete ReAct reasoning cycle.
+        
+        Args:
+            goal: The mission goal to work towards
+            use_langgraph: Override the default LangGraph usage setting
+            
+        Returns:
+            Dictionary containing the complete reasoning cycle results
+        """
+        # 决定使用哪种推理模式
+        should_use_langgraph = (use_langgraph if use_langgraph is not None 
+                               else self.use_langgraph)
+        
+        if should_use_langgraph and self.langgraph_workflow:
+            print(f"\n🧠 使用 LangGraph 工作流程执行任务")
+            return self.execute_mission_with_langgraph(goal)
+        else:
+            print(f"\n🧠 使用基础 ReAct 推理模式执行任务")
+            return self._execute_basic_reasoning_cycle(goal)
+    
+    def _execute_basic_reasoning_cycle(self, goal: str) -> Dict[str, Any]:
         """
         Execute a complete ReAct reasoning cycle.
         

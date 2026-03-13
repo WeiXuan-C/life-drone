@@ -50,6 +50,11 @@ class DroneInfo:
     last_scan_time: Optional[float] = None
     survivors_found: int = 0
     total_distance: float = 0.0
+    
+    @property
+    def id(self) -> str:
+        """Alias for drone_id for compatibility."""
+        return self.drone_id
 
 
 @dataclass
@@ -166,6 +171,25 @@ class DroneRegistry:
             key=lambda station: ((x - station[0]) ** 2 + (y - station[1]) ** 2) ** 0.5
         )
         return nearest_station
+    
+    def register_drone(self, drone_info: DroneInfo) -> bool:
+        """Register a new drone in the registry."""
+        if drone_info.id not in self.drones:
+            self.drones[drone_info.id] = drone_info
+            return True
+        return False
+    
+    def update_drone_status(self, drone_id: str, status: DroneStatus) -> bool:
+        """Update drone status."""
+        drone = self.get_drone(drone_id)
+        if drone:
+            drone.status = status
+            return True
+        return False
+    
+    def get_drone_info(self, drone_id: str) -> Optional[DroneInfo]:
+        """Get drone information by ID (alias for get_drone)."""
+        return self.get_drone(drone_id)
 
 
 # Global drone registry instance

@@ -1,5 +1,5 @@
 """
-增强UI的组件方法
+Enhanced UI component methods
 """
 
 import tkinter as tk
@@ -8,52 +8,53 @@ import math
 from simulation.terrain_system import TerrainType, ObstacleType, WeatherCondition
 
 def create_legend(parent_frame):
-    """创建地形图例"""
-    legend_frame = ttk.LabelFrame(parent_frame, text="🔤 地形图例", padding=5)
+    """Create terrain legend"""
+    legend_frame = ttk.LabelFrame(parent_frame, text="🔤 Terrain Legend", padding=5)
     legend_frame.pack(fill=tk.X, pady=5)
     
-    # 地形颜色
+    # Terrain colors
     terrain_colors = {
-        "平地": "#90EE90",      # 浅绿
-        "丘陵": "#DEB887",      # 浅棕
-        "山脉": "#8B4513",      # 深棕
-        "水域": "#4169E1",      # 蓝色
-        "森林": "#228B22",      # 深绿
-        "沙漠": "#F4A460",      # 沙色
-        "沼泽": "#556B2F",      # 橄榄绿
-        "城市": "#696969",      # 灰色
-        "悬崖": "#2F4F4F",      # 深灰
-        "山谷": "#9ACD32"       # 黄绿
+        "Flat": "#90EE90",      # Light green
+        "Hill": "#DEB887",      # Light brown
+        "Mountain": "#8B4513",  # Dark brown
+        "Water": "#4169E1",     # Blue
+        "Forest": "#228B22",    # Dark green
+        "Desert": "#F4A460",    # Sand
+        "Swamp": "#556B2F",     # Olive green
+        "Urban": "#696969",     # Gray
+        "Cliff": "#2F4F4F",     # Dark gray
+        "Valley": "#9ACD32"     # Yellow green
     }
     
-    legend_text = "地形: "
+    legend_text = "Terrain: "
     for terrain, color in list(terrain_colors.items())[:5]:
         legend_text += f"■{terrain} "
-    legend_text += "\n障碍: 🏢建筑 🌳树木 📡信号塔 🚗车辆 | 天气: ☀晴 🌧雨 💨风 🌫雾 ⛈暴雨"
+    legend_text += "\nObstacles: 🏢Building 🌳Tree 📡Tower 🚗Vehicle | Weather: ☀Clear 🌧Rain 💨Wind 🌫Fog ⛈Storm"
+    legend_text += "\nAgents: 🚁Drone S=Survivor ✓=Rescued ⚡=Charging Station"
     
     ttk.Label(legend_frame, text=legend_text, font=('Arial', 11)).pack()
 
 def create_control_panel(parent_frame, ui_instance):
-    """创建控制面板"""
-    control_frame = ttk.LabelFrame(parent_frame, text="🎮 增强控制面板", padding=10)
+    """Create control panel"""
+    control_frame = ttk.LabelFrame(parent_frame, text="🎮 Enhanced Control Panel", padding=10)
     control_frame.pack(fill=tk.X, pady=(0, 10))
     
-    # 地形生成控制
+    # Terrain generation control
     terrain_frame = ttk.Frame(control_frame)
     terrain_frame.pack(fill=tk.X, pady=5)
     
-    ttk.Label(terrain_frame, text="地形种子:").pack(side=tk.LEFT)
+    ttk.Label(terrain_frame, text="Terrain Seed:").pack(side=tk.LEFT)
     ui_instance.terrain_seed_var = tk.IntVar(value=42)
     ttk.Entry(terrain_frame, textvariable=ui_instance.terrain_seed_var, width=10).pack(side=tk.LEFT, padx=(5, 10))
     
-    ttk.Button(terrain_frame, text="🗺️ 重新生成地形", 
+    ttk.Button(terrain_frame, text="🗺️ Regenerate Terrain", 
               command=ui_instance.regenerate_terrain).pack(side=tk.LEFT, padx=5)
     
-    # 位置选择
+    # Position selection
     pos_frame = ttk.Frame(control_frame)
     pos_frame.pack(fill=tk.X, pady=5)
     
-    ttk.Label(pos_frame, text="选择位置:").pack(side=tk.LEFT)
+    ttk.Label(pos_frame, text="Select Position:").pack(side=tk.LEFT)
     ui_instance.x_var = tk.IntVar(value=10)
     ui_instance.y_var = tk.IntVar(value=10)
     
@@ -63,11 +64,11 @@ def create_control_panel(parent_frame, ui_instance):
     ttk.Label(pos_frame, text="Y:").pack(side=tk.LEFT)
     ttk.Spinbox(pos_frame, from_=0, to=19, width=5, textvariable=ui_instance.y_var).pack(side=tk.LEFT)
     
-    # 无人机参数
+    # Drone parameters
     drone_frame = ttk.Frame(control_frame)
     drone_frame.pack(fill=tk.X, pady=5)
     
-    ttk.Label(drone_frame, text="无人机电量:").pack(side=tk.LEFT)
+    ttk.Label(drone_frame, text="Drone Battery:").pack(side=tk.LEFT)
     ui_instance.battery_var = tk.IntVar(value=100)
     battery_scale = ttk.Scale(drone_frame, from_=20, to=100, orient=tk.HORIZONTAL, 
                              variable=ui_instance.battery_var, length=120)
@@ -77,96 +78,136 @@ def create_control_panel(parent_frame, ui_instance):
     ui_instance.battery_label.pack(side=tk.LEFT)
     battery_scale.configure(command=lambda v: ui_instance.battery_label.config(text=f"{int(float(v))}%"))
     
-    # 添加按钮
+    # Add buttons
     button_frame = ttk.Frame(control_frame)
     button_frame.pack(fill=tk.X, pady=10)
     
-    ttk.Button(button_frame, text="🚁 添加无人机", 
+    ttk.Button(button_frame, text="🚁 Add Drone", 
               command=ui_instance.add_drone).pack(side=tk.LEFT, padx=(0, 5))
-    ttk.Button(button_frame, text="🆘 添加幸存者", 
+    ttk.Button(button_frame, text="🆘 Add Survivor", 
               command=ui_instance.add_survivor).pack(side=tk.LEFT, padx=5)
+    ttk.Button(button_frame, text="⚡ Add Charging Station", 
+              command=ui_instance.add_charging_station).pack(side=tk.LEFT, padx=5)
     
-    # 模拟控制
+    # Simulation control
     sim_frame = ttk.Frame(control_frame)
     sim_frame.pack(fill=tk.X, pady=10)
     
-    ttk.Button(sim_frame, text="▶️ 执行一步", 
+    ttk.Button(sim_frame, text="▶️ Execute Step", 
               command=ui_instance.step_simulation).pack(side=tk.LEFT, padx=(0, 5))
     
     ui_instance.auto_var = tk.BooleanVar()
-    ttk.Checkbutton(sim_frame, text="自动运行", 
+    ttk.Checkbutton(sim_frame, text="Auto Run", 
                    variable=ui_instance.auto_var, 
                    command=ui_instance.toggle_auto_run).pack(side=tk.LEFT, padx=5)
     
-    ttk.Button(sim_frame, text="🔄 重置", 
+    ttk.Button(sim_frame, text="🔄 Reset", 
               command=ui_instance.reset_simulation).pack(side=tk.LEFT, padx=5)
 
 def create_enhanced_analysis_panel(parent_frame, ui_instance):
-    """创建增强分析面板"""
-    analysis_frame = ttk.LabelFrame(parent_frame, text="🧠 增强AI分析", padding=10)
-    analysis_frame.pack(fill=tk.X, pady=(0, 10))
-    
-    # 关键指标
-    metrics_frame = ttk.Frame(analysis_frame)
-    metrics_frame.pack(fill=tk.X)
-    
+    """Create enhanced analysis panel with tabs"""
+    analysis_frame = ttk.LabelFrame(parent_frame, text="🧠 Enhanced AI Analysis", padding=10)
+    analysis_frame.pack(fill=tk.BOTH, expand=False, pady=(0, 10))
+
+    # Create notebook for tabs
+    analysis_notebook = ttk.Notebook(analysis_frame)
+    analysis_notebook.pack(fill=tk.BOTH, expand=True)
+
+    # Tab 1: Mission Status
+    mission_tab = ttk.Frame(analysis_notebook, padding=10)
+    analysis_notebook.add(mission_tab, text="Mission Status")
+
     ui_instance.metrics_labels = {}
-    metrics = ["活跃无人机", "救援进度", "平均电量", "地形挑战", "天气延误", "救援成功率"]
-    
-    for i, metric in enumerate(metrics):
-        frame = ttk.Frame(metrics_frame)
-        frame.grid(row=i//3, column=i%3, padx=5, pady=2, sticky="w")
-        
+
+    # Mission metrics
+    mission_metrics = ["Active Drones", "Rescue Progress", "Rescue Success Rate"]
+    for i, metric in enumerate(mission_metrics):
+        frame = ttk.Frame(mission_tab)
+        frame.pack(fill=tk.X, pady=5)
+
         ttk.Label(frame, text=f"{metric}:", font=('Arial', 11, 'bold')).pack(side=tk.LEFT)
         ui_instance.metrics_labels[metric] = ttk.Label(frame, text="0", font=('Arial', 11))
-        ui_instance.metrics_labels[metric].pack(side=tk.LEFT, padx=(5, 0))
+        ui_instance.metrics_labels[metric].pack(side=tk.LEFT, padx=(10, 0))
+
+    # Tab 2: Resource Status
+    resource_tab = ttk.Frame(analysis_notebook, padding=10)
+    analysis_notebook.add(resource_tab, text="Resources")
+
+    resource_metrics = ["Avg Battery"]
+    for metric in resource_metrics:
+        frame = ttk.Frame(resource_tab)
+        frame.pack(fill=tk.X, pady=5)
+
+        ttk.Label(frame, text=f"{metric}:", font=('Arial', 11, 'bold')).pack(side=tk.LEFT)
+        ui_instance.metrics_labels[metric] = ttk.Label(frame, text="0", font=('Arial', 11))
+        ui_instance.metrics_labels[metric].pack(side=tk.LEFT, padx=(10, 0))
+
+    # Tab 3: Environment Challenges
+    env_tab = ttk.Frame(analysis_notebook, padding=10)
+    analysis_notebook.add(env_tab, text="Challenges")
+
+    env_metrics = ["Terrain Challenges", "Weather Delays"]
+    for metric in env_metrics:
+        frame = ttk.Frame(env_tab)
+        frame.pack(fill=tk.X, pady=5)
+
+        ttk.Label(frame, text=f"{metric}:", font=('Arial', 11, 'bold')).pack(side=tk.LEFT)
+        ui_instance.metrics_labels[metric] = ttk.Label(frame, text="0", font=('Arial', 11))
+        ui_instance.metrics_labels[metric].pack(side=tk.LEFT, padx=(10, 0))
+
 
 def create_ai_reasoning_panel(parent_frame, ui_instance):
-    """创建AI推理面板"""
-    reasoning_frame = ttk.LabelFrame(parent_frame, text="🤔 AI多步推理过程", padding=10)
-    reasoning_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
+    """Create AI reasoning panel"""
+    reasoning_frame = ttk.Frame(parent_frame)
+    reasoning_frame.pack(fill=tk.BOTH, expand=True)
     
-    # 创建笔记本控件用于显示不同无人机的推理
+    # Create notebook widget to display reasoning for different drones
     ui_instance.reasoning_notebook = ttk.Notebook(reasoning_frame)
     ui_instance.reasoning_notebook.pack(fill=tk.BOTH, expand=True)
     
-    # 初始化推理显示区域
+    # Initialize reasoning display areas
     ui_instance.reasoning_displays = {}
 
 def create_terrain_analysis_panel(parent_frame, ui_instance):
-    """创建地形分析面板"""
-    terrain_frame = ttk.LabelFrame(parent_frame, text="🗺️ 地形环境分析", padding=10)
-    terrain_frame.pack(fill=tk.X, pady=(0, 10))
+    """Create terrain analysis panel"""
+    terrain_frame = ttk.Frame(parent_frame)
+    terrain_frame.pack(fill=tk.BOTH, expand=True)
     
-    # 地形统计
-    ui_instance.terrain_stats_text = tk.Text(terrain_frame, height=4, width=50, font=('Arial', 11))
-    ui_instance.terrain_stats_text.pack(fill=tk.X)
+    # Add scrollbar
+    scrollbar = ttk.Scrollbar(terrain_frame, orient=tk.VERTICAL)
+    scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+    
+    # Terrain statistics with scrollbar
+    ui_instance.terrain_stats_text = tk.Text(terrain_frame, font=('Arial', 11),
+                                             wrap=tk.WORD, yscrollcommand=scrollbar.set)
+    ui_instance.terrain_stats_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+    scrollbar.config(command=ui_instance.terrain_stats_text.yview)
 
 def get_terrain_color(terrain_type, height=0, weather=None, obstacle=None):
-    """获取地形颜色"""
+    """Get terrain color"""
     base_colors = {
-        TerrainType.FLAT: "#90EE90",      # 浅绿
-        TerrainType.HILL: "#DEB887",      # 浅棕
-        TerrainType.MOUNTAIN: "#8B4513",  # 深棕
-        TerrainType.WATER: "#4169E1",     # 蓝色
-        TerrainType.FOREST: "#228B22",    # 深绿
-        TerrainType.DESERT: "#F4A460",    # 沙色
-        TerrainType.SWAMP: "#556B2F",     # 橄榄绿
-        TerrainType.URBAN: "#696969",     # 灰色
-        TerrainType.CLIFF: "#2F4F4F",     # 深灰
-        TerrainType.VALLEY: "#9ACD32"     # 黄绿
+        TerrainType.FLAT: "#90EE90",      # Light green
+        TerrainType.HILL: "#DEB887",      # Light brown
+        TerrainType.MOUNTAIN: "#8B4513",  # Dark brown
+        TerrainType.WATER: "#4169E1",     # Blue
+        TerrainType.FOREST: "#228B22",    # Dark green
+        TerrainType.DESERT: "#F4A460",    # Sand
+        TerrainType.SWAMP: "#556B2F",     # Olive green
+        TerrainType.URBAN: "#696969",     # Gray
+        TerrainType.CLIFF: "#2F4F4F",     # Dark gray
+        TerrainType.VALLEY: "#9ACD32"     # Yellow green
     }
     
     color = base_colors.get(terrain_type, "#FFFFFF")
     
-    # 根据高度调整颜色深度
+    # Adjust color depth based on height
     if height > 1500:
-        # 高海拔，颜色更深
+        # High altitude, darker color
         color = darken_color(color, 0.3)
     elif height > 800:
         color = darken_color(color, 0.15)
     
-    # 天气影响
+    # Weather effects
     if weather == WeatherCondition.STORM:
         color = darken_color(color, 0.4)
     elif weather == WeatherCondition.FOG:
@@ -177,7 +218,7 @@ def get_terrain_color(terrain_type, height=0, weather=None, obstacle=None):
     return color
 
 def darken_color(color, factor):
-    """使颜色变深"""
+    """Darken color"""
     if color.startswith('#'):
         color = color[1:]
     
@@ -192,7 +233,7 @@ def darken_color(color, factor):
     return f"#{r:02x}{g:02x}{b:02x}"
 
 def lighten_color(color, factor):
-    """使颜色变浅"""
+    """Lighten color"""
     if color.startswith('#'):
         color = color[1:]
     
@@ -207,7 +248,7 @@ def lighten_color(color, factor):
     return f"#{r:02x}{g:02x}{b:02x}"
 
 def get_obstacle_symbol(obstacle_type):
-    """获取障碍物符号"""
+    """Get obstacle symbol"""
     symbols = {
         ObstacleType.BUILDING: "🏢",
         ObstacleType.TREE: "🌳",
@@ -220,7 +261,7 @@ def get_obstacle_symbol(obstacle_type):
     return symbols.get(obstacle_type, "")
 
 def get_weather_symbol(weather):
-    """获取天气符号"""
+    """Get weather symbol"""
     symbols = {
         WeatherCondition.CLEAR: "☀",
         WeatherCondition.RAIN: "🌧",

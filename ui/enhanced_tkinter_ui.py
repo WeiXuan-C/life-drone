@@ -1,6 +1,6 @@
 """
-增强的Tkinter交互式UI
-支持地形可视化、复杂AI决策分析和详细环境信息
+Enhanced Tkinter Interactive UI
+Supports terrain visualization, complex AI decision analysis, and detailed environment information
 """
 
 import sys
@@ -22,20 +22,20 @@ from ui.enhanced_ui_components import (
 from ui.enhanced_ui_methods import EnhancedUIMethodsMixin
 
 class EnhancedDroneUI(EnhancedUIMethodsMixin):
-    """增强的无人机控制界面，支持地形和复杂AI分析"""
+    """Enhanced drone control interface with terrain and complex AI analysis support"""
     
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("🚁 增强型自主无人机群指挥系统 - 复杂地形版")
+        self.root.title("🚁 Enhanced Autonomous Drone Swarm Command System - Complex Terrain Edition")
         self.root.geometry("1800x1200")
         
-        # 配置默认字体大小
+        # Configure default font size
         self.root.option_add('*Font', 'Arial 12')
         self.root.option_add('*Label.Font', 'Arial 12')
         self.root.option_add('*Button.Font', 'Arial 12')
         self.root.option_add('*Checkbutton.Font', 'Arial 12')
         
-        # 配置ttk样式
+        # Configure ttk styles
         style = ttk.Style()
         style.configure('TLabel', font=('Arial', 12))
         style.configure('TButton', font=('Arial', 12), padding=(10, 5))
@@ -43,35 +43,46 @@ class EnhancedDroneUI(EnhancedUIMethodsMixin):
         style.configure('TLabelFrame.Label', font=('Arial', 14, 'bold'))
         style.configure('Heading', font=('Arial', 12, 'bold'))
         
-        # 模型和状态
+        # Model and state
         self.model = None
         self.auto_run = False
         self.selected_pos = (10, 10)
-        self.canvas_size = 800  # 增大画布
-        self.cell_size = 40     # 增大网格单元
+        self.canvas_size = 800  # Enlarged canvas
+        self.cell_size = 40     # Enlarged grid cell
+        self.zoom_level = 1.0   # Zoom level (0.5 to 2.0)
+        self.min_zoom = 0.5
+        self.max_zoom = 2.0
         self.show_terrain = True
         self.show_height = False
         self.show_weather = False
         
-        # 创建UI
+        # Pan/scroll offset
+        self.offset_x = 0
+        self.offset_y = 0
+        
+        # Create UI
         self.create_widgets()
         self.create_model()
         
-        # 启动更新循环
+        # Initialize AI Reasoning display
+        if hasattr(self, 'update_reasoning_displays'):
+            self.update_reasoning_displays()
+        
+        # Start update loop
         self.update_display()
     
     def create_widgets(self):
-        """创建UI组件"""
+        """Create UI components"""
         
-        # 主框架
+        # Main frame
         main_frame = ttk.Frame(self.root)
         main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
         
-        # 左侧：网格可视化
-        left_frame = ttk.LabelFrame(main_frame, text="🗺️ 复杂地形灾区模拟", padding=10)
+        # Left side: Grid visualization
+        left_frame = ttk.LabelFrame(main_frame, text="🗺️ Complex Terrain Disaster Area Simulation", padding=10)
         left_frame.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=(0, 10))
         
-        # 可视化选项
+        # Visualization options
         viz_frame = ttk.Frame(left_frame)
         viz_frame.pack(fill=tk.X, pady=(0, 10))
         
@@ -79,56 +90,109 @@ class EnhancedDroneUI(EnhancedUIMethodsMixin):
         self.height_var = tk.BooleanVar(value=False)
         self.weather_var = tk.BooleanVar(value=False)
         
-        ttk.Checkbutton(viz_frame, text="显示地形", variable=self.terrain_var,
+        ttk.Checkbutton(viz_frame, text="Show Terrain", variable=self.terrain_var,
                        command=self.toggle_terrain_display).pack(side=tk.LEFT, padx=(0, 10))
-        ttk.Checkbutton(viz_frame, text="显示高度", variable=self.height_var,
+        ttk.Checkbutton(viz_frame, text="Show Height", variable=self.height_var,
                        command=self.toggle_height_display).pack(side=tk.LEFT, padx=(0, 10))
-        ttk.Checkbutton(viz_frame, text="显示天气", variable=self.weather_var,
+        ttk.Checkbutton(viz_frame, text="Show Weather", variable=self.weather_var,
                        command=self.toggle_weather_display).pack(side=tk.LEFT)
         
-        # 网格画布
-        self.canvas = tk.Canvas(left_frame, width=self.canvas_size, height=self.canvas_size, 
-                               bg='white', relief=tk.SUNKEN, borderwidth=2)
-        self.canvas.pack(pady=10)
+        # Zoom controls
+        zoom_frame = ttk.Frame(left_frame)
+        zoom_frame.pack(fill=tk.X, pady=(0, 10))
+        
+        ttk.Label(zoom_frame, text="Zoom:").pack(side=tk.LEFT, padx=(0, 5))
+        ttk.Button(zoom_frame, text="➖ Zoom Out", command=self.zoom_out, width=12).pack(side=tk.LEFT, padx=2)
+        ttk.Button(zoom_frame, text="🔍 Reset", command=self.zoom_reset, width=10).pack(side=tk.LEFT, padx=2)
+        ttk.Button(zoom_frame, text="➕ Zoom In", command=self.zoom_in, width=12).pack(side=tk.LEFT, padx=2)
+        
+        self.zoom_label = ttk.Label(zoom_frame, text="100%")
+        self.zoom_label.pack(side=tk.LEFT, padx=(10, 0))
+        
+        # Grid canvas with scrollbars
+        canvas_frame = ttk.Frame(left_frame)
+        canvas_frame.pack(fill=tk.BOTH, expand=True, pady=10)
+        
+        # Create scrollbars
+        h_scrollbar = ttk.Scrollbar(canvas_frame, orient=tk.HORIZONTAL)
+        v_scrollbar = ttk.Scrollbar(canvas_frame, orient=tk.VERTICAL)
+        
+        self.canvas = tk.Canvas(canvas_frame, width=self.canvas_size, height=self.canvas_size, 
+                               bg='white', relief=tk.SUNKEN, borderwidth=2,
+                               xscrollcommand=h_scrollbar.set,
+                               yscrollcommand=v_scrollbar.set)
+        
+        h_scrollbar.config(command=self.canvas.xview)
+        v_scrollbar.config(command=self.canvas.yview)
+        
+        # Pack scrollbars and canvas
+        v_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        h_scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
+        self.canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        
+        # Bind mouse events
         self.canvas.bind("<Button-1>", self.on_canvas_click)
         self.canvas.bind("<Motion>", self.on_canvas_hover)
+        self.canvas.bind("<MouseWheel>", self.on_mouse_wheel)  # Windows/Mac
+        self.canvas.bind("<Button-4>", self.on_mouse_wheel)    # Linux scroll up
+        self.canvas.bind("<Button-5>", self.on_mouse_wheel)    # Linux scroll down
         
-        # 地形信息显示
-        self.terrain_info_label = ttk.Label(left_frame, text="地形信息: 点击网格查看详情", 
+        # Terrain info display
+        self.terrain_info_label = ttk.Label(left_frame, text="Terrain Info: Click grid to view details", 
                                            font=('Arial', 12))
         self.terrain_info_label.pack(pady=5)
         
-        # 图例
+        # Legend
         create_legend(left_frame)
         
-        # 右侧：控制和分析面板
-        right_frame = ttk.Frame(main_frame)
-        right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, padx=(10, 0))
+        # Right side: Control and analysis panels
+        right_frame = ttk.Frame(main_frame, width=600)
+        right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=(10, 0))
         
-        # 创建各个面板
+        # Control panel at top
         create_control_panel(right_frame, self)
-        create_enhanced_analysis_panel(right_frame, self)
-        create_ai_reasoning_panel(right_frame, self)
-        create_terrain_analysis_panel(right_frame, self)
-        self.create_status_table(right_frame)
-        self.create_log_panel(right_frame)
+        
+        # Create main notebook for all analysis tabs
+        self.main_notebook = ttk.Notebook(right_frame)
+        self.main_notebook.pack(fill=tk.BOTH, expand=True, pady=(10, 0))
+        
+        # Tab 1: AI Analysis & Status
+        analysis_tab = ttk.Frame(self.main_notebook, padding=5)
+        self.main_notebook.add(analysis_tab, text="📊 Analysis & Status")
+        create_enhanced_analysis_panel(analysis_tab, self)
+        self.create_status_table(analysis_tab)
+        
+        # Tab 2: AI Reasoning
+        reasoning_tab = ttk.Frame(self.main_notebook, padding=5)
+        self.main_notebook.add(reasoning_tab, text="🤔 AI Reasoning")
+        create_ai_reasoning_panel(reasoning_tab, self)
+        
+        # Tab 3: Terrain Analysis
+        terrain_tab = ttk.Frame(self.main_notebook, padding=5)
+        self.main_notebook.add(terrain_tab, text="🗺️ Terrain")
+        create_terrain_analysis_panel(terrain_tab, self)
+        
+        # Tab 4: Mission Log
+        log_tab = ttk.Frame(self.main_notebook, padding=5)
+        self.main_notebook.add(log_tab, text="📝 Mission Log")
+        self.create_log_panel(log_tab)
     
     def create_status_table(self, parent):
-        """创建状态表格"""
-        table_frame = ttk.LabelFrame(parent, text="🚁 无人机详细状态", padding=10)
-        table_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
+        """Create status table"""
+        table_frame = ttk.LabelFrame(parent, text="🚁 Drone Detailed Status", padding=10)
+        table_frame.pack(fill=tk.BOTH, expand=True, pady=(10, 0))
         
-        # 创建表格
-        columns = ("ID", "电量", "状态", "位置", "地形", "目标")
-        self.status_tree = ttk.Treeview(table_frame, columns=columns, show="headings", height=6)
+        # Create table
+        columns = ("ID", "Battery", "Status", "Position", "Terrain", "Target")
+        self.status_tree = ttk.Treeview(table_frame, columns=columns, show="headings", height=8)
         
-        # 设置列标题和宽度
-        column_widths = {"ID": 100, "电量": 80, "状态": 100, "位置": 80, "地形": 120, "目标": 80}
+        # Set column headers and widths
+        column_widths = {"ID": 100, "Battery": 80, "Status": 100, "Position": 80, "Terrain": 120, "Target": 80}
         for col in columns:
             self.status_tree.heading(col, text=col)
             self.status_tree.column(col, width=column_widths.get(col, 100))
         
-        # 滚动条
+        # Scrollbar
         scrollbar = ttk.Scrollbar(table_frame, orient=tk.VERTICAL, command=self.status_tree.yview)
         self.status_tree.configure(yscrollcommand=scrollbar.set)
         
@@ -136,41 +200,46 @@ class EnhancedDroneUI(EnhancedUIMethodsMixin):
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
     
     def create_log_panel(self, parent):
-        """创建日志面板"""
-        log_frame = ttk.LabelFrame(parent, text="📝 任务日志", padding=10)
+        """Create log panel"""
+        log_frame = ttk.Frame(parent)
         log_frame.pack(fill=tk.BOTH, expand=True)
         
-        self.log_text = scrolledtext.ScrolledText(log_frame, height=6, width=50, 
-                                                 font=('Courier', 11), wrap=tk.WORD)
-        self.log_text.pack(fill=tk.BOTH, expand=True)
+        # Add scrollbar
+        scrollbar = ttk.Scrollbar(log_frame, orient=tk.VERTICAL)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        self.log_text = tk.Text(log_frame, font=('Courier', 10), wrap=tk.WORD,
+                               yscrollcommand=scrollbar.set)
+        self.log_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        scrollbar.config(command=self.log_text.yview)
     
     def update_analysis(self):
-        """更新AI分析"""
+        """Update AI analysis"""
         if not self.model:
             return
         
         analysis = self.model.get_ai_analysis()
         
-        # 更新指标
-        self.metrics_labels["活跃无人机"].config(text=f"{analysis['活跃无人机']}/{analysis['总无人机数']}")
-        self.metrics_labels["救援进度"].config(text=f"{analysis['已救援']}/{analysis['总幸存者']}")
-        self.metrics_labels["平均电量"].config(text=f"{analysis['平均电量']:.1f}%")
-        self.metrics_labels["地形挑战"].config(text=str(analysis['地形挑战']))
-        self.metrics_labels["天气延误"].config(text=str(analysis['天气延误']))
-        self.metrics_labels["救援成功率"].config(text=f"{analysis['救援成功率']:.1f}%")
+        # Update metrics
+        self.metrics_labels["Active Drones"].config(text=f"{analysis['active_drones']}/{analysis['total_drones']}")
+        self.metrics_labels["Rescue Progress"].config(text=f"{analysis['rescued']}/{analysis['total_survivors']}")
+        self.metrics_labels["Avg Battery"].config(text=f"{analysis['avg_battery']:.1f}%")
+        self.metrics_labels["Terrain Challenges"].config(text=str(analysis['terrain_challenges']))
+        self.metrics_labels["Weather Delays"].config(text=str(analysis['weather_delays']))
+        self.metrics_labels["Rescue Success Rate"].config(text=f"{analysis['rescue_success_rate']:.1f}%")
         
-        # 更新地形分析
-        terrain_analysis = analysis['地形分析']
-        terrain_text = f"地形分布: "
-        for terrain, count in terrain_analysis['地形分布'].items():
+        # Update terrain analysis
+        terrain_analysis = analysis['terrain_analysis']
+        terrain_text = f"Terrain Distribution: "
+        for terrain, count in terrain_analysis['terrain_distribution'].items():
             percentage = (count / 400) * 100  # 20x20 = 400 cells
             terrain_text += f"{terrain}({percentage:.1f}%) "
         
-        terrain_text += f"\n障碍物: {terrain_analysis['障碍物数量']}个"
-        terrain_text += f"\n平均海拔: {terrain_analysis['平均高度']:.0f}m"
+        terrain_text += f"\nObstacles: {terrain_analysis['obstacle_count']} units"
+        terrain_text += f"\nAvg Altitude: {terrain_analysis['avg_altitude']:.0f}m"
         
-        weather_text = "天气分布: "
-        for weather, count in terrain_analysis['天气条件'].items():
+        weather_text = "Weather Distribution: "
+        for weather, count in terrain_analysis['weather_conditions'].items():
             percentage = (count / 400) * 100
             weather_text += f"{weather}({percentage:.1f}%) "
         
@@ -180,22 +249,22 @@ class EnhancedDroneUI(EnhancedUIMethodsMixin):
         self.terrain_stats_text.insert(1.0, terrain_text)
     
     def update_status_table(self):
-        """更新状态表格"""
+        """Update status table"""
         if not self.model:
             return
         
-        # 清空表格
+        # Clear table
         for item in self.status_tree.get_children():
             self.status_tree.delete(item)
         
-        # 添加无人机数据
+        # Add drone data
         drones = [a for a in self.model.custom_agents if isinstance(a, EnhancedDroneAgent)]
         
         for drone in drones:
             battery_icon = "🟢" if drone.battery > 60 else "🟡" if drone.battery > 30 else "🔴"
             
-            # 获取地形信息
-            terrain_info = "未知"
+            # Get terrain info
+            terrain_info = "Unknown"
             if drone.pos:
                 terrain_cell = drone.get_current_terrain()
                 if terrain_cell:
@@ -203,8 +272,8 @@ class EnhancedDroneUI(EnhancedUIMethodsMixin):
                     if terrain_cell.height > 500:
                         terrain_info += f"({terrain_cell.height:.0f}m)"
             
-            position = f"({drone.pos[0]}, {drone.pos[1]})" if drone.pos else "未知"
-            target = f"({drone.target[0]}, {drone.target[1]})" if drone.target else "无"
+            position = f"({drone.pos[0]}, {drone.pos[1]})" if drone.pos else "Unknown"
+            target = f"({drone.target[0]}, {drone.target[1]})" if drone.target else "None"
             
             self.status_tree.insert("", tk.END, values=(
                 drone.unique_id,
@@ -216,44 +285,84 @@ class EnhancedDroneUI(EnhancedUIMethodsMixin):
             ))
     
     def log_message(self, message):
-        """添加日志消息"""
+        """Add log message"""
         timestamp = time.strftime("%H:%M:%S")
         log_entry = f"[{timestamp}] {message}\n"
         
         self.log_text.insert(tk.END, log_entry)
         self.log_text.see(tk.END)
         
-        # 限制日志长度
+        # Limit log length
         lines = self.log_text.get(1.0, tk.END).split('\n')
         if len(lines) > 100:
             self.log_text.delete(1.0, f"{len(lines)-100}.0")
     
+    def zoom_in(self):
+        """Zoom in"""
+        if self.zoom_level < self.max_zoom:
+            self.zoom_level = min(self.max_zoom, self.zoom_level + 0.25)
+            self.update_zoom()
+            self.log_message(f"🔍 Zoomed in to {int(self.zoom_level * 100)}%")
+    
+    def zoom_out(self):
+        """Zoom out"""
+        if self.zoom_level > self.min_zoom:
+            self.zoom_level = max(self.min_zoom, self.zoom_level - 0.25)
+            self.update_zoom()
+            self.log_message(f"🔍 Zoomed out to {int(self.zoom_level * 100)}%")
+    
+    def zoom_reset(self):
+        """Reset zoom to 100%"""
+        self.zoom_level = 1.0
+        self.update_zoom()
+        self.log_message("🔍 Zoom reset to 100%")
+    
+    def on_mouse_wheel(self, event):
+        """Handle mouse wheel zoom"""
+        # Windows/Mac
+        if event.num == 4 or event.delta > 0:
+            self.zoom_in()
+        elif event.num == 5 or event.delta < 0:
+            self.zoom_out()
+    
+    def update_zoom(self):
+        """Update zoom level and redraw"""
+        # Update zoom label
+        self.zoom_label.config(text=f"{int(self.zoom_level * 100)}%")
+        
+        # Update canvas scroll region
+        zoomed_size = int(20 * self.cell_size * self.zoom_level)
+        self.canvas.config(scrollregion=(0, 0, zoomed_size, zoomed_size))
+        
+        # Redraw grid
+        self.draw_grid()
+    
     def update_display(self):
-        """更新显示"""
+        """Update display"""
         self.draw_grid()
         self.update_analysis()
         self.update_status_table()
         
-        # 定期更新
+        # Periodic update
         self.root.after(1000, self.update_display)
     
     def run(self):
-        """运行UI"""
+        """Run UI"""
         self.root.mainloop()
 
 def main():
-    """主函数"""
-    print("🚁 启动增强型Tkinter交互式UI...")
-    print("🗺️ 复杂地形特性:")
-    print("   • 多种地形类型：平地、丘陵、山脉、水域、森林、沙漠等")
-    print("   • 高度差异：海拔0-2000米，影响移动成本和通信")
-    print("   • 动态天气：晴天、雨天、大风、雾天、暴雨")
-    print("   • 障碍物系统：建筑、树木、信号塔、废墟等")
-    print("🧠 AI增强特性:")
-    print("   • 多步推理：环境感知→威胁评估→资源分析→任务规划→路径优化→决策执行")
-    print("   • 复杂路径规划：A*算法考虑地形成本，非直线距离")
-    print("   • 动态适应：实时响应天气变化和地形挑战")
-    print("   • 详细推理记录：完整的AI思考过程可视化")
+    """Main function"""
+    print("🚁 Starting Enhanced Tkinter Interactive UI...")
+    print("🗺️ Complex Terrain Features:")
+    print("   • Multiple terrain types: Flat, Hills, Mountains, Water, Forest, Desert, etc.")
+    print("   • Altitude differences: 0-2000m elevation, affecting movement cost and communication")
+    print("   • Dynamic weather: Clear, Rain, Wind, Fog, Storm")
+    print("   • Obstacle system: Buildings, Trees, Towers, Debris, etc.")
+    print("🧠 AI Enhancement Features:")
+    print("   • Multi-step reasoning: Environment perception → Threat assessment → Resource analysis → Mission planning → Path optimization → Decision execution")
+    print("   • Complex path planning: A* algorithm considering terrain cost, non-linear distance")
+    print("   • Dynamic adaptation: Real-time response to weather changes and terrain challenges")
+    print("   • Detailed reasoning records: Complete AI thinking process visualization")
     
     app = EnhancedDroneUI()
     app.run()

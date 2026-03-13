@@ -17,13 +17,24 @@ class SimpleDroneAgent(Agent):
         super().__init__(model)
         self.unique_id = unique_id
         self.battery = 100
-        self.status = "idle"  # idle, scanning, moving, charging
+        self.status = "idle"  # idle, scanning, moving, charging, returning_home
         self.target = None
+        self.home_base = None  # Main return point for all drones
         
     def step(self):
-        """Simple drone behavior"""
+        """Simple drone behavior with home base return capability"""
         # Decrease battery
         self.battery = max(0, self.battery - 1)
+        
+        # Check if drone should return home (emergency recall or mission complete)
+        if hasattr(self.model, 'emergency_recall') and self.model.emergency_recall:
+            self.status = "returning_home"
+            if self.home_base and self.pos != self.home_base:
+                self.move_towards(self.home_base)
+                return
+            elif self.pos == self.home_base:
+                self.status = "at_home_base"
+                return
         
         # Simple AI logic
         if self.battery <= 20:
@@ -35,6 +46,9 @@ class SimpleDroneAgent(Agent):
                 station = stations[0]
                 if self.pos == station.pos:
                     self.battery = min(100, self.battery + 10)
+                    # If fully charged and no emergency, return to normal operations
+                    if self.battery >= 80 and not (hasattr(self.model, 'emergency_recall') and self.model.emergency_recall):
+                        self.status = "idle"
                 else:
                     self.move_towards(station.pos)
         else:
@@ -48,12 +62,23 @@ class SimpleDroneAgent(Agent):
                     survivor.found = True
                     self.status = "rescuing"
                     self.model.log_event(f"Drone {self.unique_id} rescued survivor at {survivor.pos}")
+                    # After rescue, check if should return home
+                    if hasattr(self.model, 'return_home_after_mission') and self.model.return_home_after_mission:
+                        self.status = "returning_home"
                 else:
                     self.status = "moving"
                     self.move_towards(survivor.pos)
             else:
-                self.status = "scanning"
-                self.random_move()
+                # No survivors found - check if should return home or continue patrol
+                if hasattr(self.model, 'return_home_when_idle') and self.model.return_home_when_idle:
+                    if self.home_base and self.pos != self.home_base:
+                        self.status = "returning_home"
+                        self.move_towards(self.home_base)
+                    else:
+                        self.status = "at_home_base"
+                else:
+                    self.status = "scanning"
+                    self.random_move()
     
     def move_towards(self, target_pos):
         """Move one step towards target"""
@@ -95,6 +120,22 @@ class SimpleSurvivorAgent(Agent):
     def step(self):
         pass
 
+class SimpleHomeBaseAgent(Agent):
+    """Main home base where all drones return"""
+    
+    def __init__(self, unique_id, model):
+        super().__init__(model)
+        self.unique_id = unique_id
+        self.drones_at_base = []
+        self.total_missions_completed = 0
+    
+    def step(self):
+        """Monitor drones at base"""
+        # Count drones currently at base
+        drones_here = [agent for agent in self.model.grid.get_cell_list_contents([self.pos])
+                      if isinstance(agent, SimpleDroneAgent)]
+        self.drones_at_base = [drone.unique_id for drone in drones_here]
+
 class SimpleChargingStationAgent(Agent):
     """Simplified charging station"""
     
@@ -106,9 +147,9 @@ class SimpleChargingStationAgent(Agent):
         pass
 
 class SimpleDroneSwarmModel(Model):
-    """Simplified model compatible with Mesa 3.x"""
+    """Simplified model compatible with Mesa 3.x with home base functionality"""
     
-    def __init__(self, width=20, height=20, n_drones=3, n_survivors=5, n_charging_stations=2):
+    def __init__(self, width=20, height=20, n_drones=3, n_survivors=5, n_charging_stations=2, home_base_pos=(10, 10)):
         super().__init__()
         self.width = width
         self.height = height
@@ -118,39 +159,55 @@ class SimpleDroneSwarmModel(Model):
         self.step_count = 0
         self.mission_log = []
         
+        # Home base configuration
+        self.home_base_pos = home_base_pos
+        self.emergency_recall = False
+        self.return_home_after_mission = False
+        self.return_home_when_idle = False
+        
+        # Create home base
+        home_base = SimpleHomeBaseAgent("home_base", self)
+        self.custom_agents.append(home_base)
+        self.grid.place_agent(home_base, home_base_pos)
+        self.log_event(f"🏠 Home Base established at {home_base_pos}")
+        
         # Create charging stations
         for i in range(n_charging_stations):
             station = SimpleChargingStationAgent(f"station_{i}", self)
             self.custom_agents.append(station)
             x, y = (1, 1) if i == 0 else (width - 2, height - 2)
             self.grid.place_agent(station, (x, y))
-            self.log_event(f"Charging station deployed at ({x}, {y})")
+            self.log_event(f"⚡ Charging station deployed at ({x}, {y})")
         
         # Create drones
         for i in range(n_drones):
             drone = SimpleDroneAgent(f"drone_{i}", self)
+            drone.home_base = home_base_pos  # Set home base for each drone
             self.custom_agents.append(drone)
-            x, y = random.randrange(3), random.randrange(3)
+            # Start drones at home base
+            x, y = home_base_pos
             self.grid.place_agent(drone, (x, y))
-            self.log_event(f"Drone {drone.unique_id} deployed at ({x}, {y})")
+            self.log_event(f"🚁 Drone {drone.unique_id} deployed from home base at ({x}, {y})")
         
         # Create survivors
         for i in range(n_survivors):
             survivor = SimpleSurvivorAgent(f"survivor_{i}", self)
             self.custom_agents.append(survivor)
             x, y = random.randrange(width), random.randrange(height)
-            # Avoid placing on charging stations
+            # Avoid placing on charging stations or home base
             while len([a for a in self.grid.get_cell_list_contents([(x, y)]) 
-                      if isinstance(a, SimpleChargingStationAgent)]) > 0:
+                      if isinstance(a, (SimpleChargingStationAgent, SimpleHomeBaseAgent))]) > 0:
                 x, y = random.randrange(width), random.randrange(height)
             self.grid.place_agent(survivor, (x, y))
-            self.log_event(f"Survivor signal detected at ({x}, {y})")
+            self.log_event(f"🆘 Survivor signal detected at ({x}, {y})")
         
         # Data collector
         self.datacollector = DataCollector(
             model_reporters={
                 "Active_Drones": lambda m: len([a for a in m.custom_agents 
-                                              if isinstance(a, SimpleDroneAgent) and a.status != "charging"]),
+                                              if isinstance(a, SimpleDroneAgent) and a.status not in ["charging", "at_home_base"]]),
+                "Drones_At_Home": lambda m: len([a for a in m.custom_agents 
+                                               if isinstance(a, SimpleDroneAgent) and a.status == "at_home_base"]),
                 "Survivors_Found": lambda m: len([a for a in m.custom_agents 
                                                 if isinstance(a, SimpleSurvivorAgent) and a.found]),
                 "Average_Battery": lambda m: sum([a.battery for a in m.custom_agents 
@@ -166,9 +223,9 @@ class SimpleDroneSwarmModel(Model):
         log_entry = f"[{timestamp}] {message}"
         self.mission_log.append(log_entry)
         
-        # Write to file
+        # Write to file with UTF-8 encoding
         os.makedirs("logs", exist_ok=True)
-        with open("logs/mission.log", "a") as f:
+        with open("logs/mission.log", "a", encoding="utf-8") as f:
             f.write(log_entry + "\n")
     
     def step(self):
@@ -193,5 +250,46 @@ class SimpleDroneSwarmModel(Model):
             "id": drone.unique_id,
             "battery": drone.battery,
             "status": drone.status,
-            "position": drone.pos
+            "position": drone.pos,
+            "home_base": drone.home_base
         } for drone in drones]
+    
+    def recall_all_drones(self):
+        """Emergency recall - all drones return to home base immediately"""
+        self.emergency_recall = True
+        self.log_event("🚨 EMERGENCY RECALL: All drones ordered to return to home base")
+        
+    def cancel_recall(self):
+        """Cancel emergency recall"""
+        self.emergency_recall = False
+        self.log_event("✅ Emergency recall cancelled - drones resume normal operations")
+    
+    def set_return_home_after_mission(self, enabled=True):
+        """Set whether drones should return home after completing missions"""
+        self.return_home_after_mission = enabled
+        status = "enabled" if enabled else "disabled"
+        self.log_event(f"📋 Return home after mission: {status}")
+    
+    def set_return_home_when_idle(self, enabled=True):
+        """Set whether drones should return home when idle (no survivors to rescue)"""
+        self.return_home_when_idle = enabled
+        status = "enabled" if enabled else "disabled"
+        self.log_event(f"🏠 Return home when idle: {status}")
+    
+    def get_home_base_status(self):
+        """Get status of home base and drones there"""
+        home_base = next((a for a in self.custom_agents if isinstance(a, SimpleHomeBaseAgent)), None)
+        if not home_base:
+            return None
+            
+        drones_at_home = [a for a in self.custom_agents 
+                         if isinstance(a, SimpleDroneAgent) and a.pos == self.home_base_pos]
+        
+        return {
+            "position": self.home_base_pos,
+            "drones_at_base": len(drones_at_home),
+            "drone_ids": [drone.unique_id for drone in drones_at_home],
+            "emergency_recall_active": self.emergency_recall,
+            "return_home_after_mission": self.return_home_after_mission,
+            "return_home_when_idle": self.return_home_when_idle
+        }

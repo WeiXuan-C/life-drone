@@ -2,25 +2,26 @@
 
 An interactive Mesa-based simulation dashboard for disaster rescue operations using AI-driven drone swarms.
 
-## ✅ 主要功能特性
+## ✅ Main Features
 
-### 🎮 交互式控制界面 (完全功能)
-- **Tkinter桌面GUI**：完整的图形用户界面，支持点击操作
-- **手动添加智能体**：用户可以在任意位置添加无人机和幸存者
-- **实时参数调节**：动态设置无人机电量、位置等参数
-- **可视化网格**：20x20灾区环境，实时显示所有智能体状态
+### 🎮 Interactive Control Interface (Full Functionality)
+- **Tkinter Desktop GUI**: Complete graphical user interface with click operations
+- **Manual Agent Addition**: Users can add drones and survivors at any location
+- **Real-time Parameter Adjustment**: Dynamically set drone battery, position and other parameters
+- **Visualization Grid**: 20x20 disaster area environment, real-time display of all agent states
 
-### 🧠 AI决策分析系统
-- **实时决策监控**：显示每架无人机的AI思考过程
-- **状态分布分析**：统计无人机各种状态的分布情况
-- **性能指标追踪**：救援效率、电量管理、任务完成率
-- **决策日志记录**：完整的AI决策历史和用户操作记录
+### 🧠 AI Decision Analysis System
+- **Real-time Decision Monitoring**: Display AI thinking process of each drone
+- **Status Distribution Analysis**: Statistics of drone status distribution
+- **Performance Metrics Tracking**: Rescue efficiency, battery management, task completion rate
+- **Decision Log Recording**: Complete AI decision history and user operation records
 
-### 🤖 智能无人机行为
-- **自主决策**：基于电量、距离、任务优先级的智能决策
-- **电量管理**：自动充电策略和能耗优化
-- **协同救援**：多无人机协调完成救援任务
-- **动态适应**：实时响应环境变化和新增任务
+### 🤖 Intelligent Drone Behavior
+- **Autonomous Decision Making**: Intelligent decisions based on battery, distance, task priority
+- **Battery Management**: Automatic charging strategy and energy consumption optimization
+- **Coordinated Rescue**: Multiple drones coordinate to complete rescue missions
+- **Dynamic Adaptation**: Real-time response to environmental changes and new tasks
+- **🏠 Home Base Operations**: Central return point for all drones with emergency recall capability
 
 ## 🚀 Quick Start
 
@@ -35,19 +36,19 @@ python main.py
 
 ### Available Interfaces
 
-#### 1. Tkinter Interactive UI (推荐 - 完全交互式)
+#### 1. Tkinter Interactive UI (Recommended - Fully Interactive)
 ```bash
 python ui/tkinter_interactive_ui.py
-# 或通过主菜单选择选项2
+# Or select option 2 from main menu
 ```
-- **完整的桌面GUI界面**
-- **点击网格选择位置**
-- **手动添加无人机和幸存者**
-- **实时AI决策分析**
-- **详细状态监控表格**
-- **自动/手动模拟控制**
+- **Complete Desktop GUI Interface**
+- **Click Grid to Select Position**
+- **Manually Add Drones and Survivors**
+- **Real-time AI Decision Analysis**
+- **Detailed Status Monitoring Table**
+- **Auto/Manual Simulation Control**
 
-#### 2. Console UI (终端界面)
+#### 2. Console UI (Terminal Interface)
 ```bash
 python ui/console_ui.py
 ```
@@ -56,32 +57,55 @@ python ui/console_ui.py
 - Manual and auto-stepping modes
 - Full drone status monitoring
 
-#### 3. Mesa 3.x Web UI (实验性)
+#### 3. Mesa 3.x Web UI (Experimental)
 ```bash
 python ui/mesa3_interactive_ui.py
 ```
-- Web-based interface (需要solara)
+- Web-based interface (requires solara)
 - Browser access at localhost:8521
 
-#### 4. Demo Mode (演示模式)
+#### 4. Command Center UI (New - Home Base Management)
+```bash
+python ui/command_center_ui.py
+```
+- **Home Base Operations Interface**
+- **Emergency Recall All Drones**
+- **Real-time Home Base Status**
+- **Drone Return Configuration**
+- **Integrated Simulation Control**
+
+#### 5. Demo Mode (Demonstration Mode)
 ```bash
 python demo.py
 ```
-- Automated demonstration
-- Shows AI decision-making in action
-- Visual progress tracking
+#### 6. Home Base Demo (New Feature)
+```bash
+python demo_home_base.py
+```
+- Demonstrates home base functionality
+- Shows emergency recall operations
+- Tests drone return behavior
 
 ## 🎯 System Components
 
 ### Core Simulation (`simulation/simple_model.py`)
-- **SimpleDroneSwarmModel**: Mesa 3.x compatible model
-- **SimpleDroneAgent**: AI-driven drone with autonomous behavior
+- **SimpleDroneSwarmModel**: Mesa 3.x compatible model with home base support
+- **SimpleDroneAgent**: AI-driven drone with autonomous behavior and home return capability
 - **SimpleSurvivorAgent**: Rescue targets with signal detection
 - **SimpleChargingStationAgent**: Power stations for drone recharging
+- **SimpleHomeBaseAgent**: Central command point where all drones can return
+
+### Command Center (`command_center.py`)
+- **CentralCommandCenter**: Main coordination hub for all drone operations
+- **Home Base Management**: Emergency recall and return-to-base functionality
+- **Mission Planning**: Coordinated multi-drone operations
+- **Real-time Monitoring**: Live status tracking and control
 
 ### User Interfaces
+- **Command Center UI** (`ui/command_center_ui.py`): Home base management and emergency controls
 - **Console UI** (`ui/console_ui.py`): Interactive terminal interface
 - **Demo Mode** (`demo.py`): Automated demonstration
+- **Home Base Demo** (`demo_home_base.py`): Home base functionality demonstration
 - **Simple UI** (`ui/simple_ui.py`): Mesa 3.x visualization (experimental)
 
 ### Legacy Components (Mesa 2.x)
@@ -106,25 +130,30 @@ python demo.py
 🟢 Healthy Drone (>60% battery)
 🟡 Medium Drone (30-60% battery)  
 🔴 Low Battery Drone (<30% battery)
+🏠 Drone at Home Base
 🆘 Survivor (needs rescue)
 ✅ Rescued Survivor
 ⚡ Charging Station
+🏢 Home Base
 .  Empty Cell
 ```
 
 ## 🧠 AI Behavior
 
 ### Drone Decision Making
-1. **Battery Critical (≤20%)**: Return to charging station immediately
-2. **At Charging Station**: Charge until 80% battery
-3. **Survivor Detection**: Move towards nearest unrescued survivor
-4. **Rescue Range**: Rescue survivors within 1 grid cell
-5. **Patrol Mode**: Random movement when no survivors detected
+1. **Emergency Recall**: Return to home base immediately when emergency recall is active
+2. **Battery Critical (≤20%)**: Return to charging station immediately
+3. **At Charging Station**: Charge until 80% battery
+4. **Survivor Detection**: Move towards nearest unrescued survivor
+5. **Rescue Range**: Rescue survivors within 1 grid cell
+6. **Home Base Return**: Return to home base when idle (configurable)
+7. **Patrol Mode**: Random movement when no survivors detected and not returning home
 
 ### Smart Features
 - **Energy Management**: Automatic charging when battery is low
 - **Pathfinding**: Direct movement towards targets
-- **Priority System**: Battery management overrides rescue operations
+- **Priority System**: Emergency recall overrides all other operations
+- **Home Base Operations**: Centralized return point for mission coordination
 - **Coordination**: Multiple drones work independently but efficiently
 
 ## 📊 Performance Metrics

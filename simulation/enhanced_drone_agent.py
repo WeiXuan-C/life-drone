@@ -1,6 +1,6 @@
 """
-增强的无人机智能体
-支持复杂地形导航、路径规划和高级AI决策
+Enhanced drone agent
+Supports complex terrain navigation, path planning and advanced AI decision-making
 """
 
 import random
@@ -13,13 +13,13 @@ from simulation.terrain_system import (
 )
 
 class EnhancedDroneAgent(Agent):
-    """增强的无人机智能体，具备复杂地形导航能力"""
+    """Enhanced drone agent with complex terrain navigation capability"""
     
     def __init__(self, unique_id, model):
         super().__init__(model)
         self.unique_id = unique_id
         
-        # 基础属性
+        # Basic attributes
         self.battery = 100
         self.max_battery = 100
         self.status = "idle"
@@ -27,296 +27,309 @@ class EnhancedDroneAgent(Agent):
         self.planned_path = []
         self.current_path_index = 0
         
-        # 增强属性
-        self.flight_altitude = 50  # 飞行高度（米）
+        # Enhanced attributes
+        self.flight_altitude = 50  # Flight altitude (meters)
         self.max_altitude = 200
         self.scan_radius = 2
         self.communication_range = 5
         
-        # AI决策相关
+        # AI decision-making related
         self.decision_history = []
         self.reasoning_steps = []
-        self.risk_tolerance = 0.7  # 风险容忍度 (0-1)
-        self.energy_efficiency_priority = 0.8  # 能效优先级
-        self.mission_priority = 0.9  # 任务优先级
+        self.risk_tolerance = 0.7  # Risk tolerance (0-1)
+        self.energy_efficiency_priority = 0.8  # Energy efficiency priority
+        self.mission_priority = 0.9  # Mission priority
         
-        # 性能统计
+        # Performance statistics
         self.total_distance_traveled = 0.0
         self.successful_rescues = 0
         self.failed_attempts = 0
         self.terrain_analysis_cache = {}
         
-        # 传感器和设备状态
+        # Sensor and device status
         self.gps_accuracy = 1.0
         self.camera_quality = 1.0
         self.communication_quality = 1.0
         
     def step(self):
-        """执行一步AI决策和行动"""
+        """Execute one step of AI decision-making and action"""
         if self.battery <= 0:
             self.status = "crashed"
-            self.log_reasoning("电量耗尽", "无人机坠毁", "emergency_landing", "系统关闭")
+            self.log_reasoning("Battery depleted", "Drone crashed", "emergency_landing", "System shutdown")
             return
         
-        # 获取当前位置的地形信息
+        # Get current terrain information
         current_terrain = self.get_current_terrain()
         
-        # 执行多步AI推理
+        # Execute multi-step AI reasoning
         self.perform_ai_reasoning(current_terrain)
         
-        # 执行决策
+        # Execute decision
         self.execute_decision()
         
-        # 更新状态
+        # Update status
         self.update_status(current_terrain)
     
     def perform_ai_reasoning(self, current_terrain: TerrainCell):
-        """执行多步AI推理过程"""
+        """Execute multi-step AI reasoning process"""
         self.reasoning_steps = []
         
-        # 第一步：环境感知和分析
+        # Step 1: Environment perception and analysis
         env_analysis = self.analyze_environment(current_terrain)
-        self.reasoning_steps.append(f"环境分析: {env_analysis}")
+        self.reasoning_steps.append(f"Environment Analysis: {env_analysis}")
         
-        # 第二步：威胁评估
+        # Step 2: Threat assessment
         threat_assessment = self.assess_threats(current_terrain)
-        self.reasoning_steps.append(f"威胁评估: {threat_assessment}")
+        self.reasoning_steps.append(f"Threat Assessment: {threat_assessment}")
         
-        # 第三步：资源状态评估
+        # Step 3: Resource status evaluation
         resource_status = self.evaluate_resources()
-        self.reasoning_steps.append(f"资源状态: {resource_status}")
+        self.reasoning_steps.append(f"Resource Status: {resource_status}")
         
-        # 第四步：任务优先级分析
+        # Step 4: Mission priority analysis
         mission_analysis = self.analyze_mission_priorities()
-        self.reasoning_steps.append(f"任务分析: {mission_analysis}")
+        self.reasoning_steps.append(f"Mission Analysis: {mission_analysis}")
         
-        # 第五步：路径规划和风险评估
+        # Step 5: Path planning and risk assessment
         path_analysis = self.plan_optimal_path()
-        self.reasoning_steps.append(f"路径规划: {path_analysis}")
+        self.reasoning_steps.append(f"Path Planning: {path_analysis}")
         
-        # 第六步：最终决策
+        # Step 6: Final decision
         final_decision = self.make_final_decision()
-        self.reasoning_steps.append(f"最终决策: {final_decision}")
+        self.reasoning_steps.append(f"Final Decision: {final_decision}")
         
-        # 记录完整的推理过程
+        # Record complete reasoning process
         self.log_reasoning(
-            thought=f"多步推理完成，共{len(self.reasoning_steps)}个步骤",
+            thought=f"Multi-step reasoning completed, {len(self.reasoning_steps)} steps total",
             decision=final_decision,
             action=self.status,
-            observation="推理过程已记录"
+            observation="Reasoning process recorded"
         )
     
     def analyze_environment(self, current_terrain: TerrainCell) -> str:
-        """分析当前环境"""
+        """Analyze current environment"""
         analysis_parts = []
         
-        # 地形分析
-        terrain_info = f"地形:{current_terrain.terrain_type.value}"
+        # Terrain analysis
+        terrain_info = f"Terrain:{current_terrain.terrain_type.value}"
         if current_terrain.height > 1000:
-            terrain_info += f",高海拔({current_terrain.height:.0f}m)"
+            terrain_info += f",High altitude({current_terrain.height:.0f}m)"
         analysis_parts.append(terrain_info)
         
-        # 天气分析
-        weather_info = f"天气:{current_terrain.weather.value}"
+        # Weather analysis
+        weather_info = f"Weather:{current_terrain.weather.value}"
         if current_terrain.weather != WeatherCondition.CLEAR:
-            weather_info += f",可见度{current_terrain.visibility:.1f}"
+            weather_info += f",Visibility {current_terrain.visibility:.1f}"
         analysis_parts.append(weather_info)
         
-        # 障碍物分析
+        # Obstacle analysis
         if current_terrain.obstacle:
-            analysis_parts.append(f"障碍物:{current_terrain.obstacle.value}")
+            analysis_parts.append(f"Obstacle:{current_terrain.obstacle.value}")
         
-        # 通信质量
+        # Communication quality
         comm_quality = current_terrain.get_communication_quality()
         if comm_quality < 0.5:
-            analysis_parts.append(f"通信受限({comm_quality:.1f})")
+            analysis_parts.append(f"Limited communication({comm_quality:.1f})")
         
         return ", ".join(analysis_parts)
     
     def assess_threats(self, current_terrain: TerrainCell) -> str:
-        """评估威胁和风险"""
+        """Assess threats and risks"""
         threats = []
         risk_level = 0.0
         
-        # 天气威胁
+        # Weather threats
         if current_terrain.weather == WeatherCondition.STORM:
-            threats.append("暴风雨威胁")
+            threats.append("Storm threat")
             risk_level += 0.8
         elif current_terrain.weather == WeatherCondition.WIND:
-            threats.append("强风影响")
+            threats.append("Strong wind impact")
             risk_level += 0.4
         elif current_terrain.weather == WeatherCondition.FOG:
-            threats.append("能见度极低")
+            threats.append("Extremely low visibility")
             risk_level += 0.6
         
-        # 地形威胁
+        # Terrain threats
         if current_terrain.terrain_type in [TerrainType.MOUNTAIN, TerrainType.CLIFF]:
-            threats.append("复杂地形")
+            threats.append("Complex terrain")
             risk_level += 0.5
         
-        # 电量威胁
+        # Battery threats
         if self.battery < 30:
-            threats.append("电量不足")
+            threats.append("Insufficient battery")
             risk_level += 0.7
         elif self.battery < 50:
-            threats.append("电量偏低")
+            threats.append("Low battery")
             risk_level += 0.3
         
-        # 障碍物威胁
+        # Obstacle threats
         if current_terrain.obstacle == ObstacleType.BUILDING:
-            threats.append("建筑物阻挡")
+            threats.append("Building obstruction")
             risk_level += 0.6
         
-        risk_description = "低风险"
+        risk_description = "Low risk"
         if risk_level > 0.7:
-            risk_description = "高风险"
+            risk_description = "High risk"
         elif risk_level > 0.4:
-            risk_description = "中等风险"
+            risk_description = "Medium risk"
         
         if threats:
             return f"{risk_description}: {', '.join(threats)}"
         else:
-            return "环境安全"
+            return "Environment safe"
     
     def evaluate_resources(self) -> str:
-        """评估资源状态"""
+        """Evaluate resource status"""
         resources = []
         
-        # 电量状态
+        # Battery status
         if self.battery > 80:
-            resources.append("电量充足")
+            resources.append("Battery sufficient")
         elif self.battery > 50:
-            resources.append("电量良好")
+            resources.append("Battery good")
         elif self.battery > 30:
-            resources.append("电量偏低")
+            resources.append("Battery low")
         else:
-            resources.append("电量危险")
+            resources.append("Battery critical")
         
-        # 设备状态
+        # Equipment status
         if self.camera_quality < 0.7:
-            resources.append("摄像头受损")
+            resources.append("Camera damaged")
         if self.gps_accuracy < 0.8:
-            resources.append("GPS信号弱")
+            resources.append("Weak GPS signal")
         if self.communication_quality < 0.6:
-            resources.append("通信受限")
+            resources.append("Limited communication")
         
-        # 飞行能力
+        # Flight capability
         current_terrain = self.get_current_terrain()
         if current_terrain and current_terrain.height > self.max_altitude:
-            resources.append("高度受限")
+            resources.append("Altitude limited")
         
-        return ", ".join(resources) if resources else "所有系统正常"
+        return ", ".join(resources) if resources else "All systems normal"
     
     def analyze_mission_priorities(self) -> str:
-        """分析任务优先级"""
+        """Analyze mission priorities"""
         priorities = []
         
-        # 紧急情况优先级
+        # Emergency priority
         if self.battery <= 20:
-            priorities.append("紧急充电(优先级:最高)")
+            priorities.append("Emergency charging(Priority:Highest)")
             return ", ".join(priorities)
         
-        # 寻找幸存者
-        survivors = self.find_nearby_survivors()
-        if survivors:
-            closest_survivor = min(survivors, key=lambda s: self.calculate_terrain_distance(s.pos))
-            distance = self.calculate_terrain_distance(closest_survivor.pos)
-            priorities.append(f"救援幸存者@{closest_survivor.pos}(距离:{distance:.1f})")
-        
-        # 区域扫描
-        if not survivors:
-            priorities.append("区域扫描搜索")
-        
-        # 充电站维护
-        if self.battery < 60:
-            charging_stations = self.find_charging_stations()
-            if charging_stations:
-                closest_station = min(charging_stations, key=lambda s: self.calculate_terrain_distance(s.pos))
-                distance = self.calculate_terrain_distance(closest_station.pos)
-                priorities.append(f"前往充电站@{closest_station.pos}(距离:{distance:.1f})")
-        
-        return ", ".join(priorities) if priorities else "无紧急任务"
-    
-    def plan_optimal_path(self) -> str:
-        """规划最优路径"""
-        if not self.target:
-            return "无目标，无需路径规划"
-        
-        # 使用地形系统计算最优路径
-        terrain = self.model.terrain
-        start = self.pos
-        end = self.target
-        
-        # 计算多条可能路径
-        direct_distance = math.sqrt((end[0] - start[0])**2 + (end[1] - start[1])**2)
-        terrain_distance = PathfindingSystem.calculate_real_distance(terrain, start, end)
-        
-        # 路径复杂度分析
-        if terrain_distance == float('inf'):
-            return f"目标不可达，需要重新选择目标"
-        
-        complexity_ratio = terrain_distance / direct_distance if direct_distance > 0 else 1.0
-        
-        if complexity_ratio > 3.0:
-            return f"路径极其复杂(复杂度:{complexity_ratio:.1f}),建议绕行"
-        elif complexity_ratio > 2.0:
-            return f"路径复杂(复杂度:{complexity_ratio:.1f}),需谨慎导航"
-        elif complexity_ratio > 1.5:
-            return f"路径中等难度(复杂度:{complexity_ratio:.1f})"
-        else:
-            return f"路径相对简单(复杂度:{complexity_ratio:.1f})"
-    
-    def make_final_decision(self) -> str:
-        """做出最终决策"""
-        current_terrain = self.get_current_terrain()
-        
-        # 紧急情况处理
-        if self.battery <= 15:
-            self.status = "emergency_return"
-            self.target = self.find_nearest_charging_station()
-            return "电量极低，紧急返回充电站"
-        
-        # 恶劣天气处理
-        if current_terrain and current_terrain.weather == WeatherCondition.STORM:
-            if self.battery > 50:
-                self.status = "weather_hold"
-                return "暴风雨天气，原地等待"
-            else:
-                self.status = "emergency_return"
-                self.target = self.find_nearest_charging_station()
-                return "暴风雨+低电量，紧急返回"
-        
-        # 正常任务决策
-        if self.status == "charging":
-            if self.battery >= 80:
-                self.status = "idle"
-                return "充电完成，准备执行任务"
-            else:
-                return "继续充电中"
-        
-        # 寻找救援目标
+        # Find survivors
         survivors = self.find_nearby_survivors()
         if survivors:
             closest_survivor = min(survivors, key=lambda s: self.calculate_terrain_distance(s.pos))
             distance = self.calculate_terrain_distance(closest_survivor.pos)
             
-            # 评估是否有足够电量完成救援
-            estimated_cost = distance * 2 + 20  # 往返+救援操作
+            # Check if already assigned to this drone
+            if self.model.is_survivor_assigned(closest_survivor.unique_id, self.unique_id):
+                priorities.append(f"Continue rescue {closest_survivor.unique_id}@{closest_survivor.pos}(Distance:{distance:.1f})")
+            else:
+                priorities.append(f"Rescue survivor@{closest_survivor.pos}(Distance:{distance:.1f})")
+        
+        # Area scanning
+        if not survivors:
+            priorities.append("Area scan search")
+        
+        # Charging station maintenance
+        if self.battery < 60:
+            charging_stations = self.find_charging_stations()
+            if charging_stations:
+                closest_station = min(charging_stations, key=lambda s: self.calculate_terrain_distance(s.pos))
+                distance = self.calculate_terrain_distance(closest_station.pos)
+                priorities.append(f"Go to charging station@{closest_station.pos}(Distance:{distance:.1f})")
+        
+        return ", ".join(priorities) if priorities else "No urgent tasks"
+    
+    def plan_optimal_path(self) -> str:
+        """Plan optimal path"""
+        if not self.target:
+            return "No target, no path planning needed"
+        
+        # Use terrain system to calculate optimal path
+        terrain = self.model.terrain
+        start = self.pos
+        end = self.target
+        
+        # Calculate multiple possible paths
+        direct_distance = math.sqrt((end[0] - start[0])**2 + (end[1] - start[1])**2)
+        terrain_distance = PathfindingSystem.calculate_real_distance(terrain, start, end)
+        
+        # Path complexity analysis
+        if terrain_distance == float('inf'):
+            return f"Target unreachable, need to reselect target"
+        
+        complexity_ratio = terrain_distance / direct_distance if direct_distance > 0 else 1.0
+        
+        if complexity_ratio > 3.0:
+            return f"Path extremely complex(Complexity:{complexity_ratio:.1f}), recommend detour"
+        elif complexity_ratio > 2.0:
+            return f"Path complex(Complexity:{complexity_ratio:.1f}), navigate carefully"
+        elif complexity_ratio > 1.5:
+            return f"Path medium difficulty(Complexity:{complexity_ratio:.1f})"
+        else:
+            return f"Path relatively simple(Complexity:{complexity_ratio:.1f})"
+    
+    def make_final_decision(self) -> str:
+        """Make final decision"""
+        current_terrain = self.get_current_terrain()
+        
+        # Emergency handling
+        if self.battery <= 15:
+            # Release any survivor assignment when going to emergency mode
+            self.model.release_survivor_assignment(self.unique_id)
+            self.status = "emergency_return"
+            self.target = self.find_nearest_charging_station()
+            return "Battery extremely low, emergency return to charging station"
+        
+        # Severe weather handling
+        if current_terrain and current_terrain.weather == WeatherCondition.STORM:
+            if self.battery > 50:
+                self.status = "weather_hold"
+                return "Storm weather, holding position"
+            else:
+                # Release any survivor assignment when going to emergency mode
+                self.model.release_survivor_assignment(self.unique_id)
+                self.status = "emergency_return"
+                self.target = self.find_nearest_charging_station()
+                return "Storm + low battery, emergency return"
+        
+        # Normal mission decision
+        if self.status == "charging":
+            if self.battery >= 80:
+                self.status = "idle"
+                return "Charging complete, ready for mission"
+            else:
+                return "Continuing to charge"
+        
+        # Find rescue targets
+        survivors = self.find_nearby_survivors()
+        if survivors:
+            closest_survivor = min(survivors, key=lambda s: self.calculate_terrain_distance(s.pos))
+            distance = self.calculate_terrain_distance(closest_survivor.pos)
+            
+            # Evaluate if there's enough battery to complete rescue
+            estimated_cost = distance * 2 + 20  # Round trip + rescue operation
             if self.battery > estimated_cost:
+                # Assign this survivor to this drone to prevent conflicts
+                self.model.assign_survivor_to_drone(self.unique_id, closest_survivor.unique_id)
                 self.target = closest_survivor.pos
                 self.status = "rescue_mission"
-                return f"执行救援任务，目标距离{distance:.1f}"
+                return f"Execute rescue mission to {closest_survivor.unique_id}, target distance {distance:.1f}"
             else:
+                # Release any survivor assignment when switching to charging
+                self.model.release_survivor_assignment(self.unique_id)
                 self.status = "charging"
                 self.target = self.find_nearest_charging_station()
-                return "电量不足以完成救援，先充电"
+                return "Insufficient battery to complete rescue, charging first"
         
-        # 区域扫描
+        # Area scanning
         self.status = "area_scan"
-        return "执行区域扫描任务"
+        return "Execute area scan mission"
     
     def execute_decision(self):
-        """执行决策"""
+        """Execute decision"""
         if self.status == "charging":
             self.handle_charging()
         elif self.status in ["rescue_mission", "emergency_return"]:
@@ -327,74 +340,74 @@ class EnhancedDroneAgent(Agent):
             self.handle_weather_hold()
     
     def handle_movement(self):
-        """处理移动"""
+        """Handle movement"""
         if not self.target:
             return
         
-        # 如果没有规划路径或路径已完成，重新规划
+        # If no planned path or path completed, replan
         if not self.planned_path or self.current_path_index >= len(self.planned_path):
             terrain = self.model.terrain
             self.planned_path = PathfindingSystem.a_star_pathfinding(terrain, self.pos, self.target)
             self.current_path_index = 0
         
-        # 沿着规划路径移动
+        # Move along planned path
         if self.planned_path and self.current_path_index < len(self.planned_path):
             next_pos = self.planned_path[self.current_path_index]
             
-            # 检查下一个位置的地形
+            # Check terrain at next position
             if self.can_move_to(next_pos):
                 old_pos = self.pos
                 self.model.grid.move_agent(self, next_pos)
                 
-                # 计算移动成本
+                # Calculate movement cost
                 terrain_cell = self.get_terrain_at(next_pos)
                 move_cost = terrain_cell.get_movement_cost() if terrain_cell else 2.0
                 self.battery -= move_cost
                 
-                # 更新统计
+                # Update statistics
                 distance = math.sqrt((next_pos[0] - old_pos[0])**2 + (next_pos[1] - old_pos[1])**2)
                 self.total_distance_traveled += distance
                 
                 self.current_path_index += 1
                 
-                # 检查是否到达目标
+                # Check if target reached
                 if next_pos == self.target:
                     self.handle_target_reached()
             else:
-                # 路径被阻挡，重新规划
+                # Path blocked, replan
                 self.planned_path = []
                 self.current_path_index = 0
     
     def handle_charging(self):
-        """处理充电"""
-        # 检查是否在充电站
+        """Handle charging"""
+        # Check if at charging station
         charging_stations = [agent for agent in self.model.grid.get_cell_list_contents([self.pos])
                            if hasattr(agent, 'unique_id') and 'station' in str(agent.unique_id)]
         
         if charging_stations:
             charge_rate = 10
-            # 地形可能影响充电效率
+            # Terrain may affect charging efficiency
             current_terrain = self.get_current_terrain()
             if current_terrain and current_terrain.weather == WeatherCondition.STORM:
-                charge_rate = 5  # 恶劣天气影响充电
+                charge_rate = 5  # Severe weather affects charging
             
             self.battery = min(self.max_battery, self.battery + charge_rate)
         else:
-            # 不在充电站，需要移动到充电站
+            # Not at charging station, need to move to charging station
             self.target = self.find_nearest_charging_station()
             if self.target:
                 self.handle_movement()
     
     def handle_area_scan(self):
-        """处理区域扫描"""
+        """Handle area scanning"""
         current_terrain = self.get_current_terrain()
         scan_efficiency = current_terrain.get_scan_efficiency() if current_terrain else 0.5
         
-        # 扫描周围区域寻找幸存者
-        scan_cost = 1.0 / scan_efficiency  # 效率越低，成本越高
+        # Scan surrounding area for survivors
+        scan_cost = 1.0 / scan_efficiency  # Lower efficiency, higher cost
         self.battery -= scan_cost
         
-        # 在扫描范围内寻找幸存者
+        # Find survivors within scan range
         found_survivors = []
         for dx in range(-self.scan_radius, self.scan_radius + 1):
             for dy in range(-self.scan_radius, self.scan_radius + 1):
@@ -409,28 +422,31 @@ class EnhancedDroneAgent(Agent):
                             found_survivors.append(agent)
         
         if found_survivors:
-            # 发现幸存者，切换到救援模式
+            # Found survivors, switch to rescue mode
             closest_survivor = min(found_survivors, key=lambda s: self.calculate_terrain_distance(s.pos))
             self.target = closest_survivor.pos
             self.status = "rescue_mission"
         else:
-            # 随机移动继续搜索
+            # Random move to continue search
             self.random_move()
     
     def handle_weather_hold(self):
-        """处理恶劣天气等待"""
-        # 在恶劣天气中等待，消耗少量电量维持系统
+        """Handle severe weather waiting"""
+        # Wait in severe weather, consume small amount of battery to maintain systems
         self.battery -= 0.5
         
-        # 检查天气是否好转
+        # Check if weather has improved
         current_terrain = self.get_current_terrain()
         if current_terrain and current_terrain.weather != WeatherCondition.STORM:
             self.status = "idle"
     
     def handle_target_reached(self):
-        """处理到达目标"""
+        """Handle target reached"""
         if self.status == "rescue_mission":
-            # 尝试救援幸存者
+            # Release survivor assignment since we're at the target
+            self.model.release_survivor_assignment(self.unique_id)
+            
+            # Attempt to rescue survivors
             survivors_here = [agent for agent in self.model.grid.get_cell_list_contents([self.pos])
                             if hasattr(agent, 'found') and not agent.found]
             
@@ -442,38 +458,38 @@ class EnhancedDroneAgent(Agent):
                     survivor.found = True
                     survivor.rescued_by = self.unique_id
                     self.successful_rescues += 1
-                    self.model.log_event(f"无人机{self.unique_id}成功救援幸存者{survivor.unique_id}")
+                    self.model.log_event(f"Drone {self.unique_id} successfully rescued survivor {survivor.unique_id}")
                 else:
                     self.failed_attempts += 1
-                    self.model.log_event(f"无人机{self.unique_id}救援失败，环境条件不佳")
+                    self.model.log_event(f"Drone {self.unique_id} rescue failed, poor environmental conditions")
         
-        # 清除目标和路径
+        # Clear target and path
         self.target = None
         self.planned_path = []
         self.current_path_index = 0
         self.status = "idle"
     
     def update_status(self, current_terrain: TerrainCell):
-        """更新状态"""
-        # 更新设备状态基于环境条件
+        """Update status"""
+        # Update equipment status based on environmental conditions
         if current_terrain:
-            # 天气影响设备
+            # Weather affects equipment
             if current_terrain.weather == WeatherCondition.STORM:
                 self.camera_quality *= 0.95
                 self.gps_accuracy *= 0.98
             elif current_terrain.weather == WeatherCondition.RAIN:
                 self.camera_quality *= 0.99
             
-            # 通信质量
+            # Communication quality
             self.communication_quality = current_terrain.get_communication_quality()
             
-            # 地形影响
+            # Terrain effects
             if current_terrain.terrain_type == TerrainType.MOUNTAIN:
                 self.gps_accuracy *= 0.99
     
-    # 辅助方法
+    # Helper methods
     def get_current_terrain(self) -> Optional[TerrainCell]:
-        """获取当前位置的地形"""
+        """Get terrain at current position"""
         if hasattr(self.model, 'terrain') and self.pos:
             y, x = self.pos
             if 0 <= y < len(self.model.terrain) and 0 <= x < len(self.model.terrain[0]):
@@ -481,7 +497,7 @@ class EnhancedDroneAgent(Agent):
         return None
     
     def get_terrain_at(self, pos: Tuple[int, int]) -> Optional[TerrainCell]:
-        """获取指定位置的地形"""
+        """Get terrain at specified position"""
         if hasattr(self.model, 'terrain'):
             y, x = pos
             if 0 <= y < len(self.model.terrain) and 0 <= x < len(self.model.terrain[0]):
@@ -489,7 +505,7 @@ class EnhancedDroneAgent(Agent):
         return None
     
     def can_move_to(self, pos: Tuple[int, int]) -> bool:
-        """检查是否可以移动到指定位置"""
+        """Check if can move to specified position"""
         terrain_cell = self.get_terrain_at(pos)
         if not terrain_cell:
             return False
@@ -498,30 +514,30 @@ class EnhancedDroneAgent(Agent):
         return move_cost != float('inf') and self.battery > move_cost
     
     def calculate_terrain_distance(self, target_pos: Tuple[int, int]) -> float:
-        """计算考虑地形的距离"""
+        """Calculate distance considering terrain"""
         if hasattr(self.model, 'terrain'):
             return PathfindingSystem.calculate_real_distance(self.model.terrain, self.pos, target_pos)
         else:
-            # 回退到欧几里得距离
+            # Fallback to Euclidean distance
             return math.sqrt((target_pos[0] - self.pos[0])**2 + (target_pos[1] - self.pos[1])**2)
     
     def find_nearby_survivors(self):
-        """寻找附近的幸存者"""
-        survivors = [agent for agent in self.model.custom_agents 
-                    if hasattr(agent, 'found') and not agent.found]
+        """Find nearby survivors that are not assigned to other drones"""
+        # Get available survivors (not assigned to other drones)
+        survivors = self.model.get_available_survivors(self.unique_id)
         
-        # 按地形距离排序
+        # Sort by terrain distance
         survivors.sort(key=lambda s: self.calculate_terrain_distance(s.pos))
-        return survivors[:5]  # 返回最近的5个
+        return survivors[:5]  # Return closest 5
     
     def find_charging_stations(self):
-        """寻找充电站"""
+        """Find charging stations"""
         stations = [agent for agent in self.model.custom_agents 
                    if hasattr(agent, 'unique_id') and 'station' in str(agent.unique_id)]
         return stations
     
     def find_nearest_charging_station(self):
-        """寻找最近的充电站"""
+        """Find nearest charging station"""
         stations = self.find_charging_stations()
         if stations:
             nearest = min(stations, key=lambda s: self.calculate_terrain_distance(s.pos))
@@ -529,7 +545,7 @@ class EnhancedDroneAgent(Agent):
         return None
     
     def random_move(self):
-        """随机移动"""
+        """Random move"""
         possible_moves = []
         for dx in [-1, 0, 1]:
             for dy in [-1, 0, 1]:
@@ -546,13 +562,13 @@ class EnhancedDroneAgent(Agent):
             old_pos = self.pos
             self.model.grid.move_agent(self, new_pos)
             
-            # 计算移动成本
+            # Calculate movement cost
             terrain_cell = self.get_terrain_at(new_pos)
             move_cost = terrain_cell.get_movement_cost() if terrain_cell else 2.0
             self.battery -= move_cost
     
     def log_reasoning(self, thought: str, decision: str, action: str, observation: str):
-        """记录推理过程"""
+        """Log reasoning process"""
         reasoning_entry = {
             "drone_id": self.unique_id,
             "thought": thought,
@@ -562,24 +578,24 @@ class EnhancedDroneAgent(Agent):
             "reasoning_steps": self.reasoning_steps.copy(),
             "battery": self.battery,
             "position": self.pos,
-            "terrain_info": self.analyze_environment(self.get_current_terrain()) if self.get_current_terrain() else "未知地形"
+            "terrain_info": self.analyze_environment(self.get_current_terrain()) if self.get_current_terrain() else "Unknown terrain"
         }
         
         if hasattr(self.model, 'log_reasoning'):
             self.model.log_reasoning(
                 self.unique_id, thought, decision, action, 
-                f"{observation} | 地形: {reasoning_entry['terrain_info']}"
+                f"{observation} | Terrain: {reasoning_entry['terrain_info']}"
             )
         
         self.decision_history.append(reasoning_entry)
         
-        # 限制历史记录长度
+        # Limit history length
         if len(self.decision_history) > 20:
             self.decision_history = self.decision_history[-20:]
 
-# 保持原有的简单智能体以兼容现有代码
+# Keep original simple agents for compatibility with existing code
 class SimpleSurvivorAgent(Agent):
-    """简单幸存者智能体"""
+    """Simple survivor agent"""
     
     def __init__(self, unique_id, model):
         super().__init__(model)
@@ -592,7 +608,7 @@ class SimpleSurvivorAgent(Agent):
         pass
 
 class SimpleChargingStationAgent(Agent):
-    """简单充电站智能体"""
+    """Simple charging station agent"""
     
     def __init__(self, unique_id, model):
         super().__init__(model)
