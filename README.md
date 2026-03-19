@@ -1,273 +1,399 @@
-# 🚁 Autonomous Drone Swarm Command System
+# 🚁 LifeDrone: Agentic AI Disaster Rescue System
 
-An interactive Mesa-based simulation dashboard for disaster rescue operations using AI-driven drone swarms.
+**LifeDrone** is an advanced AI-powered disaster rescue drone coordination system that combines simulation-based modeling, chain-of-thought reasoning, and Model Context Protocol (MCP) integration for autonomous emergency response operations.
 
-## ✅ Main Features
+## 🎯 About LifeDrone
 
-### 🎮 Interactive Control Interface (Full Functionality)
-- **Tkinter Desktop GUI**: Complete graphical user interface with click operations
-- **Manual Agent Addition**: Users can add drones and survivors at any location
-- **Real-time Parameter Adjustment**: Dynamically set drone battery, position and other parameters
-- **Visualization Grid**: 20x20 disaster area environment, real-time display of all agent states
+LifeDrone represents the next generation of disaster response technology, utilizing autonomous drone swarms coordinated by advanced AI agents to locate and rescue survivors in emergency situations. The system integrates multiple cutting-edge technologies to provide a comprehensive solution for disaster management scenarios.
 
-### 🧠 AI Decision Analysis System
-- **Real-time Decision Monitoring**: Display AI thinking process of each drone
-- **Status Distribution Analysis**: Statistics of drone status distribution
-- **Performance Metrics Tracking**: Rescue efficiency, battery management, task completion rate
-- **Decision Log Recording**: Complete AI decision history and user operation records
+### Key Capabilities
+- **🤖 Agentic AI Coordination**: Advanced AI agents with chain-of-thought reasoning
+- **🌍 Complex Terrain Simulation**: Mountains, water bodies, forests with dynamic weather
+- **🔄 Real-time Decision Making**: ReAct pattern (Thought → Action → Observation → Reflection)
+- **📡 MCP Integration**: Model Context Protocol for tool coordination
+- **🎮 Interactive Interfaces**: Multiple UI options for different use cases
+- **📊 Mission Analytics**: Comprehensive logging and performance tracking
 
-### 🤖 Intelligent Drone Behavior
-- **Autonomous Decision Making**: Intelligent decisions based on battery, distance, task priority
-- **Battery Management**: Automatic charging strategy and energy consumption optimization
-- **Coordinated Rescue**: Multiple drones coordinate to complete rescue missions
-- **Dynamic Adaptation**: Real-time response to environmental changes and new tasks
-- **🏠 Home Base Operations**: Central return point for all drones with emergency recall capability
+## 🛠️ Tech Stack
 
-## 🚀 Quick Start
+### Core Technologies
+- **🐍 Python 3.8+**: Primary development language
+- **🤖 Mesa Framework**: Agent-based modeling and simulation
+- **🧠 Ollama + Qwen2**: Local LLM for AI reasoning and decision making
+- **🔄 LangGraph**: Advanced workflow orchestration for AI agents
+- **📡 FastMCP**: Model Context Protocol server for tool integration
+- **🎮 Tkinter**: Desktop GUI for interactive control
+- **📊 Pandas + NumPy**: Data analysis and performance metrics
 
-### Installation & Setup
+### AI & Reasoning
+- **ReAct Pattern**: Structured reasoning (Thought → Action → Observation → Reflection)
+- **Chain-of-Thought**: Detailed decision process logging
+- **Memory System**: Mission context and learning from past operations
+- **Tool Integration**: MCP-based drone control and coordination
+
+### Simulation & Modeling
+- **Complex Terrain**: Multi-layer terrain system with obstacles and weather
+- **Dynamic Environment**: Real-time weather changes and environmental challenges
+- **A* Pathfinding**: Intelligent navigation with terrain cost analysis
+- **Multi-Agent Coordination**: Distributed decision making with conflict resolution
+
+## 🚀 Quick Start Guide
+
+### Prerequisites Check
+Before starting, ensure you have Python 3.8+ installed:
 ```bash
-# Install dependencies (Mesa 3.x compatible)
+python --version  # Should show 3.8 or higher
+```
+
+### 1. Installation
+
+#### Install Core Dependencies
+```bash
+# Core simulation and AI dependencies
 pip install mesa>=3.0.0 numpy pandas matplotlib
 
-# Run the system
+# AI and reasoning components
+pip install requests langchain-community
+
+# MCP server (optional but recommended)
+pip install fastmcp
+
+# UI components
+pip install tkinter  # Usually included with Python
+```
+
+#### Verify Installation
+```bash
+python test_mcp_connection.py
+```
+Expected output: ✅ All components ready
+
+### 2. Start Ollama (AI Reasoning Engine)
+
+LifeDrone uses Ollama with Qwen2 for AI reasoning. Install and start Ollama:
+
+#### Install Ollama
+- **Windows**: Download from [ollama.ai](https://ollama.ai)
+- **macOS**: `brew install ollama`
+- **Linux**: `curl -fsSL https://ollama.ai/install.sh | sh`
+
+#### Start Ollama and Install Qwen2
+```bash
+# Start Ollama service
+ollama serve
+
+# In a new terminal, install Qwen2 model
+ollama pull qwen2
+
+# Verify installation
+ollama list
+```
+
+Expected output: qwen2 model listed and ready
+
+### 3. Start MCP Server (Drone Control)
+
+The MCP server provides the interface between AI agents and drone operations:
+
+```bash
+# Start MCP server
+python start_mcp_server.py
+```
+
+Expected output:
+```
+🚁 Drone Control Server
+📡 FastMCP Available: True
+🔧 Drone Registry: 5 drones initialized
+🚀 Starting MCP server...
+```
+
+**Keep this terminal open** - the MCP server needs to run continuously.
+
+### 4. Start JSON Response Viewer (AI Monitoring)
+
+Monitor AI reasoning and responses in real-time:
+
+```bash
+# In a new terminal
+python simple_json_ui.py
+```
+
+This opens a window showing:
+- 🧠 AI reasoning processes
+- 📊 Decision analysis
+- 🔄 Tool execution results
+- 📝 Mission logs
+
+### 5. Launch Main Interface
+
+Choose your preferred interface:
+
+#### Option A: Complete System (Recommended)
+```bash
 python main.py
+# Select option 'j' for Combined UI Demo
 ```
 
-### Available Interfaces
-
-#### 1. Tkinter Interactive UI (Recommended - Fully Interactive)
+#### Option B: Enhanced Terrain UI Only
 ```bash
-python ui/tkinter_interactive_ui.py
-# Or select option 2 from main menu
+python main.py
+# Press Enter for Terrain UI
 ```
-- **Complete Desktop GUI Interface**
-- **Click Grid to Select Position**
-- **Manually Add Drones and Survivors**
-- **Real-time AI Decision Analysis**
-- **Detailed Status Monitoring Table**
-- **Auto/Manual Simulation Control**
 
-#### 2. Console UI (Terminal Interface)
+#### Option C: Combined Launch Script
 ```bash
-python ui/console_ui.py
+python launch_combined_ui.py
 ```
-- Interactive terminal interface
-- Real-time grid visualization
-- Manual and auto-stepping modes
-- Full drone status monitoring
 
-#### 3. Mesa 3.x Web UI (Experimental)
+## 🎮 User Interface Options
+
+### 🎮 Enhanced Terrain UI (Primary Interface)
+- **Complex Terrain Visualization**: Mountains, water, forests, urban areas
+- **Real-time Weather**: Dynamic weather conditions affecting operations
+- **Interactive Drone Control**: Click-to-command drone operations
+- **AI Decision Monitoring**: Live chain-of-thought reasoning display
+- **Mission Planning**: Multi-drone coordination and task assignment
+- **Performance Analytics**: Real-time metrics and success rates
+
+### 🤖 JSON Response Viewer (AI Monitoring)
+- **Ollama Integration**: Direct connection to Qwen2 reasoning engine
+- **Chain-of-Thought Display**: Step-by-step AI decision processes
+- **Tool Execution Logs**: MCP tool calls and responses
+- **Mission Memory**: Historical context and learning
+- **Error Monitoring**: AI reasoning validation and debugging
+
+### 🏢 Command Center Dashboard
+- **Mission Control**: Central coordination hub for all operations
+- **Fleet Management**: Real-time drone status and deployment
+- **Emergency Controls**: Immediate recall and emergency protocols
+- **Strategic Planning**: Long-term mission coordination
+- **Performance Monitoring**: System-wide analytics and reporting
+
+## 🧠 AI Reasoning System
+
+### ReAct Pattern Implementation
+LifeDrone implements the ReAct (Reasoning and Acting) pattern for AI decision making:
+
+1. **🤔 Thought**: Analyze current situation and available information
+2. **🎯 Action**: Choose and execute appropriate drone operations
+3. **👁️ Observation**: Monitor results and environmental feedback
+4. **🔄 Reflection**: Learn from outcomes and adjust future decisions
+
+### Chain-of-Thought Features
+- **Structured Reasoning**: Each decision includes detailed thought process
+- **Context Awareness**: Considers terrain, weather, battery levels, mission priorities
+- **Learning Memory**: Builds knowledge from past operations and outcomes
+- **Multi-Agent Coordination**: Coordinates decisions across multiple drones
+- **Emergency Protocols**: Rapid decision making for critical situations
+
+### LangGraph Workflow Integration
+- **Advanced Orchestration**: Complex multi-step mission workflows
+- **State Management**: Maintains mission context across operations
+- **Tool Coordination**: Seamless integration with MCP drone tools
+- **Error Recovery**: Automatic handling of failed operations
+- **Scalable Architecture**: Supports complex, multi-phase rescue missions
+
+## 🛠️ System Architecture
+
+### Core Components
+
+#### 1. Simulation Engine (`simulation/`)
+- **Enhanced Model**: Complex terrain and weather simulation
+- **Drone Agents**: AI-powered autonomous drone behavior
+- **Environment System**: Dynamic terrain, obstacles, and weather
+- **Performance Tracking**: Comprehensive mission analytics
+
+#### 2. AI Reasoning (`agent/`)
+- **Rescue Agent**: Main AI coordinator with Ollama integration
+- **Memory System**: Mission context and historical learning
+- **Reasoning Engine**: ReAct pattern implementation
+- **LangGraph Workflow**: Advanced mission orchestration
+
+#### 3. MCP Server (`mcp_server/`)
+- **Drone Tools**: Complete set of drone control operations
+- **FastMCP Integration**: Modern MCP protocol implementation
+- **Tool Registry**: Centralized drone and resource management
+- **API Interface**: Standardized tool access for AI agents
+
+#### 4. User Interfaces (`ui/`)
+- **Enhanced Terrain UI**: Primary interactive interface
+- **JSON Viewer**: AI reasoning monitoring
+- **Command Center**: Mission control dashboard
+- **Combined Launcher**: Integrated multi-window experience
+
+## 📋 Available MCP Tools
+
+The system provides 6 core MCP tools for drone operations:
+
+1. **`discover_drones_tool()`** - Get list of available drones and their status
+2. **`get_battery_status_tool(drone_id)`** - Check specific drone battery level
+3. **`move_to_tool(drone_id, x, y)`** - Move drone to specified coordinates
+4. **`thermal_scan_tool(drone_id)`** - Perform thermal scanning for survivors
+5. **`return_to_base_tool(drone_id)`** - Send drone to nearest charging station
+6. **`get_mission_status_tool()`** - Get overall mission statistics and progress
+
+## 🎯 Usage Scenarios
+
+### 🚨 Emergency Response Training
+- **Disaster Simulation**: Realistic emergency scenarios with complex terrain
+- **Multi-Agent Coordination**: Train teams on coordinating multiple rescue units
+- **Decision Making**: Practice critical decisions under time pressure
+- **Resource Management**: Optimize battery usage and charging station placement
+- **Weather Adaptation**: Handle changing environmental conditions
+
+### 🎓 Educational & Research
+- **AI Behavior Study**: Analyze chain-of-thought reasoning in autonomous systems
+- **Multi-Agent Systems**: Research coordination and communication patterns
+- **Simulation Modeling**: Study complex system interactions and emergent behavior
+- **Performance Optimization**: Test different strategies and algorithms
+- **Technology Integration**: Explore MCP, LangGraph, and LLM integration patterns
+
+### 🏢 Professional Development
+- **System Integration**: Learn modern AI architecture patterns
+- **Protocol Implementation**: Understand MCP and tool integration
+- **Workflow Orchestration**: Master LangGraph for complex AI workflows
+- **Performance Monitoring**: Implement comprehensive system analytics
+- **User Interface Design**: Create effective human-AI interaction interfaces
+
+## 🔧 Troubleshooting
+
+### Common Issues and Solutions
+
+#### Ollama Connection Issues
 ```bash
-python ui/mesa3_interactive_ui.py
-```
-- Web-based interface (requires solara)
-- Browser access at localhost:8521
+# Check if Ollama is running
+curl http://localhost:11434/api/tags
 
-#### 4. Command Center UI (New - Home Base Management)
+# If not running, start Ollama
+ollama serve
+
+# Verify Qwen2 model is installed
+ollama list | grep qwen2
+```
+
+#### MCP Server Not Starting
 ```bash
-python ui/command_center_ui.py
-```
-- **Home Base Operations Interface**
-- **Emergency Recall All Drones**
-- **Real-time Home Base Status**
-- **Drone Return Configuration**
-- **Integrated Simulation Control**
+# Test MCP components
+python test_mcp_connection.py
 
-#### 5. Demo Mode (Demonstration Mode)
+# Check FastMCP installation
+pip show fastmcp
+
+# Reinstall if needed
+pip install --upgrade fastmcp
+```
+
+#### UI Not Loading
 ```bash
-python demo.py
-```
-#### 6. Home Base Demo (New Feature)
-```bash
-python demo_home_base.py
-```
-- Demonstrates home base functionality
-- Shows emergency recall operations
-- Tests drone return behavior
+# Check Python version
+python --version  # Should be 3.8+
 
-## 🎯 System Components
+# Test core simulation
+python -c "from simulation.enhanced_model import EnhancedDroneSwarmModel; print('✅ Simulation ready')"
 
-### Core Simulation (`simulation/simple_model.py`)
-- **SimpleDroneSwarmModel**: Mesa 3.x compatible model with home base support
-- **SimpleDroneAgent**: AI-driven drone with autonomous behavior and home return capability
-- **SimpleSurvivorAgent**: Rescue targets with signal detection
-- **SimpleChargingStationAgent**: Power stations for drone recharging
-- **SimpleHomeBaseAgent**: Central command point where all drones can return
-
-### Command Center (`command_center.py`)
-- **CentralCommandCenter**: Main coordination hub for all drone operations
-- **Home Base Management**: Emergency recall and return-to-base functionality
-- **Mission Planning**: Coordinated multi-drone operations
-- **Real-time Monitoring**: Live status tracking and control
-
-### User Interfaces
-- **Command Center UI** (`ui/command_center_ui.py`): Home base management and emergency controls
-- **Console UI** (`ui/console_ui.py`): Interactive terminal interface
-- **Demo Mode** (`demo.py`): Automated demonstration
-- **Home Base Demo** (`demo_home_base.py`): Home base functionality demonstration
-- **Simple UI** (`ui/simple_ui.py`): Mesa 3.x visualization (experimental)
-
-### Legacy Components (Mesa 2.x)
-- **Advanced UI** (`ui/mesa_ui.py`, `ui/advanced_ui.py`): Web-based interfaces
-- **Original Model** (`simulation/model.py`): Full-featured model with scheduling
-
-## 🎮 Console UI Controls
-
-```
-🎮 Controls:
-   [ENTER] - Single Step
-   [a] - Auto Step (toggle)
-   [r] - Reset Simulation
-   [s] - Show Statistics
-   [l] - Show Legend
-   [q] - Quit
+# Check Tkinter availability
+python -c "import tkinter; print('✅ Tkinter available')"
 ```
 
-## 🔤 Visual Legend
-
-```
-🟢 Healthy Drone (>60% battery)
-🟡 Medium Drone (30-60% battery)  
-🔴 Low Battery Drone (<30% battery)
-🏠 Drone at Home Base
-🆘 Survivor (needs rescue)
-✅ Rescued Survivor
-⚡ Charging Station
-🏢 Home Base
-.  Empty Cell
-```
-
-## 🧠 AI Behavior
-
-### Drone Decision Making
-1. **Emergency Recall**: Return to home base immediately when emergency recall is active
-2. **Battery Critical (≤20%)**: Return to charging station immediately
-3. **At Charging Station**: Charge until 80% battery
-4. **Survivor Detection**: Move towards nearest unrescued survivor
-5. **Rescue Range**: Rescue survivors within 1 grid cell
-6. **Home Base Return**: Return to home base when idle (configurable)
-7. **Patrol Mode**: Random movement when no survivors detected and not returning home
-
-### Smart Features
-- **Energy Management**: Automatic charging when battery is low
-- **Pathfinding**: Direct movement towards targets
-- **Priority System**: Emergency recall overrides all other operations
-- **Home Base Operations**: Centralized return point for mission coordination
-- **Coordination**: Multiple drones work independently but efficiently
+#### Performance Issues
+- **Reduce simulation size**: Lower `width`, `height`, or `n_drones` parameters
+- **Disable weather**: Set `weather_enabled=False` in model initialization
+- **Limit AI reasoning**: Reduce reasoning frequency in agent settings
+- **Close unused UIs**: Run only necessary interface components
 
 ## 📊 Performance Metrics
 
-The system tracks:
-- Active drone count
-- Survivor rescue rate
-- Average battery levels
-- Mission completion time
-- AI decision frequency
+LifeDrone tracks comprehensive performance metrics:
 
-## 🔧 Integration Ready
+### Mission Effectiveness
+- **Rescue Success Rate**: Percentage of survivors successfully rescued
+- **Mission Completion Time**: Average time to complete rescue operations
+- **Coverage Efficiency**: Area searched per unit time
+- **Resource Utilization**: Battery usage optimization and charging efficiency
 
-### Architecture Designed For:
-- **FastMCP Server**: External drone control via MCP protocol
-- **LangGraph Workflows**: Complex mission orchestration
-- **Ollama/Qwen2 AI**: Advanced reasoning and natural language planning
-- **Mesa Visualization**: Web-based dashboard (when compatible)
+### AI Performance
+- **Decision Quality**: Accuracy of AI reasoning and action selection
+- **Response Time**: Speed of AI decision making under pressure
+- **Learning Progress**: Improvement in performance over multiple missions
+- **Error Recovery**: Ability to handle and recover from failed operations
 
-### Extension Points:
-- Custom agent behaviors in `SimpleDroneAgent.step()`
-- Additional UI components in console interface
-- External API integration via MCP tools
-- Advanced AI reasoning modules
+### System Performance
+- **Simulation Speed**: Steps per second in real-time operation
+- **Memory Usage**: System resource consumption during operation
+- **Network Latency**: MCP tool response times
+- **UI Responsiveness**: Interface update frequency and smoothness
 
-## 🛠️ Development
+## 🔮 Future Enhancements
 
-### Project Structure
-```
-├── main.py                    # Main entry point
-├── demo.py                   # Automated demonstration
-├── simulation/
-│   ├── simple_model.py       # Mesa 3.x compatible model ✅
-│   ├── model.py             # Original Mesa 2.x model
-│   └── drone_agent.py       # Legacy agent classes
-├── ui/
-│   ├── console_ui.py        # Working console interface ✅
-│   ├── simple_ui.py         # Mesa 3.x visualization
-│   ├── mesa_ui.py           # Legacy web UI
-│   └── visualization.py     # Legacy components
-├── utils/
-│   └── logging.py           # Mission logging utilities
-└── logs/
-    └── mission.log          # Mission event log
-```
+### Planned Features
+- **🌐 Multi-Site Coordination**: Connect multiple disaster sites
+- **📱 Mobile Interface**: Tablet and smartphone control interfaces
+- **🎥 3D Visualization**: Advanced terrain and drone visualization
+- **🔊 Voice Commands**: Natural language mission control
+- **📡 Real Hardware Integration**: Connect to actual drone hardware
+- **🤝 Multi-User Collaboration**: Team-based mission coordination
 
-### Testing
-```bash
-# Test core functionality
-python -c "
-from simulation.simple_model import SimpleDroneSwarmModel
-model = SimpleDroneSwarmModel()
-model.step()
-print('✅ Core system working!')
-"
+### Research Directions
+- **Advanced AI Models**: Integration with newer LLMs and reasoning systems
+- **Swarm Intelligence**: Enhanced collective behavior algorithms
+- **Predictive Analytics**: Forecast disaster patterns and optimal responses
+- **Adaptive Learning**: Continuous improvement from mission outcomes
+- **Ethical AI**: Ensure responsible AI decision making in critical situations
 
-# Run full demo
-python demo.py
-```
+## 📚 Documentation
 
-## 🎯 Current Status
+### Additional Resources
+- **🌐 DeepWiki**: [https://deepwiki.com/WeiXuan-C/Life-Drone] - Comprehensive knowledge base and advanced documentation
+- **Architecture Guide**: `docs/architecture.md` - System design and component interaction
+- **API Reference**: `docs/mcp_design.md` - MCP tool documentation
+- **Tech Deep Dive**: `docs/tech_architecture.md` - Technical implementation details
+- **AI Guide**: `docs/agentic_ai.md` - AI reasoning and decision making
 
-### ✅ Working Components
-- Mesa 3.x compatible simulation engine
-- Console-based interactive UI
-- AI-driven drone behavior
-- Real-time mission logging
-- Performance monitoring
-- Demo mode with visualization
-
-### 🔄 Integration Points
-- MCP server integration (architecture ready)
-- LangGraph workflow orchestration (hooks prepared)
-- Ollama/Qwen2 AI reasoning (interface designed)
-- Web UI (requires Mesa version compatibility)
-
-### 🚀 Ready to Use
-The system is fully functional for:
-- Disaster rescue simulation
-- AI behavior research
-- Multi-agent coordination studies
-- Educational demonstrations
-- Performance benchmarking
-
-## 📝 Usage Examples
-
-### Basic Simulation
+### Code Examples
 ```python
-from simulation.simple_model import SimpleDroneSwarmModel
+# Basic simulation setup
+from simulation.enhanced_model import EnhancedDroneSwarmModel
 
-# Create model
-model = SimpleDroneSwarmModel(
+model = EnhancedDroneSwarmModel(
     width=20, height=20,
-    n_drones=5, n_survivors=10,
-    n_charging_stations=3
+    n_drones=5, n_survivors=8,
+    n_charging_stations=3,
+    weather_enabled=True
 )
 
-# Run simulation
-for step in range(100):
-    model.step()
-    if step % 10 == 0:
-        print(f"Step {step}: Mission progress...")
+# Run with AI reasoning
+from agent.rescue_agent import RescueAgent
+agent = RescueAgent()
+result = agent.execute_reasoning_cycle("Locate and rescue all survivors")
 ```
 
-### Interactive Console
-```bash
-python ui/console_ui.py
-# Use controls to interact with simulation
-# Press 'a' for auto-stepping
-# Press 's' for detailed statistics
-```
+## 🤝 Contributing
+
+We welcome contributions to LifeDrone! Areas where you can help:
+
+- **🐛 Bug Reports**: Report issues and help improve system stability
+- **✨ Feature Requests**: Suggest new capabilities and enhancements
+- **📝 Documentation**: Improve guides and add usage examples
+- **🧪 Testing**: Add test cases and improve system reliability
+- **🎨 UI/UX**: Enhance user interfaces and user experience
+- **🤖 AI Improvements**: Contribute to reasoning algorithms and decision making
+
+## 📄 License
+
+LifeDrone is released under the MIT License. See LICENSE file for details.
 
 ---
 
-**🚁 Autonomous drone swarms ready for disaster rescue operations!**
+## 🚀 Ready to Deploy
 
-**🎯 Fully functional with console UI - Web UI ready for Mesa compatibility updates**
+LifeDrone is production-ready for:
+- **Emergency Response Training**: Realistic disaster simulation scenarios
+- **Research & Development**: AI behavior analysis and multi-agent coordination
+- **Educational Programs**: Teaching AI, simulation, and emergency management
+- **Technology Demonstration**: Showcase modern AI architecture and integration
+- **Professional Development**: Learn cutting-edge AI and system integration skills
+
+**🎯 Start your first rescue mission today!**
+
+For support and questions, please check the documentation or create an issue in the repository.

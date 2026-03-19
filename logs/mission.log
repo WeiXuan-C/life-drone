@@ -840,3 +840,16 @@
 [00:37:14] Survivor signal survivor_3 detected at Mountain (4, 3)
 [00:37:14] Survivor signal survivor_4 detected at Mountain (11, 10)
 [00:37:14] Terrain analysis: Mountain(44.0%), Cliff(3.0%), Hill(19.5%), Forest(16.2%), Desert(1.8%), Flat(9.2%), Urban(3.5%), Swamp(1.5%), Water(0.8%), Valley(0.5%), 55 obstacles, average altitude 1237m
+[00:00] Central Command Center operational
+[00:00] Home Base established at (10, 10)
+[12:39:29] Charging station station_0 deployed on Urban terrain at (1, 18)
+[12:39:29] Charging station station_1 deployed on Urban terrain at (11, 17)
+[12:39:29] Drone drone_0 deployed on Flat,Storm at (0, 17)
+[12:39:29] Drone drone_1 deployed on Valley,Storm at (0, 18)
+[12:39:29] Drone drone_2 deployed on Swamp,Storm at (0, 19)
+[12:39:29] Survivor signal survivor_0 detected at Urban (2, 12)
+[12:39:29] Survivor signal survivor_1 detected at Forest, near Tree (14, 17)
+[12:39:29] Survivor signal survivor_2 detected at Hill (19, 19)
+[12:39:29] Survivor signal survivor_3 detected at Mountain (4, 3)
+[12:39:29] Survivor signal survivor_4 detected at Mountain (11, 10)
+[12:39:29] Terrain analysis: Mountain(44.0%), Cliff(3.0%), Hill(19.5%), Forest(16.2%), Desert(1.8%), Flat(9.2%), Urban(3.5%), Swamp(1.5%), Water(0.8%), Valley(0.5%), 55 obstacles, average altitude 1237m

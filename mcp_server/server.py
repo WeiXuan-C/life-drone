@@ -221,7 +221,7 @@ class DroneControlServer:
         
         self.logger.info(f"Registered 6 MCP tools for {self.server_name}")
     
-    async def start_server(self, host: str = "localhost", port: int = 8000):
+    def start_server(self, host: str = "localhost", port: int = 8000):
         """
         Start the MCP server.
         
@@ -260,9 +260,12 @@ class DroneControlServer:
             
             # Start the server
             if FASTMCP_AVAILABLE:
-                await self.mcp.serve(host=host, port=port)
+                # FastMCP uses run() method, not serve()
+                self.mcp.run()
             else:
-                await self.mcp.serve(host=host, port=port)
+                # Mock server uses async serve
+                import asyncio
+                asyncio.run(self.mcp.serve(host=host, port=port))
         
         except Exception as e:
             self.logger.error(f"Failed to start server: {e}")
@@ -319,7 +322,8 @@ async def main():
     server = DroneControlServer()
     
     try:
-        await server.start_server()
+        # Use synchronous start_server method
+        server.start_server()
     except KeyboardInterrupt:
         print("\n🛑 Server shutdown requested")
         server.stop_server()

@@ -1,0 +1,5 @@
+2026-03-19 13:19:41,885 - DroneControlServer - INFO - Registered 6 MCP tools for Test Drone Server
+2026-03-19 13:19:41,888 - DroneControlServer - INFO - Registered 6 MCP tools for Drone Control Server
+2026-03-19 13:19:41,888 - DroneControlServer - INFO - Starting Drone Control Server on localhost:8000
+2026-03-19 13:19:41,890 - DroneControlServer - ERROR - Failed to start server: 'FastMCP' object has no attribute 'serve'
+2026-03-19 13:19:41,890 - DroneControlServer - INFO - Stopping MCP server
