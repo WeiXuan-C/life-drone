@@ -64,6 +64,7 @@ class SurvivorInfo:
     signal_strength: float
     detected_time: float
     rescued: bool = False
+    rescue_time: Optional[float] = None
 
 
 class DroneRegistry:
@@ -79,7 +80,12 @@ class DroneRegistry:
         """Initialize the drone registry with default fleet."""
         self.drones: Dict[str, DroneInfo] = {}
         self.survivors: Dict[str, SurvivorInfo] = {}
-        self.charging_stations: List[Tuple[int, int]] = [(0, 0), (19, 19), (10, 10)]
+        # Add more charging stations to ensure coverage of entire area
+        self.charging_stations: List[Tuple[int, int]] = [
+            (0, 0), (0, 19), (19, 0), (19, 19),  # Four corners
+            (10, 10), (5, 10), (15, 10),         # Center area
+            (10, 5), (10, 15)                    # Top and bottom center
+        ]
         self.grid_size = (20, 20)  # 20x20 grid
         
         # Initialize default drone fleet
@@ -417,9 +423,11 @@ def thermal_scan(drone_id: str) -> Dict[str, Any]:
             "scan_position": list(drone.position),
             "survivors_detected": len(survivors_detected),
             "survivor_details": survivor_positions,
+            "positions": [detail["position"] for detail in survivor_positions],  # Add positions field for compatibility
             "battery_consumed": scan_battery_cost,
             "remaining_battery": drone.battery,
             "scan_range": 3,
+            "scan_time": time.time(),
             "message": f"Thermal scan complete. Found {len(survivors_detected)} survivors"
         }
     
@@ -508,6 +516,90 @@ def return_to_base(drone_id: str) -> Dict[str, Any]:
         }
 
 
+def rescue_survivor(drone_id: str, survivor_position: Tuple[int, int]) -> Dict[str, Any]:
+    """
+    MCP Tool: Rescue survivor at specified position.
+    
+    Args:
+        drone_id: ID of the drone performing rescue
+        survivor_position: Position of the survivor (x, y)
+        
+    Returns:
+        Dictionary containing rescue result
+    """
+    try:
+        drone = drone_registry.get_drone(drone_id)
+        if not drone:
+            return {
+                "success": False,
+                "error": f"Drone {drone_id} not found",
+                "drone_id": drone_id
+            }
+        
+        # Check if drone has enough battery for rescue operation
+        if drone.battery < 10:
+            return {
+                "success": False,
+                "error": f"Insufficient battery for rescue operation. Need 10%, have {drone.battery}%",
+                "drone_id": drone_id,
+                "battery": drone.battery
+            }
+        
+        # Check if drone is at the survivor location
+        drone_x, drone_y = drone.position
+        survivor_x, survivor_y = survivor_position
+        distance = ((drone_x - survivor_x) ** 2 + (drone_y - survivor_y) ** 2) ** 0.5
+        
+        if distance > 2:  # Must be within 2 units to rescue
+            return {
+                "success": False,
+                "error": f"Drone too far from survivor. Distance: {distance:.1f}, max: 2.0",
+                "drone_id": drone_id,
+                "drone_position": [drone_x, drone_y],
+                "survivor_position": list(survivor_position)
+            }
+        
+        # Find survivor at this position
+        rescued_survivor = None
+        for survivor_id, survivor in drone_registry.survivors.items():
+            if survivor.position == survivor_position and not survivor.rescued:
+                rescued_survivor = survivor
+                break
+        
+        if not rescued_survivor:
+            return {
+                "success": False,
+                "error": f"No survivor found at position {survivor_position}",
+                "drone_id": drone_id,
+                "position": list(survivor_position)
+            }
+        
+        # Perform rescue
+        rescued_survivor.rescued = True
+        rescued_survivor.rescue_time = time.time()
+        
+        # Consume battery for rescue operation
+        drone_registry.simulate_battery_drain(drone_id, 10)  # 10% battery for rescue
+        drone.status = DroneStatus.IDLE
+        
+        return {
+            "success": True,
+            "drone_id": drone_id,
+            "survivor_position": list(survivor_position),
+            "rescue_time": rescued_survivor.rescue_time,
+            "battery_consumed": 10,
+            "remaining_battery": drone.battery,
+            "message": f"Drone {drone_id} successfully rescued survivor at {survivor_position}"
+        }
+    
+    except Exception as e:
+        return {
+            "success": False,
+            "error": f"Failed to rescue survivor: {str(e)}",
+            "drone_id": drone_id
+        }
+
+
 def get_mission_status() -> Dict[str, Any]:
     """
     MCP Tool: Get overall mission status and statistics.
@@ -571,6 +663,7 @@ def register_mcp_tools(mcp_server):
     mcp_server.tool()(get_battery_status)
     mcp_server.tool()(move_to)
     mcp_server.tool()(thermal_scan)
+    mcp_server.tool()(rescue_survivor)
     mcp_server.tool()(return_to_base)
     mcp_server.tool()(get_mission_status)
 

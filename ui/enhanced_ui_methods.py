@@ -6,6 +6,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import math
 import random
+import time
 from simulation.enhanced_model import EnhancedDroneSwarmModel
 from simulation.enhanced_drone_agent import EnhancedDroneAgent, SimpleSurvivorAgent, SimpleChargingStationAgent
 from simulation.terrain_system import TerrainType, ObstacleType, WeatherCondition

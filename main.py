@@ -1,11 +1,15 @@
 """
 Agentic AI Disaster Rescue Drone System
 Main entry point with Central Command Center coordination
+MANDATORY: All operations must use LangGraph workflow
 """
 
 import sys
 import os
 from command_center import CentralCommandCenter, get_command_center
+
+# MANDATORY: Import RescueAgent for LangGraph workflow
+from agent.rescue_agent import get_rescue_agent, initialize_rescue_agent
 
 def main():
     """Main entry point for the Agentic AI system with Central Command"""
@@ -14,8 +18,19 @@ def main():
     print("=" * 55)
     print("🏢 Central Command Center - Main Control Hub")
     print("🤖 AI-Powered Drone Coordination for Emergency Response")
+    print("🔄 MANDATORY: All operations use LangGraph workflow")
+    
+    # MANDATORY: Initialize RescueAgent with LangGraph
+    print("\n🤖 Initializing RescueAgent with mandatory LangGraph workflow...")
+    rescue_agent = initialize_rescue_agent()
+    agent_status = rescue_agent.get_agent_status()
+    print(f"✅ RescueAgent Status: {agent_status['status']}")
+    print(f"🔄 LangGraph Active: {agent_status['langgraph_active']}")
+    print(f"🧠 Ollama Connected: {agent_status['ollama_connected']}")
+    
     print("\nSystem Features:")
     print("   • Central Command Center for all drone operations")
+    print("   • MANDATORY LangGraph workflow for all AI operations")
     print("   • Advanced AI reasoning with Ollama Qwen2")
     print("   • Complex terrain system (mountains, water, forests)")
     print("   • Dynamic weather and environmental conditions")
@@ -25,47 +40,40 @@ def main():
     print("   • MCP server integration for tool coordination")
     
     print("\n" + "=" * 55)
-    print("Choose your mode:")
-    print("1. 🎮 Launch Enhanced Terrain UI")
-    print("2. 🚀 Run LangGraph Workflow Demo")
-    print("3. 🧪 Run AI Demo")
-    print("4. 📊 Exit")
+    print("🎮 Launch Options:")
+    print("   1. Complete Terrain UI with Console Logging")
+    print("      • Enhanced terrain visualization with mountains, water, forests")
+    print("      • Real-time console logging and mission tracking")
+    print("      • AI-powered drone coordination with LangGraph workflow")
+    print("   2. Combined UI Demo (Terrain + JSON Viewer)")
+    print("      • Side-by-side terrain and JSON response analysis")
+    print("      • See Ollama Qwen2 JSON responses in real-time")
+    print("      • Complete rescue mission simulation")
     
-    choice = input("\nEnter your choice (1-4): ").strip()
+    choice = input("\nPress Enter for Terrain UI, 'j' for Combined UI Demo, or 'q' to quit: ").strip().lower()
     
-    if choice == "1":
-        print("\n🎮 Launching Enhanced Terrain UI...")
+    if choice == 'q':
+        print("\n👋 Goodbye!")
+        # Shutdown RescueAgent gracefully
+        rescue_agent.shutdown()
+        sys.exit(0)
+    elif choice == 'j':
+        print("\n🎮 Launching Combined UI Demo (Terrain + JSON Viewer)...")
+        print("🔄 Flow: UI → RescueAgent → Ollama → LangGraph → MCP")
+        try:
+            launch_combined_ui()
+        except Exception as e:
+            print(f"❌ Error: {e}")
+            print("💡 Falling back to JSON viewer only...")
+            launch_json_only()
+    else:
+        print("\n🎮 Launching Complete Terrain UI with Console Logging...")
+        print("🔄 Flow: UI → RescueAgent → Ollama → LangGraph → MCP")
         try:
             launch_enhanced_ui()
         except Exception as e:
             print(f"❌ Error: {e}")
             run_basic_demo()
-        
-    elif choice == "2":
-        print("\n🚀 Launching LangGraph Workflow Demo...")
-        try:
-            import subprocess
-            subprocess.run([sys.executable, "demo_langgraph.py"])
-        except Exception as e:
-            print(f"❌ Error: {e}")
-            run_basic_demo()
-        
-    elif choice == "3":
-        print("\n🧪 Running AI Demo...")
-        try:
-            import subprocess
-            subprocess.run([sys.executable, "demo_agentic_ai.py"])
-        except Exception as e:
-            print(f"❌ Error: {e}")
-            run_basic_demo()
-        
-    elif choice == "4":
-        print("\n👋 Goodbye!")
-        sys.exit(0)
-        
-    else:
-        print("❌ Invalid choice. Please select 1-4.")
-        main()
 
 
 
@@ -163,6 +171,47 @@ def run_home_base_demo():
         pass
     main()
 
+
+def launch_combined_ui():
+    """Launch both terrain UI and JSON viewer together"""
+    import subprocess
+    import threading
+    import time
+    
+    def launch_json_viewer():
+        """Launch JSON viewer in separate process"""
+        try:
+            subprocess.run([sys.executable, "simple_json_ui.py"], check=False)
+        except Exception as e:
+            print(f"❌ JSON Viewer error: {e}")
+    
+    def launch_terrain_ui():
+        """Launch terrain UI in separate process"""
+        try:
+            from ui.enhanced_tkinter_ui import main as enhanced_main
+            enhanced_main()
+        except Exception as e:
+            print(f"❌ Terrain UI error: {e}")
+    
+    # Start JSON viewer in background thread
+    json_thread = threading.Thread(target=launch_json_viewer, daemon=True)
+    json_thread.start()
+    
+    # Small delay to let JSON viewer start
+    time.sleep(1)
+    
+    # Launch terrain UI in main thread
+    launch_terrain_ui()
+
+def launch_json_only():
+    """Launch only the JSON viewer as fallback"""
+    try:
+        import subprocess
+        subprocess.run([sys.executable, "simple_json_ui.py"], check=False)
+    except Exception as e:
+        print(f"❌ JSON viewer fallback error: {e}")
+        print("💡 Running basic demo instead...")
+        run_basic_demo()
 
 def launch_enhanced_ui():
     """Launch the enhanced terrain UI"""

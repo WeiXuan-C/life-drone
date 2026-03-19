@@ -26,7 +26,7 @@ try:
     from langchain_community.chat_models import ChatOllama
     LANGCHAIN_AVAILABLE = True
     
-    # 尝试导入 LangGraph
+    # Try to import LangGraph
     try:
         from .langgraph_workflow import LangGraphRescueWorkflow
         LANGGRAPH_AVAILABLE = True
@@ -102,15 +102,15 @@ class RescueAgent:
         if self.use_langgraph:
             try:
                 self.langgraph_workflow = LangGraphRescueWorkflow(model_name, base_url)
-                print("✅ LangGraph 工作流程已启用")
+                print("✅ LangGraph workflow enabled")
             except Exception as e:
-                print(f"⚠️  LangGraph 初始化失败，使用基础 ReAct 模式: {e}")
+                print(f"⚠️  LangGraph initialization failed, using basic ReAct mode: {e}")
                 self.use_langgraph = False
                 self.langgraph_workflow = None
         else:
             self.langgraph_workflow = None
             if not LANGGRAPH_AVAILABLE:
-                print("ℹ️  LangGraph 不可用，使用基础 ReAct 模式")
+                print("ℹ️  LangGraph not available, using basic ReAct mode")
         
         # Initialize LLM
         if LANGCHAIN_AVAILABLE:
@@ -444,13 +444,13 @@ Provide a prioritized list of actions in this format:
     
     def execute_mission_with_langgraph(self, goal: str) -> Dict[str, Any]:
         """
-        使用 LangGraph 工作流程执行完整任务
+        Execute complete mission using LangGraph workflow
         
         Args:
-            goal: 任务目标
+            goal: Mission objective
             
         Returns:
-            任务执行结果
+            Mission execution results
         """
         if not self.use_langgraph or not self.langgraph_workflow:
             return {
@@ -459,7 +459,7 @@ Provide a prioritized list of actions in this format:
                 "fallback": "使用基础推理模式"
             }
         
-        print(f"\n🚀 使用 LangGraph 执行任务：{goal}")
+        print(f"\n🚀 Using LangGraph to execute mission: {goal}")
         
         try:
             result = self.langgraph_workflow.run_mission(goal)
@@ -497,10 +497,10 @@ Provide a prioritized list of actions in this format:
                                else self.use_langgraph)
         
         if should_use_langgraph and self.langgraph_workflow:
-            print(f"\n🧠 使用 LangGraph 工作流程执行任务")
+            print(f"\n🧠 Using LangGraph workflow to execute mission")
             return self.execute_mission_with_langgraph(goal)
         else:
-            print(f"\n🧠 使用基础 ReAct 推理模式执行任务")
+            print(f"\n🧠 Using basic ReAct reasoning mode to execute mission")
             return self._execute_basic_reasoning_cycle(goal)
     
     def _execute_basic_reasoning_cycle(self, goal: str) -> Dict[str, Any]:
