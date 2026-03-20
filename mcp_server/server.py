@@ -207,7 +207,21 @@ class DroneControlServer:
             self.logger.info(f"return_to_base result: {result.get('message', 'OK')}")
             return result
         
-        # Tool 6: Get Mission Status
+        # Tool 6: Rescue Survivor
+        @self.mcp.tool(
+            name="rescue_survivor",
+            description="Rescue survivor at specified position"
+        )
+        def mcp_rescue_survivor(drone_id: str, x: int, y: int) -> Dict[str, Any]:
+            """MCP wrapper for rescue_survivor tool."""
+            self.logger.info(f"MCP Tool called: rescue_survivor(drone_id={drone_id}, x={x}, y={y})")
+            # Import rescue_survivor function
+            from .drone_tools import rescue_survivor
+            result = rescue_survivor(drone_id, (x, y))
+            self.logger.info(f"rescue_survivor result: {result.get('message', 'OK')}")
+            return result
+        
+        # Tool 7: Get Mission Status
         @self.mcp.tool(
             name="get_mission_status",
             description="Get overall mission statistics and fleet status information"
@@ -219,7 +233,7 @@ class DroneControlServer:
             self.logger.info(f"get_mission_status result: {result.get('message', 'OK')}")
             return result
         
-        self.logger.info(f"Registered 6 MCP tools for {self.server_name}")
+        self.logger.info(f"Registered 7 MCP tools for {self.server_name}")
     
     def start_server(self, host: str = "localhost", port: int = 8000):
         """
@@ -247,6 +261,7 @@ class DroneControlServer:
                 "get_battery_status(drone_id) - Check drone battery level",
                 "move_to(drone_id, x, y) - Move drone to coordinates",
                 "thermal_scan(drone_id) - Scan for survivors",
+                "rescue_survivor(drone_id, x, y) - Rescue survivor at position",
                 "return_to_base(drone_id) - Send drone to charging station",
                 "get_mission_status() - Get mission statistics"
             ]

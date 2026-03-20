@@ -507,7 +507,7 @@ class EnhancedDroneSwarmModel(Model):
     # Data collector methods
     def _count_active_drones(self):
         return len([a for a in self.custom_agents 
-                   if isinstance(a, EnhancedDroneAgent) and a.status not in ['charging', 'crashed']])
+                   if isinstance(a, EnhancedDroneAgent) and a.status not in ['charging', 'crashed', 'mission_complete']])
     
     def _count_rescued_survivors(self):
         return len([a for a in self.custom_agents 

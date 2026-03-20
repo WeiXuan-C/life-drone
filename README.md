@@ -49,6 +49,12 @@ python --version  # Should show 3.8 or higher
 
 #### Install Core Dependencies
 ```bash
+# Install all dependencies at once
+pip install -r requirements.txt
+```
+
+Or install individually:
+```bash
 # Core simulation and AI dependencies
 pip install mesa>=3.0.0 numpy pandas matplotlib
 
@@ -57,20 +63,27 @@ pip install requests langchain-community
 
 # MCP server (optional but recommended)
 pip install fastmcp
-
-# UI components
-pip install tkinter  # Usually included with Python
 ```
 
 #### Verify Installation
 ```bash
-python test_mcp_connection.py
+python verify_installation.py
 ```
-Expected output: ✅ All components ready
+Expected output: 🎉 All checks passed!
 
-### 2. Start Ollama (AI Reasoning Engine)
+### 2. Launch the System
 
-LifeDrone uses Ollama with Qwen2 for AI reasoning. Install and start Ollama:
+**That's it! Just run:**
+
+```bash
+python main.py
+```
+
+The system will automatically launch the redesigned UI with all features ready to use.
+
+### 3. Optional: Start Ollama (for AI Reasoning)
+
+If you want to use AI reasoning features:
 
 #### Install Ollama
 - **Windows**: Download from [ollama.ai](https://ollama.ai)
@@ -84,16 +97,9 @@ ollama serve
 
 # In a new terminal, install Qwen2 model
 ollama pull qwen2
-
-# Verify installation
-ollama list
 ```
 
-Expected output: qwen2 model listed and ready
-
-### 3. Start MCP Server (Drone Control)
-
-The MCP server provides the interface between AI agents and drone operations:
+### 4. Optional: Start MCP Server (for Advanced Features)
 
 ```bash
 # Start MCP server
@@ -127,36 +133,50 @@ This opens a window showing:
 
 ### 5. Launch Main Interface
 
-Choose your preferred interface:
+Simply run:
 
-#### Option A: Complete System (Recommended)
 ```bash
 python main.py
-# Select option 'j' for Combined UI Demo
 ```
 
-#### Option B: Enhanced Terrain UI Only
-```bash
-python main.py
-# Press Enter for Terrain UI
-```
+This will launch the **Redesigned UI** - a modern, streamlined interface featuring:
+- 🗺️ Real-time terrain visualization with complex environments
+- 🚁 Interactive drone control and monitoring
+- 🤖 AI decision-making with chain-of-thought reasoning
+- 📊 Live mission analytics and performance metrics
+- 🎮 Click-to-command drone operations
+- 🌦️ Dynamic weather and terrain effects
 
-#### Option C: Combined Launch Script
-```bash
-python launch_combined_ui.py
-```
+**That's it!** The system is ready to use.
 
-## 🎮 User Interface Options
+## 🎮 User Interface Features
 
-### 🎮 Enhanced Terrain UI (Primary Interface)
-- **Complex Terrain Visualization**: Mountains, water, forests, urban areas
-- **Real-time Weather**: Dynamic weather conditions affecting operations
-- **Interactive Drone Control**: Click-to-command drone operations
-- **AI Decision Monitoring**: Live chain-of-thought reasoning display
-- **Mission Planning**: Multi-drone coordination and task assignment
-- **Performance Analytics**: Real-time metrics and success rates
+### 🎮 Redesigned UI (Main Interface)
+The redesigned UI provides a complete mission control experience:
 
-### 🤖 JSON Response Viewer (AI Monitoring)
+- **Complex Terrain Visualization**: Mountains, water, forests, urban areas with realistic rendering
+- **Real-time Weather**: Dynamic weather conditions (clear, rain, fog, wind, storm) affecting operations
+- **Interactive Drone Control**: 
+  - Click on map to add drones, survivors, or charging stations
+  - Real-time status monitoring for all agents
+  - Battery level tracking and alerts
+- **AI Decision Monitoring**: 
+  - Live chain-of-thought reasoning display
+  - Decision history and reasoning logs
+  - Multi-step AI analysis visualization
+- **Mission Planning**: 
+  - Multi-drone coordination
+  - Automatic task assignment
+  - Conflict resolution
+- **Performance Analytics**: 
+  - Real-time rescue statistics
+  - Success rates and efficiency metrics
+  - Distance traveled and battery consumption
+- **Mission Complete Auto-Return**: 
+  - Drones automatically return to base when all survivors rescued
+  - Intelligent path planning for return journey
+
+### 🤖 AI Reasoning Features
 - **Ollama Integration**: Direct connection to Qwen2 reasoning engine
 - **Chain-of-Thought Display**: Step-by-step AI decision processes
 - **Tool Execution Logs**: MCP tool calls and responses

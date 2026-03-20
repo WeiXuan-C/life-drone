@@ -122,18 +122,60 @@ class RescueAgent:
         else:
             self.llm = None
         
-        # System prompt for the rescue agent
-        self.system_prompt = """
+        # Build system prompt dynamically (will be updated with discovered tools)
+        self.system_prompt = self._build_system_prompt()
+    
+    def _build_system_prompt(self) -> str:
+        """
+        Build system prompt dynamically with tools discovered from MCP server.
+        
+        Returns:
+            System prompt string with current available tools
+        """
+        # Try to get tools from MCP client
+        tool_descriptions = []
+        
+        try:
+            from mcp_client.client import get_mcp_client
+            
+            mcp_client = get_mcp_client()
+            
+            if mcp_client.connect():
+                tools_info = mcp_client.get_available_tools()
+                
+                if tools_info and "tools" in tools_info:
+                    for tool in tools_info["tools"]:
+                        # Build parameter list
+                        params = ""
+                        if "inputSchema" in tool and "properties" in tool["inputSchema"]:
+                            param_names = list(tool["inputSchema"]["properties"].keys())
+                            params = f"({', '.join(param_names)})"
+                        
+                        # Add tool description
+                        description = tool.get("description", "No description available")
+                        tool_descriptions.append(f"- {tool['name']}{params}: {description}")
+        
+        except Exception as e:
+            print(f"⚠️  Could not discover MCP tools for system prompt: {e}")
+            # Fallback to generic description
+            tool_descriptions = [
+                "- Tools will be discovered dynamically from MCP server",
+                "- Use discover_drones() to see available drones",
+                "- Use get_battery_status(drone_id) to check battery",
+                "- Use move_to(drone_id, x, y) to move drones",
+                "- Use thermal_scan(drone_id) to scan for survivors"
+            ]
+        
+        # Build complete system prompt
+        tools_section = "\n".join(tool_descriptions) if tool_descriptions else "No tools available"
+        
+        return f"""
 You are a Rescue Command Agent coordinating drone operations in a disaster zone.
 
 Your mission: Coordinate a fleet of drones to locate and rescue survivors efficiently.
 
-Available MCP Tools:
-- discover_drones(): Get list of available drones
-- get_battery_status(drone_id): Check drone battery level
-- move_to(drone_id, x, y): Move drone to coordinates
-- thermal_scan(drone_id): Scan for survivors at current position
-- return_to_base(drone_id): Send drone back to charging station
+Available MCP Tools (dynamically discovered):
+{tools_section}
 
 Reasoning Process:
 1. THOUGHT: Analyze the situation and decide what to do next
@@ -279,32 +321,6 @@ ACTION: Which MCP tool should I call and with what parameters?
         
         return result
     
-    def discover_drones(self) -> Dict[str, Any]:
-        """
-        Discover available drones through MCP tool.
-        
-        Returns:
-            Dictionary containing drone discovery results
-        """
-        self.memory.add_event("Initiating drone discovery")
-        
-        try:
-            # Call MCP tool (simulated for now)
-            result = self.call_mcp_tool("discover_drones", {})
-            
-            if result.get("success"):
-                drone_count = len(result.get("drones", []))
-                self.memory.add_event(f"{drone_count} drones discovered")
-            else:
-                self.memory.add_event("Drone discovery failed")
-            
-            return result
-        
-        except Exception as e:
-            error_msg = f"Error discovering drones: {str(e)}"
-            self.memory.add_event(error_msg)
-            return {"success": False, "error": error_msg}
-    
     def plan_actions(self, goal: str, available_drones: List[str]) -> List[Dict[str, Any]]:
         """
         Plan a sequence of actions to achieve the mission goal.
@@ -353,72 +369,34 @@ Provide a prioritized list of actions in this format:
     
     def call_mcp_tool(self, tool_name: str, parameters: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Call an MCP tool and handle the response.
+        Call an MCP tool via real MCP client (no hardcoded simulations).
         
         Args:
             tool_name: Name of the MCP tool to call
             parameters: Parameters for the tool
             
         Returns:
-            Tool execution result
+            Tool execution result from real MCP server
         """
         self.memory.add_event(f"Calling MCP tool: {tool_name} with params: {parameters}")
         
         try:
-            # Simulate MCP tool call (replace with actual MCP client)
-            # This would normally make an HTTP request to the MCP server
+            # Import and use real MCP client
+            from mcp_client.client import get_mcp_client
             
-            # Simulated responses for different tools
-            if tool_name == "discover_drones":
-                result = {
-                    "success": True,
-                    "drones": ["drone_A", "drone_B", "drone_C"],
-                    "message": "3 drones discovered and ready"
-                }
+            mcp_client = get_mcp_client()
             
-            elif tool_name == "get_battery_status":
-                drone_id = parameters.get("drone_id", "unknown")
-                # Simulate battery levels
-                battery_levels = {"drone_A": 85, "drone_B": 45, "drone_C": 15}
-                battery = battery_levels.get(drone_id, 50)
-                
-                result = {
-                    "success": True,
-                    "drone_id": drone_id,
-                    "battery": battery,
-                    "status": "critical" if battery < 20 else "normal"
-                }
-            
-            elif tool_name == "move_to":
-                result = {
-                    "success": True,
-                    "drone_id": parameters.get("drone_id"),
-                    "new_position": [parameters.get("x"), parameters.get("y")],
-                    "message": "Drone moved successfully"
-                }
-            
-            elif tool_name == "thermal_scan":
-                # Simulate survivor detection
-                result = {
-                    "success": True,
-                    "drone_id": parameters.get("drone_id"),
-                    "survivors_detected": 1,
-                    "positions": [[5, 8]],
-                    "message": "Thermal scan completed"
-                }
-            
-            elif tool_name == "return_to_base":
-                result = {
-                    "success": True,
-                    "drone_id": parameters.get("drone_id"),
-                    "message": "Drone returning to base for charging"
-                }
-            
-            else:
-                result = {
+            # Ensure connection
+            if not mcp_client.connect():
+                error_msg = "Failed to connect to MCP server"
+                self.memory.add_event(f"MCP connection failed: {error_msg}")
+                return {
                     "success": False,
-                    "error": f"Unknown tool: {tool_name}"
+                    "error": error_msg
                 }
+            
+            # Call tool dynamically via MCP client
+            result = mcp_client.call_tool(tool_name, **parameters)
             
             # Log the result
             if result.get("success"):
@@ -505,7 +483,7 @@ Provide a prioritized list of actions in this format:
     
     def _execute_basic_reasoning_cycle(self, goal: str) -> Dict[str, Any]:
         """
-        Execute a complete ReAct reasoning cycle.
+        Execute a complete ReAct reasoning cycle using dynamic tool calling.
         
         Args:
             goal: The mission goal to work towards
@@ -521,17 +499,13 @@ Provide a prioritized list of actions in this format:
         
         print(f"💭 THOUGHT: {thought}")
         
-        # Step 2: Execute action
+        # Step 2: Execute action based on LLM recommendation
         action_description = analysis["recommended_action"]
         print(f"🎯 ACTION: {action_description}")
         
-        # Parse action and execute (simplified)
-        if "discover_drones" in action_description.lower():
-            observation = self.discover_drones()
-        elif "battery" in action_description.lower():
-            observation = self.call_mcp_tool("get_battery_status", {"drone_id": "drone_A"})
-        else:
-            observation = {"message": "Action executed", "success": True}
+        # Parse action from LLM response and execute dynamically
+        # The LLM should provide tool name and parameters
+        observation = self._parse_and_execute_action(action_description)
         
         print(f"👁️ OBSERVATION: {observation}")
         
@@ -564,6 +538,60 @@ Keep the reflection brief and actionable.
             "reflection": reflection,
             "success": observation.get("success", True)
         }
+    
+    def _parse_and_execute_action(self, action_description: str) -> Dict[str, Any]:
+        """
+        Parse action description from LLM and execute via MCP dynamically.
+        
+        Args:
+            action_description: Natural language action description from LLM
+            
+        Returns:
+            Action execution result
+        """
+        # Ask LLM to convert natural language to structured tool call
+        parse_prompt = f"""
+Convert this action description into a structured tool call:
+"{action_description}"
+
+Reply in JSON format:
+{{
+    "tool_name": "exact_mcp_tool_name",
+    "parameters": {{"param1": "value1"}}
+}}
+
+Available tools: discover_drones, get_battery_status, move_to, thermal_scan, 
+                rescue_survivor, return_to_base
+"""
+        
+        try:
+            response = self._generate_response(parse_prompt)
+            
+            # Try to parse JSON response
+            import json
+            tool_call = json.loads(response)
+            
+            tool_name = tool_call.get("tool_name")
+            parameters = tool_call.get("parameters", {})
+            
+            # Execute via MCP dynamically
+            return self.call_mcp_tool(tool_name, parameters)
+            
+        except Exception as e:
+            # Fallback: try to extract tool name from description
+            action_lower = action_description.lower()
+            
+            if "discover" in action_lower and "drone" in action_lower:
+                return self.call_mcp_tool("discover_drones", {})
+            elif "battery" in action_lower or "status" in action_lower:
+                # Need to get drone_id from available drones
+                return self.call_mcp_tool("get_mission_status", {})
+            else:
+                return {
+                    "success": False,
+                    "error": f"Could not parse action: {action_description}",
+                    "message": "Action parsing failed"
+                }
 
 
 # Example usage and testing

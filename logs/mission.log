@@ -1,855 +1,776 @@
-=== MISSION LOG STARTED: 2026-03-18 17:22:30 ===
-[00:00] Agentic AI system initialized
-[00:00] Mission command center activated
-[00:00] Disaster zone coordinates received
-[00:00] Drone fleet status check initiated
-[00:01] Fleet discovery: 5 drones operational
-[00:01] Low battery alert: drone_C at 15%
-[01:17] 任务分析：The task involves coordinating the deployment of emergency drones for the search of survivors in a disaster zone. The mission has been activated and coordinates have been received, indicating a high level of urgency. The drone fleet status check has been initiated, which suggests that resources are being prepared for the operation.
-[01:17] 发现 5 架无人机
-[03:56] 任务计划制定完成，计划执行 5 个行动
-[03:56] 行动成功：return_to_base (drone_A) - Drone drone_A returned to charging station at (0, 0)
-[03:56] 工作流程执行错误：None
-[03:59] AI reasoning cycle completed with warnings
-[03:59] drone_A deployed to sector (5, 8)
-[03:59] drone_A thermal scan: 1 survivors found
-[03:59] drone_B deployed to sector (12, 15)
-[03:59] drone_B thermal scan: 0 survivors found
-[03:59] drone_D deployed to sector (18, 6)
-[03:59] drone_D thermal scan: 0 survivors found
-[03:59] drone_C returned for emergency charging
-[03:59] Mission update: 1 survivors located, 5 drones active
-[00:12] UI Request: {'type': 'search_area', 'area': {'x': 10, 'y': 10}, 'search_radius': 8, 'priority': 'high'}
-[01:35] 任务分析：The task involves searching for survivors in a specific area at coordinates (10, 10). The search area is defined with a radius of 8 units around the center point. The urgency level is high as indicated by the UI request.
-[01:35] 发现 5 架无人机
-[04:28] 任务计划制定完成，计划执行 5 个行动
-[04:28] 行动成功：return_to_base (drone_A) - Drone drone_A returned to charging station at (0, 0)
-[04:28] 工作流程执行错误：None
-[04:28] UI Request: {'type': 'emergency_response', 'details': 'Multiple survivors detected in disaster zone', 'priority': 'critical'}
-[06:34] 任务分析：The task involves rescuing multiple survivors in a disaster zone, which indicates a high level of urgency and complexity due to the potential severity of the situation and the need for immediate action.
-[06:34] 发现 5 架无人机
-[09:35] 任务计划制定完成，计划执行 5 个行动
-[09:35] 行动成功：return_to_base (drone_A) - Drone drone_A returned to charging station at (0, 0)
-[09:35] 工作流程执行错误：None
-[09:35] UI Request: {'type': 'patrol_area', 'area': {'x': 15, 'y': 5}, 'patrol_radius': 5, 'priority': 'medium'}
-[00:00] UI Request: {'type': 'search_area', 'area': {'x': 5, 'y': 5}, 'search_radius': 3, 'priority': 'medium'}
-[11:00] 任务分析：任务目标是巡逻指定区域以寻找幸存者，这表明情况可能非常紧急，因为寻找幸存者是救援行动中的首要任务。任务的复杂性可能较高，因为需要在未知的环境中进行搜索，同时可能需要处理有限的资源和潜在的挑战。
-[11:00] 发现 5 架无人机
-[02:57] 任务分析：{
-  "analysis": "任务目标是在坐标(5, 5)进行搜索。最近事件表明，已经有一个无人机(drone_A)返回了充电站，但任务计划制定完成并执行了5个行动。UI请求包括在15x5区域进行巡逻和在5x5区域内进行搜索，优先级均为中等。",
-  "urgency_level": "中等",
-  "required_resources": [
-    {
-      "type": "drone",
-      "quantity": 1,
-      "status": "charged"
-    },
-    {
-      "type": "search equipment",
-      "quantity": 1,
-      "status": "functional"
-    },
-    {
-      "type": "communication system",
-      "quantity": 1,
-      "status": "functional"
-    }
-  ],
-  "potential_challenges_and_risks": [
-    "低能见度或恶劣天气可能影响无人机的搜索效率。",
-    "搜索区域可能有障碍物，限制无人机的搜索范围。",
-    "任务区域可能存在未知风险，如危险物品或动物。",
-    "无人机电池电量可能不足以完成整个任务。",
-    "通信系统可能在偏远地区出现信号不佳的问题。",
-    "任务优先级中等，可能与其他紧急任务冲突，影响资源分配。",
-    "夜间搜索可能需要额外的照明设备或夜间视觉辅助设备。",
-    "搜索区域的大小和复杂性可能需要更多无人机或更长时间的搜索。",
-    "无人机可能需要定期检查和维护，以确保任务的连续性。",
-    "任务执行过程中可能需要实时调整策略以应对突发情况。",
-    "搜索区域可能有多个入口和出口，需要精确的导航和定位系统以确保覆盖整个区域。",
-    "搜索区域可能有多个目标，需要优先级排序和资源分配策略。",
-  ],
-  "strategy": {
-    "initial_strategy": "首先，确保所有无人机都已充电并准备好执行任务。使用已有的无人机进行搜索区域(5, 5)的初步搜索，同时在15x5区域内进行巡逻，以覆盖可能的紧急情况。",
-    "resource_allocation": "根据任务的紧急程度和资源可用性，合理分配无人机和设备。优先考虑在搜索区域(5, 5)进行深入搜索，同时保持对15x5区域的巡逻。",
-    "communication_and_coordination": "确保所有参与人员之间的沟通畅通，及时共享信息和资源。在任务执行过程中，保持与指挥中心的联系，以便在需要时进行调整。",
-    "adaptability_and_flexibility": "根据实时情况调整任务策略。如果发现搜索区域有更多潜在风险或需要更多资源，应立即请求增援或调整资源分配。",
-    "safety_precautions": "确保所有操作人员和无人机的安全。在执行任务前进行安全检查，执行任务时遵循安全规程。",
-    "post-mission review": "任务完成后，进行详细的后任务审查，评估任务执行情况，总结经验教训，优化未来任务的执行策略。",
-    "backup_plan": "准备备份计划，以防主要任务执行过程中出现意外情况，如无人机故障或通信中断。"
-  }
-}
-[02:57] 发现 5 架无人机
-[14:53] 任务计划制定完成，计划执行 5 个行动
-[14:53] 行动成功：return_to_base (drone_A) - Drone drone_A returned to charging station at (0, 0)
-[14:53] 工作流程执行错误：None
-[07:22] 任务计划制定完成，计划执行 5 个行动
-[07:22] 行动成功：return_to_base (drone_A) - Drone drone_A returned to charging station at (0, 0)
-[07:29] 行动成功：return_to_base (drone_B) - Drone drone_B returned to charging station at (5, 10)
-[07:34] 行动成功：return_to_base (drone_C) - Drone drone_C returned to charging station at (10, 10)
-[07:38] 行动成功：return_to_base (drone_D) - Drone drone_D returned to charging station at (10, 10)
-[07:43] 行动成功：return_to_base (drone_E) - Drone drone_E returned to charging station at (15, 10)
-[07:43] 任务完成：发现 0 名幸存者
-[00:00] UI Request: {'type': 'search_area', 'area': {'x': 5, 'y': 5}, 'search_radius': 3, 'priority': 'medium'}
-[01:08] 任务分析：The task involves searching for survivors in an area defined by coordinates (5, 5). The search area is relatively small, with a radius of 3 units, which suggests that the task might not be particularly complex in terms of geographical scope. However, the fact that no survivors were found during previous searches at similar coordinates could indicate that the task might be challenging due to the nature of the environment or the specific conditions at the location.
-[01:08] 发现 5 架无人机
-[03:13] 任务计划制定完成，计划执行 5 个行动
-[03:13] 行动成功：return_to_base (drone_A) - Drone drone_A returned to charging station at (0, 0)
-[03:20] 行动成功：return_to_base (drone_B) - Drone drone_B returned to charging station at (5, 10)
-[03:25] 行动成功：return_to_base (drone_C) - Drone drone_C returned to charging station at (10, 10)
-[03:30] 行动成功：return_to_base (drone_D) - Drone drone_D returned to charging station at (10, 10)
-[03:35] 行动成功：return_to_base (drone_E) - Drone drone_E returned to charging station at (15, 10)
-[03:35] 任务完成：发现 0 名幸存者
-[00:00] Central Command Center operational
-[00:00] Home Base established at (10, 10)
-[00:00] Central Command Center operational
-[00:00] Home Base established at (10, 10)
-[00:00] Central Command Center operational
-[00:00] Home Base established at (10, 10)
-[00:17] UI Request: {'type': 'search_area', 'area': {'x': 10, 'y': 10}, 'search_radius': 8, 'priority': 'high'}
-[19:55:36] Charging station station_0 deployed on Urban terrain at (1, 18)
-[19:55:36] Charging station station_1 deployed on Urban terrain at (11, 17)
-[19:55:36] Drone drone_0 deployed on Flat,Storm at (0, 17)
-[19:55:36] Drone drone_1 deployed on Valley,Storm at (0, 18)
-[19:55:36] Drone drone_2 deployed on Swamp,Storm at (0, 19)
-[19:55:36] Survivor signal survivor_0 detected at Urban (2, 12)
-[19:55:36] Survivor signal survivor_1 detected at Forest, near Tree (14, 17)
-[19:55:36] Survivor signal survivor_2 detected at Hill (19, 19)
-[19:55:36] Survivor signal survivor_3 detected at Mountain (4, 3)
-[19:55:36] Survivor signal survivor_4 detected at Mountain (11, 10)
-[19:55:36] Terrain analysis: Mountain(44.0%), Cliff(3.0%), Hill(19.5%), Forest(16.2%), Desert(1.8%), Flat(9.2%), Urban(3.5%), Swamp(1.5%), Water(0.8%), Valley(0.5%), 55 obstacles, average altitude 1237m
-[01:21] Mission analysis: The mission objective is to search an area at coordinates (10, 10). The recent events indicate that the Central Command Center and Home Base are already established at this location, suggesting that the area is under observation or control. The UI request specifies a search radius of 8 units and a priority level of 'high', indicating urgency and the need for thorough coverage.
-[01:21] Discovered 5 drones
-[02:52] Mission plan completed, planning to execute 8 actions
-[02:52] 行动成功：move_to (drone_A) - Drone drone_A moved to (5, 8)
-[02:58] 行动成功：thermal_scan (drone_A) - Thermal scan complete. Found 1 survivors
-[03:03] 行动失败：rescue_survivor (drone_A) - Drone too far from survivor. Distance: 2.2, max: 2.0
-[03:08] 行动成功：move_to (drone_B) - Drone drone_B moved to (12, 15)
-[03:13] 行动成功：thermal_scan (drone_B) - Thermal scan complete. Found 0 survivors
-[03:17] 行动成功：move_to (drone_D) - Drone drone_D moved to (10, 10)
-[03:21] 行动成功：thermal_scan (drone_D) - Thermal scan complete. Found 1 survivors
-[03:26] 行动失败：rescue_survivor (drone_D) - Drone too far from survivor. Distance: 2.8, max: 2.0
-[03:31] 行动成功：move_to (drone_E) - Drone drone_E moved to (15, 10)
-[00:00] Central Command Center operational
-[00:00] Home Base established at (10, 10)
-[03:36] 行动成功：thermal_scan (drone_E) - Thermal scan complete. Found 1 survivors
-[03:41] 行动成功：rescue_survivor (drone_E) - Drone drone_E successfully rescued survivor at (14, 9)
-[03:41] Mission completed: found 3 survivors
-[03:41] UI Request: {'type': 'emergency_response', 'details': 'Multiple survivors detected in disaster zone', 'priority': 'critical'}
-[19:59:09] Charging station station_0 deployed on Urban terrain at (1, 18)
-[19:59:09] Charging station station_1 deployed on Urban terrain at (11, 17)
-[19:59:09] Drone drone_0 deployed on Flat,Storm at (0, 17)
-[19:59:09] Drone drone_1 deployed on Valley,Storm at (0, 18)
-[19:59:09] Drone drone_2 deployed on Swamp,Storm at (0, 19)
-[19:59:09] Survivor signal survivor_0 detected at Urban (2, 12)
-[19:59:09] Survivor signal survivor_1 detected at Forest, near Tree (14, 17)
-[19:59:09] Survivor signal survivor_2 detected at Hill (19, 19)
-[19:59:09] Survivor signal survivor_3 detected at Mountain (4, 3)
-[19:59:09] Survivor signal survivor_4 detected at Mountain (11, 10)
-[19:59:09] Terrain analysis: Mountain(44.0%), Cliff(3.0%), Hill(19.5%), Forest(16.2%), Desert(1.8%), Flat(9.2%), Urban(3.5%), Swamp(1.5%), Water(0.8%), Valley(0.5%), 55 obstacles, average altitude 1237m
-[19:59:41] Drone drone_0 successfully rescued survivor survivor_0
-[19:59:52] Weather change: (4,0) Clear → Wind
-[19:59:52] Weather change: (10,1) Clear → Rain
-[19:59:52] Weather change: (16,1) Clear → Rain
-[19:59:52] Weather change: (3,2) Clear → Wind
-[19:59:52] Weather change: (11,4) Clear → Wind
-[19:59:52] Weather change: (7,5) Clear → Rain
-[19:59:52] Weather change: (2,6) Clear → Wind
-[19:59:52] Weather change: (7,6) Clear → Wind
-[19:59:52] Weather change: (11,6) Clear → Rain
-[19:59:52] Weather change: (17,6) Rain → Fog
-[19:59:52] Weather change: (3,8) Clear → Wind
-[19:59:52] Weather change: (14,8) Clear → Rain
-[19:59:52] Weather change: (16,8) Rain → Clear
-[19:59:52] Weather change: (19,10) Clear → Wind
-[19:59:52] Weather change: (2,11) Clear → Rain
-[19:59:52] Weather change: (5,11) Clear → Rain
-[19:59:52] Weather change: (9,11) Clear → Rain
-[19:59:52] Weather change: (12,11) Clear → Wind
-[19:59:52] Weather change: (6,12) Clear → Wind
-[19:59:52] Weather change: (14,12) Clear → Wind
-[19:59:52] Weather change: (6,13) Clear → Rain
-[19:59:52] Weather change: (11,13) Clear → Wind
-[19:59:52] Weather change: (16,13) Clear → Rain
-[19:59:52] Weather change: (0,14) Storm → Wind
-[19:59:52] Weather change: (19,14) Clear → Rain
-[19:59:52] Weather change: (3,16) Storm → Rain
-[19:59:52] Weather change: (4,16) Storm → Wind
-[19:59:52] Weather change: (16,16) Clear → Wind
-[19:59:52] Weather change: (13,17) Clear → Rain
-[19:59:52] Weather change: (18,17) Clear → Wind
-[19:59:52] Weather change: (0,18) Storm → Wind
-[19:59:52] Weather change: (4,19) Storm → Rain
-[19:59:52] Weather change: (10,19) Clear → Rain
-[19:59:52] Weather change: (17,19) Clear → Rain
-[19:59:52] Weather change: (18,19) Clear → Rain
-[05:02] Mission analysis: The mission involves an urgent response to a disaster zone where multiple survivors have been detected. The use of drones for thermal scanning and rescue indicates a high level of complexity due to the need for specialized equipment and real-time data analysis.
-[05:02] Discovered 5 drones
-[20:00:17] Weather change: (13,0) Clear → Rain
-[20:00:17] Weather change: (19,0) Clear → Wind
-[20:00:17] Weather change: (0,1) Clear → Rain
-[20:00:17] Weather change: (5,1) Clear → Rain
-[20:00:17] Weather change: (4,2) Clear → Wind
-[20:00:17] Weather change: (9,2) Clear → Wind
-[20:00:17] Weather change: (19,2) Rain → Fog
-[20:00:17] Weather change: (0,3) Clear → Rain
-[20:00:17] Weather change: (2,3) Clear → Rain
-[20:00:17] Weather change: (17,3) Rain → Fog
-[20:00:17] Weather change: (4,4) Clear → Rain
-[20:00:17] Weather change: (8,4) Clear → Rain
-[20:00:17] Weather change: (12,4) Clear → Rain
-[20:00:17] Weather change: (17,4) Rain → Fog
-[20:00:17] Weather change: (19,4) Rain → Clear
-[20:00:17] Weather change: (6,5) Clear → Rain
-[20:00:17] Weather change: (17,5) Rain → Fog
-[20:00:17] Weather change: (2,8) Clear → Rain
-[20:00:17] Weather change: (8,8) Clear → Rain
-[20:00:17] Weather change: (5,9) Clear → Wind
-[20:00:17] Weather change: (16,9) Clear → Wind
-[20:00:17] Weather change: (19,9) Clear → Wind
-[20:00:17] Weather change: (5,10) Clear → Rain
-[20:00:17] Weather change: (5,11) Rain → Clear
-[20:00:17] Weather change: (8,11) Clear → Wind
-[20:00:17] Weather change: (12,11) Wind → Clear
-[20:00:17] Weather change: (7,14) Clear → Wind
-[20:00:17] Weather change: (0,15) Storm → Wind
-[20:00:17] Weather change: (4,16) Wind → Fog
-[20:00:17] Weather change: (18,16) Clear → Rain
-[20:00:17] Weather change: (14,17) Clear → Rain
-[20:00:17] Weather change: (2,18) Storm → Wind
-[20:00:17] Weather change: (19,18) Clear → Rain
-[20:00:17] Weather change: (0,19) Storm → Rain
-[20:00:17] Weather change: (2,19) Storm → Wind
-[20:00:18] Step 20: 0 drones active, 1 survivors rescued, average battery 96.4%
-[20:00:44] Weather change: (1,0) Clear → Rain
-[20:00:44] Weather change: (2,0) Clear → Wind
-[20:00:44] Weather change: (5,0) Clear → Rain
-[20:00:44] Weather change: (10,0) Clear → Rain
-[20:00:44] Weather change: (11,0) Clear → Wind
-[20:00:44] Weather change: (0,1) Rain → Clear
-[20:00:44] Weather change: (4,2) Wind → Fog
-[20:00:44] Weather change: (16,2) Rain → Clear
-[20:00:44] Weather change: (7,3) Clear → Wind
-[20:00:44] Weather change: (8,3) Clear → Wind
-[20:00:44] Weather change: (9,3) Clear → Wind
-[20:00:44] Weather change: (0,4) Clear → Wind
-[20:00:44] Weather change: (9,4) Clear → Rain
-[20:00:44] Weather change: (12,4) Rain → Clear
-[20:00:44] Weather change: (16,4) Rain → Clear
-[20:00:44] Weather change: (11,5) Clear → Rain
-[20:00:44] Weather change: (13,5) Clear → Wind
-[20:00:44] Weather change: (16,5) Rain → Clear
-[20:00:44] Weather change: (4,6) Clear → Wind
-[20:00:44] Weather change: (19,6) Rain → Fog
-[20:00:44] Weather change: (2,7) Clear → Wind
-[20:00:44] Weather change: (6,7) Clear → Rain
-[20:00:44] Weather change: (10,7) Clear → Rain
-[20:00:44] Weather change: (11,7) Clear → Wind
-[20:00:44] Weather change: (5,8) Clear → Rain
-[20:00:44] Weather change: (8,8) Rain → Fog
-[20:00:44] Weather change: (9,8) Clear → Rain
-[20:00:44] Weather change: (16,8) Clear → Wind
-[20:00:44] Weather change: (18,8) Rain → Clear
-[20:00:44] Weather change: (4,9) Clear → Wind
-[20:00:44] Weather change: (9,9) Clear → Wind
-[20:00:44] Weather change: (18,9) Rain → Clear
-[20:00:44] Weather change: (11,10) Clear → Rain
-[20:00:44] Weather change: (14,10) Clear → Rain
-[20:00:44] Weather change: (19,10) Wind → Fog
-[20:00:44] Weather change: (2,11) Rain → Fog
-[20:00:44] Weather change: (6,11) Clear → Wind
-[20:00:44] Weather change: (9,11) Rain → Clear
-[20:00:44] Weather change: (18,11) Clear → Wind
-[20:00:44] Weather change: (2,12) Clear → Rain
-[20:00:44] Weather change: (5,12) Clear → Rain
-[20:00:44] Weather change: (8,12) Clear → Rain
-[20:00:44] Weather change: (14,12) Wind → Clear
-[20:00:44] Weather change: (19,12) Clear → Rain
-[20:00:44] Weather change: (0,14) Wind → Fog
-[20:00:44] Weather change: (10,14) Clear → Wind
-[20:00:44] Weather change: (12,15) Clear → Wind
-[20:00:44] Weather change: (16,15) Clear → Wind
-[20:00:44] Weather change: (2,16) Storm → Rain
-[20:00:44] Weather change: (17,17) Clear → Rain
-[20:00:44] Weather change: (9,18) Clear → Rain
-[20:00:44] Weather change: (13,18) Clear → Rain
-[20:00:44] Weather change: (16,18) Clear → Rain
-[20:00:44] Weather change: (9,19) Clear → Wind
-[20:00:45] Weather change: (13,19) Clear → Wind
-[20:00:45] Weather change: (16,19) Clear → Wind
-[20:01:13] Weather change: (5,0) Rain → Fog
-[20:01:13] Weather change: (14,0) Clear → Rain
-[20:01:13] Weather change: (2,1) Clear → Wind
-[20:01:13] Weather change: (16,1) Rain → Fog
-[20:01:13] Weather change: (0,2) Clear → Wind
-[20:01:13] Weather change: (1,2) Clear → Rain
-[20:01:13] Weather change: (6,2) Clear → Rain
-[20:01:13] Weather change: (14,2) Clear → Wind
-[20:01:13] Weather change: (16,3) Rain → Fog
-[20:01:13] Weather change: (2,4) Clear → Rain
-[20:01:13] Weather change: (7,5) Rain → Fog
-[20:01:13] Weather change: (10,5) Clear → Rain
-[20:01:13] Weather change: (3,6) Clear → Rain
-[20:01:13] Weather change: (17,6) Fog → Clear
-[20:01:13] Weather change: (0,7) Clear → Wind
-[20:01:13] Weather change: (9,7) Clear → Rain
-[20:01:13] Weather change: (19,7) Rain → Clear
-[20:01:13] Weather change: (9,8) Rain → Clear
-[20:01:13] Weather change: (8,9) Clear → Rain
-[20:01:13] Weather change: (4,10) Clear → Rain
-[20:01:13] Weather change: (13,10) Clear → Wind
-[20:01:13] Weather change: (3,12) Clear → Wind
-[20:01:13] Weather change: (0,13) Clear → Rain
-[20:01:13] Weather change: (4,13) Clear → Rain
-[20:01:13] Weather change: (16,13) Rain → Clear
-[20:01:13] Weather change: (2,14) Storm → Rain
-[20:01:13] Weather change: (14,15) Clear → Rain
-[20:01:13] Weather change: (18,15) Clear → Wind
-[20:01:13] Weather change: (0,16) Storm → Rain
-[20:01:13] Weather change: (7,17) Storm → Wind
-[20:01:13] Weather change: (12,17) Clear → Wind
-[20:01:13] Weather change: (17,17) Rain → Clear
-[20:01:13] Weather change: (5,18) Storm → Rain
-[20:01:13] Weather change: (14,18) Clear → Wind
-[20:01:13] Weather change: (1,19) Storm → Wind
-[20:01:13] Weather change: (13,19) Wind → Clear
-[20:01:14] Step 40: 0 drones active, 1 survivors rescued, average battery 100.0%
-[06:43] Mission plan completed, planning to execute 10 actions
-[06:43] 行动成功：move_to (drone_A) - Drone drone_A moved to (5, 8)
-[20:01:42] Weather change: (10,0) Rain → Fog
-[20:01:42] Weather change: (11,0) Wind → Clear
-[20:01:42] Weather change: (17,0) Clear → Wind
-[20:01:42] Weather change: (5,1) Rain → Clear
-[20:01:42] Weather change: (18,1) Rain → Fog
-[20:01:42] Weather change: (9,2) Wind → Clear
-[20:01:42] Weather change: (7,3) Wind → Clear
-[20:01:42] Weather change: (8,3) Wind → Fog
-[20:01:42] Weather change: (14,3) Clear → Wind
-[20:01:42] Weather change: (8,4) Rain → Clear
-[20:01:42] Weather change: (16,4) Clear → Rain
-[20:01:42] Weather change: (10,7) Rain → Clear
-[20:01:42] Weather change: (11,7) Wind → Clear
-[20:01:42] Weather change: (1,8) Clear → Rain
-[20:01:42] Weather change: (19,8) Rain → Fog
-[20:01:42] Weather change: (15,9) Clear → Wind
-[20:01:42] Weather change: (18,9) Clear → Rain
-[20:01:42] Weather change: (8,10) Clear → Rain
-[20:01:42] Weather change: (16,10) Clear → Wind
-[20:01:42] Weather change: (19,10) Fog → Clear
-[20:01:42] Weather change: (16,11) Clear → Rain
-[20:01:42] Weather change: (2,12) Rain → Fog
-[20:01:42] Weather change: (9,12) Clear → Wind
-[20:01:42] Weather change: (13,12) Clear → Wind
-[20:01:42] Weather change: (5,13) Clear → Wind
-[20:01:42] Weather change: (6,13) Rain → Fog
-[20:01:42] Weather change: (7,13) Clear → Wind
-[20:01:42] Weather change: (8,13) Clear → Rain
-[20:01:42] Weather change: (16,13) Clear → Wind
-[20:01:42] Weather change: (3,14) Storm → Rain
-[20:01:42] Weather change: (11,14) Clear → Wind
-[20:01:42] Weather change: (8,15) Clear → Rain
-[20:01:42] Weather change: (11,16) Clear → Wind
-[20:01:42] Weather change: (19,16) Clear → Wind
-[20:01:42] Weather change: (9,17) Clear → Wind
-[20:01:42] Weather change: (3,18) Storm → Wind
-[20:01:42] Weather change: (9,18) Rain → Clear
-[20:01:42] Weather change: (17,18) Clear → Rain
-[06:49] 行动成功：thermal_scan (drone_A) - Thermal scan complete. Found 1 survivors
-[06:54] 行动失败：rescue_survivor (drone_A) - Drone too far from survivor. Distance: 2.2, max: 2.0
-[06:58] 行动成功：move_to (drone_B) - Drone drone_B moved to (12, 15)
-[07:03] 行动成功：thermal_scan (drone_B) - Thermal scan complete. Found 0 survivors
-[07:07] 行动成功：move_to (drone_C) - Drone drone_C moved to (8, 8)
-[20:02:06] Weather change: (7,0) Clear → Rain
-[20:02:06] Weather change: (15,0) Clear → Rain
-[20:02:06] Weather change: (7,1) Clear → Rain
-[20:02:06] Weather change: (19,1) Clear → Rain
-[20:02:06] Weather change: (13,2) Clear → Wind
-[20:02:06] Weather change: (5,4) Clear → Rain
-[20:02:06] Weather change: (13,4) Clear → Rain
-[20:02:06] Weather change: (19,4) Clear → Wind
-[20:02:06] Weather change: (2,5) Clear → Rain
-[20:02:06] Weather change: (5,5) Clear → Rain
-[20:02:06] Weather change: (14,5) Rain → Clear
-[20:02:06] Weather change: (18,5) Rain → Fog
-[20:02:06] Weather change: (0,6) Clear → Wind
-[20:02:06] Weather change: (3,6) Rain → Clear
-[20:02:06] Weather change: (0,8) Clear → Wind
-[20:02:06] Weather change: (4,8) Clear → Rain
-[20:02:06] Weather change: (6,8) Clear → Wind
-[20:02:06] Weather change: (13,8) Clear → Wind
-[20:02:06] Weather change: (0,9) Clear → Wind
-[20:02:06] Weather change: (6,9) Clear → Rain
-[20:02:06] Weather change: (13,9) Clear → Wind
-[20:02:06] Weather change: (4,10) Rain → Clear
-[20:02:06] Weather change: (7,10) Clear → Rain
-[20:02:06] Weather change: (19,12) Rain → Fog
-[20:02:06] Weather change: (3,13) Clear → Rain
-[20:02:06] Weather change: (19,13) Clear → Rain
-[20:02:06] Weather change: (7,14) Wind → Clear
-[20:02:06] Weather change: (16,15) Wind → Fog
-[20:02:06] Weather change: (8,16) Clear → Rain
-[20:02:06] Weather change: (17,16) Clear → Wind
-[20:02:06] Weather change: (10,17) Clear → Rain
-[20:02:06] Weather change: (0,18) Wind → Fog
-[20:02:06] Weather change: (14,18) Wind → Clear
-[20:02:06] Weather change: (18,18) Clear → Wind
-[20:02:06] Weather change: (0,19) Rain → Fog
-[20:02:06] Weather change: (2,19) Wind → Fog
-[20:02:06] Weather change: (7,19) Storm → Wind
-[20:02:06] Weather change: (14,19) Clear → Rain
-[20:02:06] Step 60: 0 drones active, 1 survivors rescued, average battery 100.0%
-[07:11] 行动成功：thermal_scan (drone_C) - Thermal scan complete. Found 0 survivors
-[07:15] 行动成功：move_to (drone_D) - Drone drone_D moved to (10, 10)
-[07:19] 行动成功：thermal_scan (drone_D) - Thermal scan complete. Found 1 survivors
-[07:24] 行动失败：rescue_survivor (drone_D) - Drone too far from survivor. Distance: 2.8, max: 2.0
-[07:29] 行动成功：move_to (drone_E) - Drone drone_E moved to (15, 10)
-[07:33] 行动成功：thermal_scan (drone_E) - Thermal scan complete. Found 0 survivors
-[07:33] Mission completed: found 2 survivors
-[07:33] UI Request: {'type': 'patrol_area', 'area': {'x': 15, 'y': 5}, 'patrol_radius': 5, 'priority': 'medium'}
-[20:02:30] Weather change: (19,0) Wind → Clear
-[20:02:30] Weather change: (2,1) Wind → Fog
-[20:02:30] Weather change: (5,1) Clear → Rain
-[20:02:30] Weather change: (18,1) Fog → Clear
-[20:02:30] Weather change: (8,2) Clear → Wind
-[20:02:30] Weather change: (15,2) Clear → Wind
-[20:02:30] Weather change: (17,2) Rain → Clear
-[20:02:30] Weather change: (1,3) Clear → Wind
-[20:02:30] Weather change: (13,3) Clear → Rain
-[20:02:30] Weather change: (14,3) Wind → Fog
-[20:02:30] Weather change: (19,3) Rain → Clear
-[20:02:30] Weather change: (6,4) Clear → Wind
-[20:02:30] Weather change: (12,4) Clear → Wind
-[20:02:30] Weather change: (6,5) Rain → Clear
-[20:02:30] Weather change: (6,7) Rain → Clear
-[20:02:30] Weather change: (19,7) Clear → Rain
-[20:02:30] Weather change: (7,8) Clear → Wind
-[20:02:30] Weather change: (8,8) Fog → Clear
-[20:02:30] Weather change: (10,8) Clear → Wind
-[20:02:30] Weather change: (12,8) Clear → Rain
-[20:02:30] Weather change: (19,8) Fog → Clear
-[20:02:30] Weather change: (10,9) Clear → Rain
-[20:02:30] Weather change: (14,9) Clear → Wind
-[20:02:30] Weather change: (16,9) Wind → Clear
-[20:02:30] Weather change: (4,12) Clear → Rain
-[20:02:30] Weather change: (9,12) Wind → Fog
-[20:02:30] Weather change: (16,12) Clear → Rain
-[20:02:30] Weather change: (10,13) Clear → Wind
-[20:02:30] Weather change: (3,14) Rain → Clear
-[20:02:30] Weather change: (14,14) Clear → Rain
-[20:02:30] Weather change: (18,14) Clear → Wind
-[20:02:30] Weather change: (15,16) Clear → Wind
-[20:02:30] Weather change: (19,17) Clear → Wind
-[20:02:30] Weather change: (2,18) Wind → Clear
-[20:02:30] Weather change: (3,18) Wind → Fog
-[20:02:30] Weather change: (17,18) Rain → Clear
-[20:02:30] Weather change: (1,19) Wind → Clear
-[20:02:30] Weather change: (6,19) Storm → Wind
-[20:02:30] Weather change: (12,19) Clear → Rain
-[20:02:30] Weather change: (16,19) Wind → Fog
-[20:02:58] Weather change: (7,1) Rain → Clear
-[20:02:58] Weather change: (11,1) Clear → Rain
-[20:02:58] Weather change: (1,3) Wind → Clear
-[20:02:58] Weather change: (6,4) Wind → Clear
-[20:02:58] Weather change: (9,4) Rain → Clear
-[20:02:58] Weather change: (16,4) Rain → Fog
-[20:02:58] Weather change: (8,5) Clear → Wind
-[20:02:58] Weather change: (15,5) Rain → Fog
-[20:02:58] Weather change: (17,7) Rain → Fog
-[20:02:58] Weather change: (2,8) Rain → Clear
-[20:02:58] Weather change: (8,8) Clear → Wind
-[20:02:58] Weather change: (9,8) Clear → Rain
-[20:02:58] Weather change: (10,8) Wind → Clear
-[20:02:58] Weather change: (15,8) Clear → Rain
-[20:02:58] Weather change: (6,9) Rain → Fog
-[20:02:58] Weather change: (12,9) Clear → Rain
-[20:02:58] Weather change: (3,11) Clear → Wind
-[20:02:58] Weather change: (10,11) Clear → Rain
-[20:02:58] Weather change: (13,11) Clear → Wind
-[20:02:58] Weather change: (16,11) Rain → Fog
-[20:02:58] Weather change: (19,11) Clear → Rain
-[20:02:58] Weather change: (3,12) Wind → Clear
-[20:02:58] Weather change: (9,12) Fog → Clear
-[20:02:58] Weather change: (10,13) Wind → Fog
-[20:02:58] Weather change: (1,14) Storm → Rain
-[20:02:58] Weather change: (8,14) Clear → Wind
-[20:02:58] Weather change: (11,14) Wind → Fog
-[20:02:58] Weather change: (0,15) Wind → Clear
-[20:02:58] Weather change: (2,15) Storm → Wind
-[20:02:58] Weather change: (5,15) Storm → Rain
-[20:02:58] Weather change: (8,15) Rain → Fog
-[20:02:58] Weather change: (13,15) Clear → Rain
-[20:02:58] Weather change: (17,16) Wind → Clear
-[20:02:58] Weather change: (1,17) Storm → Wind
-[20:02:58] Weather change: (13,17) Rain → Fog
-[20:02:58] Weather change: (15,17) Clear → Rain
-[20:02:58] Weather change: (16,17) Clear → Rain
-[20:02:58] Weather change: (11,18) Clear → Rain
-[20:02:58] Weather change: (3,19) Storm → Wind
-[20:02:59] Step 80: 0 drones active, 1 survivors rescued, average battery 100.0%
-[20:03:23] Charging station station_0 deployed on Flat terrain at (18, 12)
-[20:03:24] Charging station station_1 deployed on Flat terrain at (18, 11)
-[20:03:24] Drone drone_0 deployed on Forest at (17, 11)
-[20:03:24] Drone drone_1 deployed on Valley at (17, 12)
-[20:03:24] Drone drone_2 deployed on Flat at (17, 13)
-[20:03:24] Survivor signal survivor_0 detected at Valley (17, 19)
-[20:03:24] Survivor signal survivor_1 detected at Flat (16, 17)
-[20:03:24] Survivor signal survivor_2 detected at Mountain (5, 5)
-[20:03:24] Survivor signal survivor_3 detected at Hill (10, 13)
-[20:03:24] Survivor signal survivor_4 detected at Forest (9, 13)
-[20:03:24] Terrain analysis: Mountain(40.8%), Cliff(3.5%), Forest(15.5%), Hill(14.8%), Flat(14.2%), Desert(3.0%), Valley(3.5%), Urban(3.8%), Swamp(0.5%), Water(0.5%), 56 obstacles, average altitude 1554m
-[20:03:30] User deployed charging station user_station_2 at Mountain (9,8)
-[20:03:42] Drone drone_0 rescue failed, poor environmental conditions
-[20:03:43] Drone drone_0 rescue failed, poor environmental conditions
-[20:03:43] Drone drone_1 successfully rescued survivor survivor_0
-[20:03:43] Drone drone_2 successfully rescued survivor survivor_3
-[20:03:44] Drone drone_0 successfully rescued survivor survivor_1
-[20:03:45] Weather change: (7,0) Clear → Wind
-[20:03:45] Weather change: (5,1) Clear → Wind
-[20:03:45] Weather change: (6,1) Clear → Wind
-[20:03:45] Weather change: (18,1) Clear → Rain
-[20:03:45] Weather change: (1,2) Clear → Wind
-[20:03:45] Weather change: (19,2) Clear → Rain
-[20:03:45] Weather change: (5,3) Clear → Rain
-[20:03:45] Weather change: (6,3) Clear → Wind
-[20:03:45] Weather change: (14,3) Clear → Rain
-[20:03:45] Weather change: (4,4) Clear → Rain
-[20:03:45] Weather change: (19,4) Clear → Wind
-[20:03:45] Weather change: (3,5) Clear → Wind
-[20:03:45] Weather change: (8,6) Clear → Wind
-[20:03:45] Weather change: (2,7) Clear → Wind
-[20:03:45] Weather change: (13,7) Clear → Wind
-[20:03:45] Weather change: (17,7) Clear → Rain
-[20:03:45] Weather change: (2,8) Clear → Rain
-[20:03:45] Weather change: (7,8) Fog → Clear
-[20:03:45] Weather change: (15,8) Clear → Wind
-[20:03:45] Weather change: (15,9) Clear → Rain
-[20:03:45] Weather change: (3,10) Clear → Rain
-[20:03:45] Weather change: (8,10) Clear → Wind
-[20:03:45] Weather change: (11,10) Clear → Wind
-[20:03:45] Weather change: (2,11) Clear → Rain
-[20:03:45] Weather change: (19,11) Clear → Rain
-[20:03:45] Weather change: (19,12) Clear → Wind
-[20:03:45] Weather change: (2,13) Clear → Wind
-[20:03:45] Weather change: (17,13) Clear → Rain
-[20:03:45] Weather change: (3,15) Clear → Wind
-[20:03:45] Weather change: (11,15) Fog → Clear
-[20:03:45] Weather change: (9,16) Fog → Clear
-[20:03:45] Weather change: (0,17) Clear → Rain
-[20:03:45] Weather change: (1,18) Clear → Rain
-[20:03:45] Weather change: (3,18) Clear → Wind
-[20:03:45] Weather change: (9,18) Clear → Wind
-[20:03:45] Weather change: (11,18) Clear → Rain
-[20:03:45] Weather change: (13,18) Clear → Rain
-[08:56] Mission analysis: The mission objective is to patrol a designated area for survivors. Recent events indicate that a drone was unable to reach a survivor due to distance constraints, but another drone successfully moved to a specific location and completed a thermal scan without finding any survivors. The mission was completed with the discovery of 2 survivors. An additional UI request was made for a patrol area with a specified radius and priority level.
-[08:56] Discovered 5 drones
-[20:03:53] Drone drone_1 successfully rescued survivor survivor_4
-[20:03:56] Weather change: (1,0) Clear → Wind
-[20:03:56] Weather change: (8,0) Clear → Wind
-[20:03:56] Weather change: (13,0) Clear → Rain
-[20:03:56] Weather change: (16,1) Clear → Wind
-[20:03:56] Weather change: (19,1) Clear → Wind
-[20:03:56] Weather change: (9,2) Clear → Rain
-[20:03:56] Weather change: (11,2) Clear → Wind
-[20:03:56] Weather change: (18,2) Clear → Wind
-[20:03:56] Weather change: (7,3) Clear → Wind
-[20:03:56] Weather change: (14,3) Rain → Clear
-[20:03:56] Weather change: (0,4) Clear → Rain
-[20:03:56] Weather change: (3,4) Clear → Wind
-[20:03:56] Weather change: (15,5) Clear → Wind
-[20:03:56] Weather change: (17,6) Clear → Rain
-[20:03:56] Weather change: (5,7) Clear → Rain
-[20:03:56] Weather change: (7,7) Clear → Wind
-[20:03:56] Weather change: (18,7) Clear → Rain
-[20:03:56] Weather change: (7,8) Clear → Wind
-[20:03:56] Weather change: (9,8) Clear → Rain
-[20:03:56] Weather change: (10,8) Clear → Wind
-[20:03:56] Weather change: (15,8) Wind → Clear
-[20:03:56] Weather change: (16,8) Clear → Wind
-[20:03:56] Weather change: (17,8) Clear → Rain
-[20:03:56] Weather change: (13,9) Clear → Rain
-[20:03:56] Weather change: (19,9) Clear → Wind
-[20:03:56] Weather change: (19,10) Clear → Wind
-[20:03:56] Weather change: (0,11) Clear → Rain
-[20:03:56] Weather change: (15,14) Clear → Rain
-[20:03:56] Weather change: (4,15) Clear → Rain
-[20:03:56] Weather change: (8,15) Fog → Clear
-[20:03:56] Weather change: (17,15) Clear → Rain
-[20:03:56] Weather change: (18,15) Clear → Rain
-[20:03:56] Weather change: (2,17) Clear → Wind
-[20:03:56] Weather change: (5,17) Clear → Wind
-[20:03:56] Weather change: (8,17) Clear → Wind
-[20:03:56] Weather change: (14,17) Clear → Wind
-[20:03:56] Weather change: (15,17) Clear → Wind
-[20:03:56] Weather change: (3,18) Wind → Fog
-[20:03:56] Weather change: (15,18) Clear → Rain
-[20:03:56] Weather change: (18,18) Clear → Rain
-[20:03:56] Weather change: (10,19) Clear → Rain
-[20:03:56] Step 20: 1 drones active, 4 survivors rescued, average battery 73.8%
-[20:03:59] Drone drone_2 rescue failed, poor environmental conditions
-[20:04:01] Drone drone_2 successfully rescued survivor survivor_2
-[20:04:06] Weather change: (3,0) Clear → Wind
-[20:04:06] Weather change: (8,0) Wind → Fog
-[20:04:06] Weather change: (15,0) Clear → Rain
-[20:04:06] Weather change: (18,0) Clear → Wind
-[20:04:06] Weather change: (2,4) Clear → Rain
-[20:04:06] Weather change: (16,4) Clear → Rain
-[20:04:06] Weather change: (13,5) Clear → Wind
-[20:04:06] Weather change: (15,5) Wind → Clear
-[20:04:06] Weather change: (0,6) Clear → Rain
-[20:04:06] Weather change: (3,6) Clear → Wind
-[20:04:06] Weather change: (4,8) Clear → Rain
-[20:04:06] Weather change: (0,9) Clear → Rain
-[20:04:06] Weather change: (11,9) Clear → Rain
-[20:04:06] Weather change: (13,10) Clear → Wind
-[20:04:06] Weather change: (0,11) Rain → Clear
-[20:04:06] Weather change: (7,12) Fog → Clear
-[20:04:06] Weather change: (1,13) Clear → Wind
-[20:04:06] Weather change: (18,13) Clear → Rain
-[20:04:06] Weather change: (19,14) Clear → Rain
-[20:04:06] Weather change: (11,15) Clear → Rain
-[20:04:06] Weather change: (13,15) Fog → Clear
-[20:04:06] Weather change: (3,16) Clear → Wind
-[20:04:06] Weather change: (19,16) Clear → Rain
-[20:04:06] Weather change: (6,18) Clear → Wind
-[20:04:06] Weather change: (8,18) Clear → Wind
-[20:04:06] Weather change: (12,18) Clear → Rain
-[20:04:06] Weather change: (18,18) Rain → Fog
-[20:04:06] Weather change: (12,19) Clear → Rain
-[20:04:06] Weather change: (14,19) Clear → Rain
-[20:04:06] Weather change: (17,19) Clear → Rain
-[20:04:06] Weather change: (18,19) Clear → Wind
-[20:04:17] Weather change: (3,0) Wind → Clear
-[20:04:17] Weather change: (5,1) Wind → Fog
-[20:04:17] Weather change: (14,1) Clear → Wind
-[20:04:17] Weather change: (3,2) Clear → Wind
-[20:04:17] Weather change: (8,2) Clear → Rain
-[20:04:17] Weather change: (11,2) Wind → Fog
-[20:04:17] Weather change: (14,2) Clear → Wind
-[20:04:17] Weather change: (7,3) Wind → Clear
-[20:04:17] Weather change: (17,3) Clear → Wind
-[20:04:17] Weather change: (4,4) Rain → Fog
-[20:04:17] Weather change: (8,6) Wind → Fog
-[20:04:17] Weather change: (9,6) Clear → Rain
-[20:04:17] Weather change: (13,6) Clear → Rain
-[20:04:17] Weather change: (15,6) Clear → Wind
-[20:04:17] Weather change: (3,7) Clear → Wind
-[20:04:17] Weather change: (2,8) Rain → Clear
-[20:04:17] Weather change: (18,8) Clear → Rain
-[20:04:17] Weather change: (2,9) Clear → Rain
-[20:04:17] Weather change: (15,9) Rain → Fog
-[20:04:17] Weather change: (5,12) Fog → Clear
-[20:04:17] Weather change: (7,12) Clear → Rain
-[20:04:17] Weather change: (3,13) Clear → Wind
-[20:04:17] Weather change: (15,13) Clear → Rain
-[20:04:17] Weather change: (16,13) Clear → Rain
-[20:04:17] Weather change: (4,14) Clear → Rain
-[20:04:17] Weather change: (3,15) Wind → Clear
-[20:04:17] Weather change: (4,15) Rain → Fog
-[20:04:17] Weather change: (9,15) Fog → Clear
-[20:04:17] Weather change: (11,15) Rain → Fog
-[20:04:17] Weather change: (16,15) Clear → Rain
-[20:04:17] Weather change: (15,16) Clear → Rain
-[20:04:17] Weather change: (17,16) Clear → Wind
-[20:04:17] Weather change: (7,17) Clear → Wind
-[20:04:17] Weather change: (17,17) Clear → Wind
-[20:04:17] Weather change: (18,17) Clear → Wind
-[20:04:17] Weather change: (1,18) Rain → Fog
-[20:04:17] Weather change: (2,18) Clear → Rain
-[20:04:17] Weather change: (3,18) Fog → Clear
-[20:04:17] Weather change: (4,18) Clear → Wind
-[20:04:17] Weather change: (3,19) Clear → Rain
-[20:04:17] Step 40: 3 drones active, 5 survivors rescued, average battery 5.8%
-[10:39] Mission plan completed, planning to execute 10 actions
-[10:39] 行动成功：move_to (drone_A) - Drone drone_A moved to (5, 8)
-[10:46] 行动成功：thermal_scan (drone_A) - Thermal scan complete. Found 1 survivors
-[10:51] 行动失败：rescue_survivor (drone_A) - Drone too far from survivor. Distance: 2.2, max: 2.0
-[10:56] 行动成功：move_to (drone_B) - Drone drone_B moved to (12, 15)
-[11:01] 行动成功：thermal_scan (drone_B) - Thermal scan complete. Found 0 survivors
-[11:05] 行动成功：move_to (drone_C) - Drone drone_C moved to (8, 8)
-[11:10] 行动成功：thermal_scan (drone_C) - Thermal scan complete. Found 0 survivors
-[11:14] 行动成功：move_to (drone_D) - Drone drone_D moved to (10, 10)
-[11:19] 行动成功：thermal_scan (drone_D) - Thermal scan complete. Found 1 survivors
-[11:25] 行动失败：rescue_survivor (drone_D) - Drone too far from survivor. Distance: 2.8, max: 2.0
-[11:30] 行动成功：move_to (drone_E) - Drone drone_E moved to (15, 10)
-[11:34] 行动成功：thermal_scan (drone_E) - Thermal scan complete. Found 0 survivors
-[11:34] Mission completed: found 2 survivors
-[00:00] Central Command Center operational
-[00:00] Home Base established at (10, 10)
-[23:24:27] Charging station station_0 deployed on Urban terrain at (1, 18)
-[23:24:27] Charging station station_1 deployed on Urban terrain at (11, 17)
-[23:24:27] Drone drone_0 deployed on Flat,Storm at (0, 17)
-[23:24:27] Drone drone_1 deployed on Valley,Storm at (0, 18)
-[23:24:27] Drone drone_2 deployed on Swamp,Storm at (0, 19)
-[23:24:27] Survivor signal survivor_0 detected at Urban (2, 12)
-[23:24:27] Survivor signal survivor_1 detected at Forest, near Tree (14, 17)
-[23:24:27] Survivor signal survivor_2 detected at Hill (19, 19)
-[23:24:27] Survivor signal survivor_3 detected at Mountain (4, 3)
-[23:24:27] Survivor signal survivor_4 detected at Mountain (11, 10)
-[23:24:27] Terrain analysis: Mountain(44.0%), Cliff(3.0%), Hill(19.5%), Forest(16.2%), Desert(1.8%), Flat(9.2%), Urban(3.5%), Swamp(1.5%), Water(0.8%), Valley(0.5%), 55 obstacles, average altitude 1237m
-[23:24:45] Drone drone_0 successfully rescued survivor survivor_0
-[23:24:54] Weather change: (4,0) Clear → Wind
-[23:24:54] Weather change: (10,1) Clear → Rain
-[23:24:54] Weather change: (16,1) Clear → Rain
-[23:24:54] Weather change: (3,2) Clear → Wind
-[23:24:54] Weather change: (11,4) Clear → Wind
-[23:24:54] Weather change: (7,5) Clear → Rain
-[23:24:54] Weather change: (2,6) Clear → Wind
-[23:24:54] Weather change: (7,6) Clear → Wind
-[23:24:54] Weather change: (11,6) Clear → Rain
-[23:24:54] Weather change: (17,6) Rain → Fog
-[23:24:54] Weather change: (3,8) Clear → Wind
-[23:24:54] Weather change: (14,8) Clear → Rain
-[23:24:54] Weather change: (16,8) Rain → Clear
-[23:24:54] Weather change: (19,10) Clear → Wind
-[23:24:54] Weather change: (2,11) Clear → Rain
-[23:24:54] Weather change: (5,11) Clear → Rain
-[23:24:54] Weather change: (9,11) Clear → Rain
-[23:24:54] Weather change: (12,11) Clear → Wind
-[23:24:54] Weather change: (6,12) Clear → Wind
-[23:24:54] Weather change: (14,12) Clear → Wind
-[23:24:54] Weather change: (6,13) Clear → Rain
-[23:24:54] Weather change: (11,13) Clear → Wind
-[23:24:54] Weather change: (16,13) Clear → Rain
-[23:24:54] Weather change: (0,14) Storm → Wind
-[23:24:54] Weather change: (19,14) Clear → Rain
-[23:24:54] Weather change: (3,16) Storm → Rain
-[23:24:54] Weather change: (4,16) Storm → Wind
-[23:24:54] Weather change: (16,16) Clear → Wind
-[23:24:54] Weather change: (13,17) Clear → Rain
-[23:24:54] Weather change: (18,17) Clear → Wind
-[23:24:54] Weather change: (0,18) Storm → Wind
-[23:24:54] Weather change: (4,19) Storm → Rain
-[23:24:54] Weather change: (10,19) Clear → Rain
-[23:24:54] Weather change: (17,19) Clear → Rain
-[23:24:54] Weather change: (18,19) Clear → Rain
-[23:25:17] Weather change: (13,0) Clear → Rain
-[23:25:17] Weather change: (19,0) Clear → Wind
-[23:25:17] Weather change: (0,1) Clear → Rain
-[23:25:17] Weather change: (5,1) Clear → Rain
-[23:25:17] Weather change: (4,2) Clear → Wind
-[23:25:17] Weather change: (9,2) Clear → Wind
-[23:25:17] Weather change: (19,2) Rain → Fog
-[23:25:17] Weather change: (0,3) Clear → Rain
-[23:25:17] Weather change: (2,3) Clear → Rain
-[23:25:17] Weather change: (17,3) Rain → Fog
-[23:25:17] Weather change: (4,4) Clear → Rain
-[23:25:17] Weather change: (8,4) Clear → Rain
-[23:25:17] Weather change: (12,4) Clear → Rain
-[23:25:17] Weather change: (17,4) Rain → Fog
-[23:25:17] Weather change: (19,4) Rain → Clear
-[23:25:17] Weather change: (6,5) Clear → Rain
-[23:25:17] Weather change: (17,5) Rain → Fog
-[23:25:17] Weather change: (2,8) Clear → Rain
-[23:25:17] Weather change: (8,8) Clear → Rain
-[23:25:17] Weather change: (5,9) Clear → Wind
-[23:25:17] Weather change: (16,9) Clear → Wind
-[23:25:17] Weather change: (19,9) Clear → Wind
-[23:25:17] Weather change: (5,10) Clear → Rain
-[23:25:17] Weather change: (5,11) Rain → Clear
-[23:25:17] Weather change: (8,11) Clear → Wind
-[23:25:17] Weather change: (12,11) Wind → Clear
-[23:25:17] Weather change: (7,14) Clear → Wind
-[23:25:17] Weather change: (0,15) Storm → Wind
-[23:25:17] Weather change: (4,16) Wind → Fog
-[23:25:17] Weather change: (18,16) Clear → Rain
-[23:25:17] Weather change: (14,17) Clear → Rain
-[23:25:17] Weather change: (2,18) Storm → Wind
-[23:25:17] Weather change: (19,18) Clear → Rain
-[23:25:17] Weather change: (0,19) Storm → Rain
-[23:25:17] Weather change: (2,19) Storm → Wind
-[23:25:17] Step 20: 0 drones active, 1 survivors rescued, average battery 96.4%
-[23:25:40] Weather change: (1,0) Clear → Rain
-[23:25:40] Weather change: (2,0) Clear → Wind
-[23:25:40] Weather change: (5,0) Clear → Rain
-[23:25:40] Weather change: (10,0) Clear → Rain
-[23:25:40] Weather change: (11,0) Clear → Wind
-[23:25:40] Weather change: (0,1) Rain → Clear
-[23:25:40] Weather change: (4,2) Wind → Fog
-[23:25:40] Weather change: (16,2) Rain → Clear
-[23:25:40] Weather change: (7,3) Clear → Wind
-[23:25:40] Weather change: (8,3) Clear → Wind
-[23:25:40] Weather change: (9,3) Clear → Wind
-[23:25:40] Weather change: (0,4) Clear → Wind
-[23:25:40] Weather change: (9,4) Clear → Rain
-[23:25:40] Weather change: (12,4) Rain → Clear
-[23:25:40] Weather change: (16,4) Rain → Clear
-[23:25:40] Weather change: (11,5) Clear → Rain
-[23:25:40] Weather change: (13,5) Clear → Wind
-[23:25:40] Weather change: (16,5) Rain → Clear
-[23:25:40] Weather change: (4,6) Clear → Wind
-[23:25:40] Weather change: (19,6) Rain → Fog
-[23:25:40] Weather change: (2,7) Clear → Wind
-[23:25:40] Weather change: (6,7) Clear → Rain
-[23:25:40] Weather change: (10,7) Clear → Rain
-[23:25:40] Weather change: (11,7) Clear → Wind
-[23:25:40] Weather change: (5,8) Clear → Rain
-[23:25:40] Weather change: (8,8) Rain → Fog
-[23:25:40] Weather change: (9,8) Clear → Rain
-[23:25:40] Weather change: (16,8) Clear → Wind
-[23:25:40] Weather change: (18,8) Rain → Clear
-[23:25:40] Weather change: (4,9) Clear → Wind
-[23:25:40] Weather change: (9,9) Clear → Wind
-[23:25:40] Weather change: (18,9) Rain → Clear
-[23:25:40] Weather change: (11,10) Clear → Rain
-[23:25:40] Weather change: (14,10) Clear → Rain
-[23:25:40] Weather change: (19,10) Wind → Fog
-[23:25:40] Weather change: (2,11) Rain → Fog
-[23:25:40] Weather change: (6,11) Clear → Wind
-[23:25:40] Weather change: (9,11) Rain → Clear
-[23:25:40] Weather change: (18,11) Clear → Wind
-[23:25:40] Weather change: (2,12) Clear → Rain
-[23:25:40] Weather change: (5,12) Clear → Rain
-[23:25:40] Weather change: (8,12) Clear → Rain
-[23:25:40] Weather change: (14,12) Wind → Clear
-[23:25:40] Weather change: (19,12) Clear → Rain
-[23:25:40] Weather change: (0,14) Wind → Fog
-[23:25:40] Weather change: (10,14) Clear → Wind
-[23:25:40] Weather change: (12,15) Clear → Wind
-[23:25:40] Weather change: (16,15) Clear → Wind
-[23:25:40] Weather change: (2,16) Storm → Rain
-[23:25:40] Weather change: (17,17) Clear → Rain
-[23:25:40] Weather change: (9,18) Clear → Rain
-[23:25:40] Weather change: (13,18) Clear → Rain
-[23:25:40] Weather change: (16,18) Clear → Rain
-[23:25:40] Weather change: (9,19) Clear → Wind
-[23:25:40] Weather change: (13,19) Clear → Wind
-[23:25:40] Weather change: (16,19) Clear → Wind
-[00:00] Central Command Center operational
-[00:00] Home Base established at (10, 10)
-[00:32:46] Charging station station_0 deployed on Urban terrain at (1, 18)
-[00:32:46] Charging station station_1 deployed on Urban terrain at (11, 17)
-[00:32:46] Drone drone_0 deployed on Flat,Storm at (0, 17)
-[00:32:46] Drone drone_1 deployed on Valley,Storm at (0, 18)
-[00:32:46] Drone drone_2 deployed on Swamp,Storm at (0, 19)
-[00:32:46] Survivor signal survivor_0 detected at Urban (2, 12)
-[00:32:46] Survivor signal survivor_1 detected at Forest, near Tree (14, 17)
-[00:32:46] Survivor signal survivor_2 detected at Hill (19, 19)
-[00:32:46] Survivor signal survivor_3 detected at Mountain (4, 3)
-[00:32:46] Survivor signal survivor_4 detected at Mountain (11, 10)
-[00:32:46] Terrain analysis: Mountain(44.0%), Cliff(3.0%), Hill(19.5%), Forest(16.2%), Desert(1.8%), Flat(9.2%), Urban(3.5%), Swamp(1.5%), Water(0.8%), Valley(0.5%), 55 obstacles, average altitude 1237m
-[00:00] Central Command Center operational
-[00:00] Home Base established at (10, 10)
-[00:37:14] Charging station station_0 deployed on Urban terrain at (1, 18)
-[00:37:14] Charging station station_1 deployed on Urban terrain at (11, 17)
-[00:37:14] Drone drone_0 deployed on Flat,Storm at (0, 17)
-[00:37:14] Drone drone_1 deployed on Valley,Storm at (0, 18)
-[00:37:14] Drone drone_2 deployed on Swamp,Storm at (0, 19)
-[00:37:14] Survivor signal survivor_0 detected at Urban (2, 12)
-[00:37:14] Survivor signal survivor_1 detected at Forest, near Tree (14, 17)
-[00:37:14] Survivor signal survivor_2 detected at Hill (19, 19)
-[00:37:14] Survivor signal survivor_3 detected at Mountain (4, 3)
-[00:37:14] Survivor signal survivor_4 detected at Mountain (11, 10)
-[00:37:14] Terrain analysis: Mountain(44.0%), Cliff(3.0%), Hill(19.5%), Forest(16.2%), Desert(1.8%), Flat(9.2%), Urban(3.5%), Swamp(1.5%), Water(0.8%), Valley(0.5%), 55 obstacles, average altitude 1237m
-[00:00] Central Command Center operational
-[00:00] Home Base established at (10, 10)
-[12:39:29] Charging station station_0 deployed on Urban terrain at (1, 18)
-[12:39:29] Charging station station_1 deployed on Urban terrain at (11, 17)
-[12:39:29] Drone drone_0 deployed on Flat,Storm at (0, 17)
-[12:39:29] Drone drone_1 deployed on Valley,Storm at (0, 18)
-[12:39:29] Drone drone_2 deployed on Swamp,Storm at (0, 19)
-[12:39:29] Survivor signal survivor_0 detected at Urban (2, 12)
-[12:39:29] Survivor signal survivor_1 detected at Forest, near Tree (14, 17)
-[12:39:29] Survivor signal survivor_2 detected at Hill (19, 19)
-[12:39:29] Survivor signal survivor_3 detected at Mountain (4, 3)
-[12:39:29] Survivor signal survivor_4 detected at Mountain (11, 10)
-[12:39:29] Terrain analysis: Mountain(44.0%), Cliff(3.0%), Hill(19.5%), Forest(16.2%), Desert(1.8%), Flat(9.2%), Urban(3.5%), Swamp(1.5%), Water(0.8%), Valley(0.5%), 55 obstacles, average altitude 1237m
+=== MISSION LOG STARTED: 2026-03-20 11:21:43 ===
+[00:00] Basic demo started
+[11:21:43] 🏠 Home Base established at (10, 10)
+[11:21:43] ⚡ Charging station deployed at (1, 1)
+[11:21:43] ⚡ Charging station deployed at (18, 18)
+[11:21:43] 🚁 Drone drone_0 deployed from home base at (10, 10)
+[11:21:43] 🚁 Drone drone_1 deployed from home base at (10, 10)
+[11:21:43] 🚁 Drone drone_2 deployed from home base at (10, 10)
+[11:21:43] 🆘 Survivor signal detected at (16, 11)
+[11:21:43] 🆘 Survivor signal detected at (19, 4)
+[11:21:43] 🆘 Survivor signal detected at (18, 1)
+[11:21:43] 🆘 Survivor signal detected at (17, 17)
+[11:21:43] 🆘 Survivor signal detected at (5, 19)
+[00:00] Step 0: 3 drones active, 0 rescued
+[11:21:43] Drone drone_0 rescued survivor at (16, 11)
+[00:00] Step 5: 3 drones active, 1 rescued
+[11:21:43] Step 10: 3 drones active
+[00:00] Step 10: 3 drones active, 1 rescued
+[11:21:43] Drone drone_1 rescued survivor at (19, 4)
+[11:21:43] Drone drone_2 rescued survivor at (18, 1)
+[00:00] Step 15: 3 drones active, 3 rescued
+[11:21:43] Step 20: 3 drones active
+[11:23:56] Charging station station_0 deployed on Flat terrain at (2, 16)
+[11:23:56] Charging station station_1 deployed on Flat terrain at (7, 14)
+[11:23:56] Drone drone_0 deployed on Flat at (1, 15)
+[11:23:56] Drone drone_1 deployed on Flat at (1, 16)
+[11:23:56] Drone drone_2 deployed on Water at (1, 17)
+[11:23:56] Survivor signal survivor_0 detected at Hill (16, 16)
+[11:23:56] Survivor signal survivor_1 detected at Flat (5, 11)
+[11:23:56] Survivor signal survivor_2 detected at Hill (9, 12)
+[11:23:56] Survivor signal survivor_3 detected at Flat (10, 19)
+[11:23:56] Survivor signal survivor_4 detected at Mountain (10, 2)
+[11:23:56] Terrain analysis: Mountain(53.8%), Hill(20.0%), Flat(18.8%), Water(7.5%), 19 obstacles, average altitude 1237m
+[11:56:40] Charging station station_0 deployed on Flat terrain at (2, 16)
+[11:56:40] Charging station station_1 deployed on Flat terrain at (7, 14)
+[11:56:40] Drone drone_0 deployed on Flat at (1, 15)
+[11:56:40] Drone drone_1 deployed on Flat at (1, 16)
+[11:56:40] Drone drone_2 deployed on Water at (1, 17)
+[11:56:40] Survivor signal survivor_0 detected at Hill (16, 16)
+[11:56:40] Survivor signal survivor_1 detected at Flat (5, 11)
+[11:56:40] Survivor signal survivor_2 detected at Hill (9, 12)
+[11:56:40] Survivor signal survivor_3 detected at Flat (10, 19)
+[11:56:40] Survivor signal survivor_4 detected at Mountain (10, 2)
+[11:56:40] Terrain analysis: Mountain(53.8%), Hill(20.0%), Flat(18.8%), Water(7.5%), 19 obstacles, average altitude 1237m
+[11:57:37] Charging station station_0 deployed on Flat terrain at (2, 16)
+[11:57:37] Charging station station_1 deployed on Flat terrain at (7, 14)
+[11:57:37] Drone drone_0 deployed on Flat at (1, 15)
+[11:57:37] Drone drone_1 deployed on Flat at (1, 16)
+[11:57:37] Drone drone_2 deployed on Water at (1, 17)
+[11:57:37] Survivor signal survivor_0 detected at Hill (16, 16)
+[11:57:37] Survivor signal survivor_1 detected at Flat (5, 11)
+[11:57:37] Survivor signal survivor_2 detected at Hill (9, 12)
+[11:57:37] Survivor signal survivor_3 detected at Flat (10, 19)
+[11:57:37] Survivor signal survivor_4 detected at Mountain (10, 2)
+[11:57:37] Terrain analysis: Mountain(53.8%), Hill(20.0%), Flat(18.8%), Water(7.5%), 19 obstacles, average altitude 1237m
+[11:58:15] Charging station station_0 deployed on Flat terrain at (2, 16)
+[11:58:15] Charging station station_1 deployed on Flat terrain at (7, 14)
+[11:58:15] Drone drone_0 deployed on Flat at (1, 15)
+[11:58:15] Drone drone_1 deployed on Flat at (1, 16)
+[11:58:15] Drone drone_2 deployed on Water at (1, 17)
+[11:58:15] Survivor signal survivor_0 detected at Hill (16, 16)
+[11:58:15] Survivor signal survivor_1 detected at Flat (5, 11)
+[11:58:15] Survivor signal survivor_2 detected at Hill (9, 12)
+[11:58:15] Survivor signal survivor_3 detected at Flat (10, 19)
+[11:58:15] Survivor signal survivor_4 detected at Mountain (10, 2)
+[11:58:15] Terrain analysis: Mountain(53.8%), Hill(20.0%), Flat(18.8%), Water(7.5%), 19 obstacles, average altitude 1237m
+[12:12:28] Charging station station_0 deployed on Flat terrain at (2, 16)
+[12:12:28] Charging station station_1 deployed on Flat terrain at (7, 14)
+[12:12:28] Drone drone_0 deployed on Flat at (1, 15)
+[12:12:28] Drone drone_1 deployed on Flat at (1, 16)
+[12:12:28] Drone drone_2 deployed on Water at (1, 17)
+[12:12:28] Survivor signal survivor_0 detected at Hill (16, 16)
+[12:12:28] Survivor signal survivor_1 detected at Flat (5, 11)
+[12:12:28] Survivor signal survivor_2 detected at Hill (9, 12)
+[12:12:28] Survivor signal survivor_3 detected at Flat (10, 19)
+[12:12:28] Survivor signal survivor_4 detected at Mountain (10, 2)
+[12:12:28] Terrain analysis: Mountain(53.8%), Hill(20.0%), Flat(18.8%), Water(7.5%), 19 obstacles, average altitude 1237m
+[12:12:46] User deployed charging station user_station_2 at Mountain (10,7)
+[12:13:13] Charging station station_0 deployed on Flat terrain at (2, 16)
+[12:13:13] Charging station station_1 deployed on Flat terrain at (7, 14)
+[12:13:13] Drone drone_0 deployed on Flat at (1, 15)
+[12:13:13] Drone drone_1 deployed on Flat at (1, 16)
+[12:13:13] Drone drone_2 deployed on Water at (1, 17)
+[12:13:13] Survivor signal survivor_0 detected at Hill (16, 16)
+[12:13:13] Survivor signal survivor_1 detected at Flat (5, 11)
+[12:13:13] Survivor signal survivor_2 detected at Hill (9, 12)
+[12:13:13] Survivor signal survivor_3 detected at Flat (10, 19)
+[12:13:13] Survivor signal survivor_4 detected at Mountain (10, 2)
+[12:13:13] Terrain analysis: Mountain(53.8%), Hill(20.0%), Flat(18.8%), Water(7.5%), 19 obstacles, average altitude 1237m
+[12:18:49] Charging station station_0 deployed on Flat terrain at (2, 16)
+[12:18:49] Charging station station_1 deployed on Flat terrain at (7, 14)
+[12:18:49] Drone drone_0 deployed on Flat at (1, 15)
+[12:18:49] Drone drone_1 deployed on Flat at (1, 16)
+[12:18:49] Drone drone_2 deployed on Water at (1, 17)
+[12:18:49] Survivor signal survivor_0 detected at Hill (16, 16)
+[12:18:49] Survivor signal survivor_1 detected at Flat (5, 11)
+[12:18:49] Survivor signal survivor_2 detected at Hill (9, 12)
+[12:18:49] Survivor signal survivor_3 detected at Flat (10, 19)
+[12:18:49] Survivor signal survivor_4 detected at Mountain (10, 2)
+[12:18:49] Terrain analysis: Mountain(53.8%), Hill(20.0%), Flat(18.8%), Water(7.5%), 19 obstacles, average altitude 1237m
+[12:50:50] Charging station station_0 deployed on Flat terrain at (2, 16)
+[12:50:50] Charging station station_1 deployed on Flat terrain at (7, 14)
+[12:50:50] Drone drone_0 deployed on Flat at (1, 15)
+[12:50:50] Drone drone_1 deployed on Flat at (1, 16)
+[12:50:50] Drone drone_2 deployed on Water at (1, 17)
+[12:50:50] Survivor signal survivor_0 detected at Hill (16, 16)
+[12:50:50] Survivor signal survivor_1 detected at Flat (5, 11)
+[12:50:50] Survivor signal survivor_2 detected at Hill (9, 12)
+[12:50:50] Survivor signal survivor_3 detected at Flat (10, 19)
+[12:50:50] Survivor signal survivor_4 detected at Mountain (10, 2)
+[12:50:50] Terrain analysis: Mountain(53.8%), Hill(20.0%), Flat(18.8%), Water(7.5%), 19 obstacles, average altitude 1237m
+[12:51:08] User added survivor signal user_survivor_5 at Mountain (10,10)
+[12:52:59] Charging station station_0 deployed on Flat terrain at (2, 16)
+[12:52:59] Charging station station_1 deployed on Flat terrain at (7, 14)
+[12:52:59] Drone drone_0 deployed on Flat at (1, 15)
+[12:52:59] Drone drone_1 deployed on Flat at (1, 16)
+[12:52:59] Drone drone_2 deployed on Water at (1, 17)
+[12:52:59] Survivor signal survivor_0 detected at Hill (16, 16)
+[12:52:59] Survivor signal survivor_1 detected at Flat (5, 11)
+[12:52:59] Survivor signal survivor_2 detected at Hill (9, 12)
+[12:52:59] Survivor signal survivor_3 detected at Flat (10, 19)
+[12:52:59] Survivor signal survivor_4 detected at Mountain (10, 2)
+[12:52:59] Terrain analysis: Mountain(53.8%), Hill(20.0%), Flat(18.8%), Water(7.5%), 19 obstacles, average altitude 1237m
+[12:53:51] Charging station station_0 deployed on Flat terrain at (2, 16)
+[12:53:51] Charging station station_1 deployed on Flat terrain at (7, 14)
+[12:53:51] Drone drone_0 deployed on Flat at (1, 15)
+[12:53:51] Drone drone_1 deployed on Flat at (1, 16)
+[12:53:51] Drone drone_2 deployed on Water at (1, 17)
+[12:53:51] Survivor signal survivor_0 detected at Hill (16, 16)
+[12:53:51] Survivor signal survivor_1 detected at Flat (5, 11)
+[12:53:51] Survivor signal survivor_2 detected at Hill (9, 12)
+[12:53:51] Survivor signal survivor_3 detected at Flat (10, 19)
+[12:53:51] Survivor signal survivor_4 detected at Mountain (10, 2)
+[12:53:51] Terrain analysis: Mountain(53.8%), Hill(20.0%), Flat(18.8%), Water(7.5%), 19 obstacles, average altitude 1237m
+[12:55:59] Charging station station_0 deployed on Flat terrain at (2, 16)
+[12:55:59] Charging station station_1 deployed on Flat terrain at (7, 14)
+[12:55:59] Drone drone_0 deployed on Flat at (1, 15)
+[12:55:59] Drone drone_1 deployed on Flat at (1, 16)
+[12:55:59] Drone drone_2 deployed on Water at (1, 17)
+[12:55:59] Survivor signal survivor_0 detected at Hill (16, 16)
+[12:55:59] Survivor signal survivor_1 detected at Flat (5, 11)
+[12:55:59] Survivor signal survivor_2 detected at Hill (9, 12)
+[12:55:59] Survivor signal survivor_3 detected at Flat (10, 19)
+[12:55:59] Survivor signal survivor_4 detected at Mountain (10, 2)
+[12:55:59] Terrain analysis: Mountain(53.8%), Hill(20.0%), Flat(18.8%), Water(7.5%), 19 obstacles, average altitude 1237m
+[12:58:10] Charging station station_0 deployed on Flat terrain at (2, 16)
+[12:58:10] Charging station station_1 deployed on Flat terrain at (7, 14)
+[12:58:10] Drone drone_0 deployed on Flat at (1, 15)
+[12:58:10] Drone drone_1 deployed on Flat at (1, 16)
+[12:58:10] Drone drone_2 deployed on Water at (1, 17)
+[12:58:10] Survivor signal survivor_0 detected at Hill (16, 16)
+[12:58:10] Survivor signal survivor_1 detected at Flat (5, 11)
+[12:58:10] Survivor signal survivor_2 detected at Hill (9, 12)
+[12:58:10] Survivor signal survivor_3 detected at Flat (10, 19)
+[12:58:10] Survivor signal survivor_4 detected at Mountain (10, 2)
+[12:58:10] Terrain analysis: Mountain(53.8%), Hill(20.0%), Flat(18.8%), Water(7.5%), 19 obstacles, average altitude 1237m
+[13:00:48] Charging station station_0 deployed on Flat terrain at (2, 16)
+[13:00:48] Charging station station_1 deployed on Flat terrain at (7, 14)
+[13:00:48] Drone drone_0 deployed on Flat at (1, 15)
+[13:00:48] Drone drone_1 deployed on Flat at (1, 16)
+[13:00:48] Drone drone_2 deployed on Water at (1, 17)
+[13:00:48] Survivor signal survivor_0 detected at Hill (16, 16)
+[13:00:48] Survivor signal survivor_1 detected at Flat (5, 11)
+[13:00:48] Survivor signal survivor_2 detected at Hill (9, 12)
+[13:00:48] Survivor signal survivor_3 detected at Flat (10, 19)
+[13:00:48] Survivor signal survivor_4 detected at Mountain (10, 2)
+[13:00:48] Terrain analysis: Mountain(53.8%), Hill(20.0%), Flat(18.8%), Water(7.5%), 19 obstacles, average altitude 1237m
+[13:37:30] Charging station station_0 deployed on Flat terrain at (13, 8)
+[13:37:30] Charging station station_1 deployed on Flat terrain at (16, 9)
+[13:37:30] Drone drone_0 deployed on Hill at (12, 7)
+[13:37:30] Drone drone_1 deployed on Water at (12, 8)
+[13:37:30] Drone drone_2 deployed on Hill at (12, 9)
+[13:37:30] Survivor signal survivor_0 detected at Hill (0, 11)
+[13:37:30] Survivor signal survivor_1 detected at Hill (15, 5)
+[13:37:30] Survivor signal survivor_2 detected at Flat (18, 13)
+[13:37:30] Survivor signal survivor_3 detected at Mountain, near Debris (4, 11)
+[13:37:30] Survivor signal survivor_4 detected at Flat (7, 7)
+[13:37:30] Terrain analysis: Flat(23.5%), Hill(27.3%), Water(10.5%), Mountain(38.8%), 20 obstacles, average altitude 897m
+[13:37:56] Drone drone_0 successfully rescued survivor survivor_1
+[13:37:58] Drone drone_1 successfully rescued survivor survivor_4
+[13:37:59] Drone drone_2 successfully rescued survivor survivor_2
+[13:38:00] Weather change: (1,0) Clear → Wind
+[13:38:00] Weather change: (7,0) Clear → Wind
+[13:38:00] Weather change: (8,0) Clear → Rain
+[13:38:00] Weather change: (3,1) Clear → Wind
+[13:38:00] Weather change: (8,1) Clear → Wind
+[13:38:00] Weather change: (2,2) Clear → Wind
+[13:38:00] Weather change: (3,2) Clear → Rain
+[13:38:00] Weather change: (0,3) Clear → Rain
+[13:38:00] Weather change: (8,3) Clear → Rain
+[13:38:00] Weather change: (10,3) Clear → Rain
+[13:38:00] Weather change: (12,3) Clear → Wind
+[13:38:00] Weather change: (17,3) Clear → Rain
+[13:38:00] Weather change: (0,4) Clear → Rain
+[13:38:00] Weather change: (9,5) Clear → Wind
+[13:38:00] Weather change: (7,6) Clear → Rain
+[13:38:00] Weather change: (9,6) Clear → Wind
+[13:38:00] Weather change: (0,7) Clear → Wind
+[13:38:00] Weather change: (17,7) Clear → Wind
+[13:38:00] Weather change: (9,8) Clear → Rain
+[13:38:00] Weather change: (11,8) Clear → Wind
+[13:38:00] Weather change: (12,8) Clear → Rain
+[13:38:00] Weather change: (17,8) Clear → Rain
+[13:38:00] Weather change: (6,9) Clear → Rain
+[13:38:00] Weather change: (5,10) Clear → Rain
+[13:38:00] Weather change: (9,10) Clear → Wind
+[13:38:00] Weather change: (10,10) Clear → Wind
+[13:38:00] Weather change: (12,10) Clear → Wind
+[13:38:00] Weather change: (1,12) Clear → Rain
+[13:38:00] Weather change: (14,12) Clear → Wind
+[13:38:00] Weather change: (5,13) Clear → Rain
+[13:38:00] Weather change: (10,13) Clear → Wind
+[13:38:00] Weather change: (19,13) Clear → Rain
+[13:38:00] Weather change: (5,15) Clear → Wind
+[13:38:00] Weather change: (1,16) Clear → Wind
+[13:38:00] Weather change: (3,16) Clear → Rain
+[13:38:00] Weather change: (4,16) Clear → Wind
+[13:38:00] Weather change: (5,16) Clear → Rain
+[13:38:00] Weather change: (16,16) Clear → Rain
+[13:38:00] Weather change: (17,16) Clear → Rain
+[13:38:00] Weather change: (2,17) Clear → Rain
+[13:38:00] Weather change: (8,17) Clear → Rain
+[13:38:00] Weather change: (13,17) Clear → Rain
+[13:38:00] Weather change: (6,18) Clear → Rain
+[13:38:00] Weather change: (3,19) Clear → Wind
+[13:38:00] Weather change: (5,19) Clear → Wind
+[13:38:02] Drone drone_1 successfully rescued survivor survivor_0
+[13:38:03] Drone drone_0 successfully rescued survivor survivor_3
+[13:38:05] Weather change: (3,0) Clear → Rain
+[13:38:05] Weather change: (18,0) Clear → Rain
+[13:38:05] Weather change: (19,0) Clear → Rain
+[13:38:05] Weather change: (0,1) Clear → Rain
+[13:38:05] Weather change: (8,1) Wind → Clear
+[13:38:05] Weather change: (16,1) Clear → Wind
+[13:38:05] Weather change: (4,2) Clear → Rain
+[13:38:05] Weather change: (6,3) Clear → Rain
+[13:38:05] Weather change: (10,3) Rain → Clear
+[13:38:05] Weather change: (11,3) Clear → Wind
+[13:38:05] Weather change: (16,3) Clear → Wind
+[13:38:05] Weather change: (5,4) Clear → Wind
+[13:38:05] Weather change: (14,4) Clear → Rain
+[13:38:05] Weather change: (2,5) Clear → Rain
+[13:38:05] Weather change: (6,5) Clear → Wind
+[13:38:05] Weather change: (9,5) Wind → Fog
+[13:38:05] Weather change: (12,5) Clear → Rain
+[13:38:05] Weather change: (1,6) Clear → Wind
+[13:38:05] Weather change: (9,8) Rain → Clear
+[13:38:05] Weather change: (8,9) Clear → Wind
+[13:38:05] Weather change: (12,9) Clear → Rain
+[13:38:05] Weather change: (13,9) Clear → Wind
+[13:38:05] Weather change: (17,9) Clear → Wind
+[13:38:05] Weather change: (19,9) Clear → Wind
+[13:38:05] Weather change: (2,10) Clear → Rain
+[13:38:05] Weather change: (16,10) Clear → Wind
+[13:38:05] Weather change: (18,10) Clear → Rain
+[13:38:05] Weather change: (1,11) Clear → Rain
+[13:38:05] Weather change: (4,11) Clear → Rain
+[13:38:05] Weather change: (13,11) Clear → Rain
+[13:38:05] Weather change: (16,11) Clear → Rain
+[13:38:05] Weather change: (19,11) Clear → Rain
+[13:38:05] Weather change: (6,12) Clear → Wind
+[13:38:05] Weather change: (10,13) Wind → Fog
+[13:38:05] Weather change: (17,13) Clear → Wind
+[13:38:05] Weather change: (5,14) Clear → Rain
+[13:38:05] Weather change: (1,15) Clear → Wind
+[13:38:05] Weather change: (11,15) Clear → Rain
+[13:38:05] Weather change: (16,15) Clear → Rain
+[13:38:05] Weather change: (1,16) Wind → Fog
+[13:38:05] Weather change: (5,16) Rain → Fog
+[13:38:05] Weather change: (7,16) Clear → Rain
+[13:38:05] Weather change: (2,17) Rain → Clear
+[13:38:05] Weather change: (9,17) Clear → Wind
+[13:38:05] Weather change: (5,18) Clear → Rain
+[13:38:05] Weather change: (13,18) Clear → Wind
+[13:38:05] Step 20: 3 drones active, 5 survivors rescued, average battery 74.9%
+[13:44:29] Charging station station_0 deployed on Flat terrain at (17, 8)
+[13:44:29] Charging station station_1 deployed on Flat terrain at (18, 9)
+[13:44:29] Drone drone_0 deployed on Flat at (16, 7)
+[13:44:29] Drone drone_1 deployed on Flat at (16, 8)
+[13:44:29] Drone drone_2 deployed on Flat at (16, 9)
+[13:44:29] Survivor signal survivor_0 detected at Flat (16, 8)
+[13:44:29] Survivor signal survivor_1 detected at Flat (14, 3)
+[13:44:29] Survivor signal survivor_2 detected at Flat (12, 4)
+[13:44:29] Survivor signal survivor_3 detected at Hill, near Debris (10, 2)
+[13:44:29] Survivor signal survivor_4 detected at Mountain, near Debris (4, 18)
+[13:44:29] Terrain analysis: Mountain(46.2%), Hill(22.2%), Flat(22.2%), Water(9.2%), 19 obstacles, average altitude 1390m
+[13:44:51] Drone drone_0 successfully rescued survivor survivor_0
+[13:44:52] Drone drone_1 successfully rescued survivor survivor_2
+[13:51:21] Charging station station_0 deployed on Flat terrain at (6, 1)
+[13:51:21] Charging station station_1 deployed on Flat terrain at (9, 15)
+[13:51:21] Drone drone_0 deployed on Flat at (5, 0)
+[13:51:21] Drone drone_1 deployed on Water at (5, 1)
+[13:51:21] Drone drone_2 deployed on Flat at (5, 2)
+[13:51:21] Survivor signal survivor_0 detected at Flat (8, 18)
+[13:51:21] Survivor signal survivor_1 detected at Hill (6, 12)
+[13:51:21] Survivor signal survivor_2 detected at Water (10, 3)
+[13:51:21] Survivor signal survivor_3 detected at Flat (7, 15)
+[13:51:21] Survivor signal survivor_4 detected at Mountain, near Debris (16, 14)
+[13:51:21] Terrain analysis: Hill(25.5%), Flat(30.5%), Water(8.8%), Mountain(35.2%), 19 obstacles, average altitude 1539m
+[13:52:00] Drone drone_0 successfully rescued survivor survivor_2
+[13:52:02] Weather change: (2,1) Clear → Rain
+[13:52:02] Weather change: (12,1) Clear → Wind
+[13:52:02] Weather change: (16,1) Clear → Wind
+[13:52:02] Weather change: (17,1) Clear → Rain
+[13:52:02] Weather change: (6,2) Clear → Wind
+[13:52:02] Weather change: (12,2) Clear → Wind
+[13:52:02] Weather change: (2,3) Clear → Wind
+[13:52:02] Weather change: (13,3) Clear → Rain
+[13:52:02] Weather change: (18,3) Clear → Wind
+[13:52:02] Weather change: (0,4) Clear → Rain
+[13:52:02] Weather change: (2,4) Clear → Wind
+[13:52:02] Weather change: (3,5) Clear → Wind
+[13:52:02] Weather change: (13,5) Clear → Rain
+[13:52:02] Weather change: (16,5) Clear → Wind
+[13:52:02] Weather change: (6,6) Clear → Wind
+[13:52:02] Weather change: (0,7) Clear → Rain
+[13:52:02] Weather change: (10,7) Clear → Rain
+[13:52:02] Weather change: (13,8) Clear → Wind
+[13:52:02] Weather change: (14,9) Clear → Wind
+[13:52:02] Weather change: (2,10) Clear → Wind
+[13:52:02] Weather change: (3,10) Clear → Rain
+[13:52:02] Weather change: (9,10) Clear → Rain
+[13:52:02] Weather change: (15,10) Clear → Rain
+[13:52:02] Weather change: (1,11) Clear → Rain
+[13:52:02] Weather change: (2,11) Clear → Wind
+[13:52:02] Weather change: (8,11) Clear → Wind
+[13:52:02] Weather change: (10,12) Clear → Wind
+[13:52:02] Weather change: (19,12) Clear → Wind
+[13:52:02] Weather change: (3,13) Wind → Clear
+[13:52:02] Weather change: (10,14) Clear → Rain
+[13:52:02] Weather change: (5,15) Wind → Clear
+[13:52:02] Weather change: (10,15) Clear → Wind
+[13:52:02] Weather change: (6,16) Clear → Wind
+[13:52:02] Weather change: (8,16) Clear → Wind
+[13:52:02] Weather change: (12,16) Clear → Wind
+[13:52:02] Weather change: (1,17) Clear → Wind
+[13:52:02] Weather change: (10,17) Clear → Rain
+[13:52:02] Weather change: (11,17) Clear → Wind
+[13:52:02] Weather change: (15,17) Clear → Wind
+[13:52:02] Weather change: (14,18) Clear → Wind
+[13:52:02] Weather change: (19,19) Clear → Rain
+[13:52:03] Drone drone_1 successfully rescued survivor survivor_1
+[13:52:04] Drone drone_2 successfully rescued survivor survivor_3
+[13:52:07] Drone drone_0 rescue failed, poor environmental conditions
+[13:52:07] Drone drone_1 rescue failed, poor environmental conditions
+[13:52:07] Weather change: (0,1) Clear → Rain
+[13:52:07] Weather change: (5,1) Clear → Rain
+[13:52:07] Weather change: (15,3) Clear → Rain
+[13:52:07] Weather change: (2,4) Wind → Fog
+[13:52:07] Weather change: (1,5) Clear → Rain
+[13:52:07] Weather change: (10,5) Clear → Rain
+[13:52:07] Weather change: (11,5) Clear → Rain
+[13:52:07] Weather change: (1,6) Clear → Rain
+[13:52:07] Weather change: (5,6) Clear → Rain
+[13:52:07] Weather change: (10,6) Clear → Rain
+[13:52:07] Weather change: (0,7) Rain → Fog
+[13:52:07] Weather change: (1,7) Clear → Wind
+[13:52:07] Weather change: (2,7) Clear → Rain
+[13:52:07] Weather change: (4,7) Clear → Wind
+[13:52:07] Weather change: (5,8) Clear → Rain
+[13:52:07] Weather change: (6,8) Clear → Rain
+[13:52:07] Weather change: (7,8) Clear → Rain
+[13:52:07] Weather change: (16,8) Clear → Wind
+[13:52:07] Weather change: (1,9) Clear → Wind
+[13:52:07] Weather change: (13,10) Clear → Rain
+[13:52:07] Weather change: (9,11) Clear → Wind
+[13:52:07] Weather change: (17,11) Clear → Wind
+[13:52:07] Weather change: (19,11) Clear → Wind
+[13:52:07] Weather change: (10,12) Wind → Fog
+[13:52:07] Weather change: (13,12) Clear → Rain
+[13:52:07] Weather change: (1,13) Clear → Wind
+[13:52:07] Weather change: (2,13) Clear → Wind
+[13:52:07] Weather change: (5,13) Wind → Clear
+[13:52:07] Weather change: (8,13) Clear → Rain
+[13:52:07] Weather change: (16,14) Clear → Rain
+[13:52:07] Weather change: (17,14) Clear → Rain
+[13:52:07] Weather change: (4,15) Wind → Fog
+[13:52:07] Weather change: (5,15) Clear → Wind
+[13:52:07] Weather change: (8,16) Wind → Fog
+[13:52:07] Weather change: (12,16) Wind → Fog
+[13:52:07] Weather change: (15,16) Clear → Rain
+[13:52:07] Weather change: (10,17) Rain → Clear
+[13:52:07] Weather change: (1,18) Clear → Rain
+[13:52:07] Weather change: (7,18) Clear → Rain
+[13:52:07] Weather change: (11,19) Clear → Rain
+[13:52:07] Drone drone_0 successfully rescued survivor survivor_4
+[13:52:07] Step 20: 3 drones active, 4 survivors rescued, average battery 76.8%
+[13:52:09] Drone drone_2 successfully rescued survivor survivor_0
+[13:52:13] Weather change: (1,0) Clear → Rain
+[13:52:13] Weather change: (8,0) Clear → Wind
+[13:52:13] Weather change: (13,1) Clear → Wind
+[13:52:13] Weather change: (14,1) Clear → Wind
+[13:52:13] Weather change: (1,2) Clear → Rain
+[13:52:13] Weather change: (7,2) Clear → Wind
+[13:52:13] Weather change: (12,2) Wind → Fog
+[13:52:13] Weather change: (16,2) Clear → Rain
+[13:52:13] Weather change: (1,3) Clear → Rain
+[13:52:13] Weather change: (6,3) Clear → Rain
+[13:52:13] Weather change: (1,4) Clear → Wind
+[13:52:13] Weather change: (2,4) Fog → Clear
+[13:52:13] Weather change: (8,4) Clear → Rain
+[13:52:13] Weather change: (9,4) Clear → Rain
+[13:52:13] Weather change: (10,4) Clear → Wind
+[13:52:13] Weather change: (11,4) Clear → Wind
+[13:52:13] Weather change: (13,4) Clear → Wind
+[13:52:13] Weather change: (19,4) Clear → Wind
+[13:52:13] Weather change: (3,5) Wind → Fog
+[13:52:13] Weather change: (7,5) Clear → Rain
+[13:52:13] Weather change: (12,5) Clear → Wind
+[13:52:13] Weather change: (1,6) Rain → Clear
+[13:52:13] Weather change: (2,6) Clear → Wind
+[13:52:13] Weather change: (12,6) Clear → Wind
+[13:52:13] Weather change: (13,6) Clear → Wind
+[13:52:13] Weather change: (8,7) Clear → Rain
+[13:52:13] Weather change: (12,7) Clear → Wind
+[13:52:13] Weather change: (3,8) Clear → Rain
+[13:52:13] Weather change: (16,8) Wind → Fog
+[13:52:13] Weather change: (18,8) Clear → Wind
+[13:52:13] Weather change: (15,9) Clear → Rain
+[13:52:13] Weather change: (16,9) Clear → Wind
+[13:52:13] Weather change: (19,9) Clear → Rain
+[13:52:13] Weather change: (1,10) Clear → Rain
+[13:52:13] Weather change: (9,10) Rain → Fog
+[13:52:13] Weather change: (4,11) Clear → Wind
+[13:52:13] Weather change: (12,11) Clear → Wind
+[13:52:13] Weather change: (16,11) Clear → Rain
+[13:52:13] Weather change: (18,12) Clear → Rain
+[13:52:13] Weather change: (12,13) Clear → Wind
+[13:52:13] Weather change: (13,13) Clear → Wind
+[13:52:13] Weather change: (0,14) Clear → Rain
+[13:52:13] Weather change: (17,14) Rain → Fog
+[13:52:13] Weather change: (5,15) Wind → Fog
+[13:52:13] Weather change: (11,15) Clear → Wind
+[13:52:13] Weather change: (14,15) Clear → Rain
+[13:52:13] Weather change: (17,15) Clear → Rain
+[13:52:13] Weather change: (19,15) Clear → Rain
+[13:52:13] Weather change: (7,17) Clear → Rain
+[13:52:13] Weather change: (18,17) Clear → Wind
+[13:52:13] Weather change: (12,18) Clear → Rain
+[13:52:13] Weather change: (17,18) Clear → Wind
+[13:52:13] Weather change: (5,19) Clear → Wind
+[13:52:13] Weather change: (15,19) Clear → Wind
+[13:52:18] Weather change: (10,0) Clear → Rain
+[13:52:18] Weather change: (5,2) Clear → Rain
+[13:52:18] Weather change: (2,3) Wind → Clear
+[13:52:18] Weather change: (9,3) Clear → Rain
+[13:52:18] Weather change: (1,4) Wind → Clear
+[13:52:18] Weather change: (10,5) Rain → Clear
+[13:52:18] Weather change: (4,7) Wind → Clear
+[13:52:18] Weather change: (9,10) Fog → Clear
+[13:52:18] Weather change: (0,11) Clear → Rain
+[13:52:18] Weather change: (19,11) Wind → Clear
+[13:52:18] Weather change: (5,12) Clear → Wind
+[13:52:18] Weather change: (15,12) Clear → Rain
+[13:52:18] Weather change: (1,13) Wind → Fog
+[13:52:18] Weather change: (9,13) Clear → Wind
+[13:52:18] Weather change: (12,13) Wind → Fog
+[13:52:18] Weather change: (8,14) Clear → Rain
+[13:52:18] Weather change: (14,14) Clear → Wind
+[13:52:18] Weather change: (19,15) Rain → Clear
+[13:52:18] Weather change: (3,16) Clear → Wind
+[13:52:18] Weather change: (15,16) Rain → Clear
+[13:52:18] Weather change: (3,17) Clear → Rain
+[13:52:18] Weather change: (4,18) Clear → Wind
+[13:52:18] Weather change: (12,18) Rain → Clear
+[13:52:18] Weather change: (5,19) Wind → Fog
+[13:52:18] Weather change: (14,19) Clear → Wind
+[13:52:18] Weather change: (17,19) Clear → Wind
+[13:52:18] Step 40: 3 drones active, 5 survivors rescued, average battery 28.8%
+[13:52:22] Drone drone_1 charging complete at station_1
+[13:52:23] Weather change: (3,1) Clear → Rain
+[13:52:23] Weather change: (5,1) Rain → Clear
+[13:52:23] Weather change: (11,1) Clear → Wind
+[13:52:23] Weather change: (5,2) Rain → Fog
+[13:52:23] Weather change: (6,2) Wind → Fog
+[13:52:23] Weather change: (10,2) Clear → Wind
+[13:52:23] Weather change: (8,3) Clear → Rain
+[13:52:23] Weather change: (18,3) Wind → Clear
+[13:52:23] Weather change: (1,4) Clear → Wind
+[13:52:23] Weather change: (3,4) Clear → Wind
+[13:52:23] Weather change: (17,4) Clear → Rain
+[13:52:23] Weather change: (8,6) Clear → Rain
+[13:52:23] Weather change: (12,6) Wind → Clear
+[13:52:23] Weather change: (5,7) Clear → Rain
+[13:52:23] Weather change: (10,7) Rain → Fog
+[13:52:23] Weather change: (15,7) Clear → Rain
+[13:52:23] Weather change: (6,8) Rain → Fog
+[13:52:23] Weather change: (8,8) Clear → Wind
+[13:52:23] Weather change: (8,10) Clear → Wind
+[13:52:23] Weather change: (9,10) Clear → Wind
+[13:52:23] Weather change: (17,10) Clear → Rain
+[13:52:23] Weather change: (1,11) Rain → Clear
+[13:52:23] Weather change: (8,11) Wind → Fog
+[13:52:23] Weather change: (9,11) Wind → Fog
+[13:52:23] Weather change: (11,12) Clear → Wind
+[13:52:23] Weather change: (0,13) Clear → Wind
+[13:52:23] Weather change: (6,13) Clear → Rain
+[13:52:23] Weather change: (9,13) Wind → Clear
+[13:52:23] Weather change: (11,13) Clear → Rain
+[13:52:23] Weather change: (11,14) Clear → Wind
+[13:52:23] Weather change: (9,15) Clear → Rain
+[13:52:23] Weather change: (14,15) Rain → Fog
+[13:52:23] Weather change: (0,16) Clear → Wind
+[13:52:23] Weather change: (10,16) Clear → Wind
+[13:52:23] Weather change: (13,17) Clear → Rain
+[13:52:23] Weather change: (13,18) Clear → Rain
+[13:52:23] Weather change: (4,19) Clear → Rain
+[13:52:23] Weather change: (10,19) Clear → Wind
+[13:52:23] Drone drone_0 detected 2 charging stations: ['station_0', 'station_1']
+[13:52:23] Drone drone_0 detected 2 charging stations: ['station_0', 'station_1']
+[13:52:23] Drone drone_0 detected 2 charging stations: ['station_0', 'station_1']
+[13:52:23] Drone drone_1 detected 2 charging stations: ['station_0', 'station_1']
+[13:52:23] Drone drone_1 detected 2 charging stations: ['station_0', 'station_1']
+[13:52:23] Drone drone_2 detected 2 charging stations: ['station_0', 'station_1']
+[13:52:23] Drone drone_2 detected 2 charging stations: ['station_0', 'station_1']
+[13:52:23] Drone drone_2 detected 2 charging stations: ['station_0', 'station_1']
+[13:52:24] Drone drone_0 charging complete at station_1
+[13:52:29] Weather change: (4,0) Clear → Wind
+[13:52:29] Weather change: (13,0) Clear → Wind
+[13:52:29] Weather change: (0,1) Rain → Fog
+[13:52:29] Weather change: (8,1) Clear → Wind
+[13:52:29] Weather change: (11,1) Wind → Fog
+[13:52:29] Weather change: (0,3) Clear → Rain
+[13:52:29] Weather change: (17,4) Rain → Fog
+[13:52:29] Weather change: (5,5) Clear → Wind
+[13:52:29] Weather change: (9,5) Clear → Wind
+[13:52:29] Weather change: (14,5) Clear → Rain
+[13:52:29] Weather change: (0,6) Clear → Wind
+[13:52:29] Weather change: (10,7) Fog → Clear
+[13:52:29] Weather change: (8,8) Wind → Fog
+[13:52:29] Weather change: (10,8) Clear → Rain
+[13:52:29] Weather change: (15,8) Clear → Wind
+[13:52:29] Weather change: (14,9) Wind → Fog
+[13:52:29] Weather change: (17,9) Clear → Rain
+[13:52:29] Weather change: (1,11) Clear → Wind
+[13:52:29] Weather change: (6,11) Clear → Wind
+[13:52:29] Weather change: (11,11) Clear → Wind
+[13:52:29] Weather change: (12,11) Wind → Fog
+[13:52:29] Weather change: (6,12) Clear → Rain
+[13:52:29] Weather change: (12,12) Clear → Wind
+[13:52:29] Weather change: (13,12) Rain → Fog
+[13:52:29] Weather change: (15,12) Rain → Clear
+[13:52:29] Weather change: (16,12) Clear → Rain
+[13:52:29] Weather change: (4,13) Wind → Clear
+[13:52:29] Weather change: (7,13) Clear → Rain
+[13:52:29] Weather change: (12,13) Fog → Clear
+[13:52:29] Weather change: (5,14) Wind → Fog
+[13:52:29] Weather change: (8,14) Rain → Fog
+[13:52:29] Weather change: (13,14) Clear → Rain
+[13:52:29] Weather change: (14,14) Wind → Clear
+[13:52:29] Weather change: (15,14) Clear → Wind
+[13:52:29] Weather change: (8,15) Clear → Rain
+[13:52:29] Weather change: (4,16) Wind → Fog
+[13:52:29] Weather change: (11,16) Clear → Rain
+[13:52:29] Weather change: (16,16) Clear → Rain
+[13:52:29] Weather change: (6,17) Clear → Rain
+[13:52:29] Weather change: (17,17) Clear → Rain
+[13:52:29] Weather change: (10,18) Clear → Rain
+[13:52:29] Weather change: (8,19) Clear → Wind
+[13:52:29] Weather change: (11,19) Rain → Clear
+[13:52:29] Weather change: (15,19) Wind → Fog
+[13:52:29] Weather change: (19,19) Rain → Clear
+[13:52:29] Step 60: 2 drones active, 5 survivors rescued, average battery 56.9%
+[13:52:32] Drone drone_2 charging complete at station_1
+[13:52:34] Weather change: (0,0) Clear → Rain
+[13:52:34] Weather change: (7,0) Clear → Wind
+[13:52:34] Weather change: (9,0) Clear → Rain
+[13:52:34] Weather change: (11,0) Clear → Wind
+[13:52:34] Weather change: (13,0) Wind → Fog
+[13:52:34] Weather change: (18,0) Clear → Rain
+[13:52:34] Weather change: (2,1) Rain → Clear
+[13:52:34] Weather change: (4,1) Clear → Rain
+[13:52:34] Weather change: (0,3) Rain → Clear
+[13:52:34] Weather change: (19,3) Clear → Wind
+[13:52:34] Weather change: (0,5) Clear → Wind
+[13:52:34] Weather change: (19,5) Clear → Wind
+[13:52:34] Weather change: (17,6) Clear → Rain
+[13:52:34] Weather change: (0,7) Fog → Clear
+[13:52:34] Weather change: (12,7) Wind → Clear
+[13:52:34] Weather change: (13,7) Clear → Wind
+[13:52:34] Weather change: (15,7) Rain → Fog
+[13:52:34] Weather change: (1,8) Clear → Rain
+[13:52:34] Weather change: (11,8) Clear → Rain
+[13:52:34] Weather change: (11,9) Clear → Rain
+[13:52:34] Weather change: (12,9) Clear → Rain
+[13:52:34] Weather change: (13,9) Clear → Rain
+[13:52:34] Weather change: (16,9) Wind → Fog
+[13:52:34] Weather change: (18,9) Clear → Rain
+[13:52:34] Weather change: (16,10) Clear → Rain
+[13:52:34] Weather change: (18,11) Clear → Rain
+[13:52:34] Weather change: (5,12) Wind → Clear
+[13:52:34] Weather change: (14,12) Clear → Wind
+[13:52:34] Weather change: (17,12) Clear → Wind
+[13:52:34] Weather change: (10,14) Rain → Clear
+[13:52:34] Weather change: (16,14) Rain → Fog
+[13:52:34] Weather change: (5,15) Fog → Clear
+[13:52:34] Weather change: (10,15) Wind → Fog
+[13:52:34] Weather change: (5,16) Clear → Rain
+[13:52:34] Weather change: (0,17) Clear → Wind
+[13:52:34] Weather change: (0,18) Clear → Rain
+[13:52:34] Weather change: (3,18) Clear → Rain
+[13:52:34] Weather change: (5,18) Clear → Rain
+[13:52:34] Weather change: (11,18) Clear → Wind
+[13:52:34] Weather change: (9,19) Clear → Rain
+[13:52:39] Weather change: (0,0) Rain → Clear
+[13:52:39] Weather change: (1,0) Rain → Fog
+[13:52:39] Weather change: (3,0) Clear → Rain
+[13:52:39] Weather change: (10,0) Rain → Clear
+[13:52:39] Weather change: (1,1) Clear → Wind
+[13:52:39] Weather change: (3,1) Rain → Fog
+[13:52:39] Weather change: (12,1) Wind → Clear
+[13:52:39] Weather change: (14,1) Wind → Fog
+[13:52:39] Weather change: (2,2) Clear → Wind
+[13:52:39] Weather change: (10,2) Wind → Clear
+[13:52:39] Weather change: (14,2) Clear → Wind
+[13:52:39] Weather change: (8,3) Rain → Clear
+[13:52:39] Weather change: (16,3) Clear → Wind
+[13:52:39] Weather change: (7,5) Rain → Fog
+[13:52:39] Weather change: (15,5) Clear → Wind
+[13:52:39] Weather change: (16,5) Wind → Fog
+[13:52:39] Weather change: (19,5) Wind → Fog
+[13:52:39] Weather change: (3,6) Clear → Wind
+[13:52:39] Weather change: (1,7) Wind → Clear
+[13:52:39] Weather change: (6,7) Clear → Wind
+[13:52:39] Weather change: (7,7) Clear → Wind
+[13:52:39] Weather change: (10,7) Clear → Wind
+[13:52:39] Weather change: (16,7) Clear → Wind
+[13:52:39] Weather change: (11,8) Rain → Clear
+[13:52:39] Weather change: (8,9) Clear → Rain
+[13:52:39] Weather change: (13,9) Rain → Fog
+[13:52:39] Weather change: (0,10) Clear → Rain
+[13:52:39] Weather change: (10,10) Clear → Wind
+[13:52:39] Weather change: (12,10) Clear → Wind
+[13:52:39] Weather change: (16,10) Rain → Fog
+[13:52:39] Weather change: (19,10) Clear → Rain
+[13:52:39] Weather change: (18,11) Rain → Fog
+[13:52:39] Weather change: (7,12) Clear → Rain
+[13:52:39] Weather change: (11,13) Rain → Clear
+[13:52:39] Weather change: (0,14) Rain → Clear
+[13:52:39] Weather change: (18,14) Clear → Wind
+[13:52:39] Weather change: (13,15) Clear → Rain
+[13:52:39] Weather change: (9,16) Clear → Wind
+[13:52:39] Weather change: (3,17) Rain → Fog
+[13:52:39] Weather change: (1,18) Rain → Fog
+[13:52:39] Weather change: (14,18) Wind → Clear
+[13:52:39] Weather change: (16,18) Clear → Rain
+[13:52:39] Weather change: (4,19) Rain → Fog
+[13:52:39] Weather change: (18,19) Clear → Rain
+[13:52:39] Step 80: 2 drones active, 5 survivors rescued, average battery 61.3%
+[13:53:50] Drone drone_1 charging complete at station_1
+[13:55:28] Charging station station_0 deployed on Flat terrain at (0, 0)
+[13:55:28] Drone drone_0 deployed on Flat at (0, 0)
+[13:55:28] Survivor signal survivor_0 detected at Flat (9, 9)
+[13:55:28] Survivor signal survivor_1 detected at Flat (4, 4)
+[13:55:28] Terrain analysis: Flat(18.2%), Hill(36.9%), Water(9.8%), Mountain(35.1%), 11 obstacles, average altitude 876m
+[13:55:28] Drone drone_0 successfully rescued survivor survivor_1
+[13:55:28] Drone drone_0 successfully rescued survivor survivor_0
+[13:55:28] Step 20: 1 drones active, 2 survivors rescued, average battery 86.0%
+[13:55:28] ✅ Drone drone_0 returned to base. Mission complete! Battery 85.4%
+[13:55:28] Charging station station_0 deployed on Flat terrain at (8, 3)
+[13:55:28] Drone drone_0 deployed on Flat at (7, 2)
+[13:55:28] Survivor signal survivor_0 detected at Mountain (5, 9)
+[13:55:28] Survivor signal survivor_1 detected at Hill (14, 6)
+[13:55:28] Survivor signal survivor_2 detected at Flat (9, 14)
+[13:55:28] Terrain analysis: Water(14.7%), Flat(20.9%), Hill(27.6%), Mountain(36.9%), 11 obstacles, average altitude 1356m
+[13:55:28] Drone drone_0 rescue failed, poor environmental conditions
+[13:55:29] Drone drone_0 successfully rescued survivor survivor_0
+[13:55:29] Drone drone_0 successfully rescued survivor survivor_2
+[13:55:29] Step 20: 1 drones active, 2 survivors rescued, average battery 77.5%
+[13:55:29] Drone drone_0 successfully rescued survivor survivor_1
+[13:55:29] ✅ Drone drone_0 returned to base. Mission complete! Battery 60.9%
+[13:55:29] Step 40: 0 drones active, 3 survivors rescued, average battery 60.9%
+[13:55:29] Drone drone_0 detected 1 charging stations: ['station_0']
+[13:55:29] Drone drone_0 detected 1 charging stations: ['station_0']
+[13:55:52] Charging station station_0 deployed on Flat terrain at (3, 5)
+[13:55:52] Drone drone_0 deployed on Water at (2, 4)
+[13:55:52] Survivor signal survivor_0 detected at Mountain (9, 2)
+[13:55:52] Survivor signal survivor_1 detected at Mountain (8, 4)
+[13:55:52] Terrain analysis: Water(18.2%), Flat(18.2%), Hill(16.9%), Mountain(46.7%), 11 obstacles, average altitude 899m
+[13:55:52] Drone drone_0 successfully rescued survivor survivor_1
+[13:55:52] Drone drone_0 successfully rescued survivor survivor_0
+[13:55:52] ✅ Drone drone_0 returned to base. Mission complete! Battery 88.5%
+[13:55:52] Charging station station_0 deployed on Flat terrain at (3, 13)
+[13:55:52] Drone drone_0 deployed on Flat at (2, 12)
+[13:55:52] Survivor signal survivor_0 detected at Mountain (19, 7)
+[13:55:52] Survivor signal survivor_1 detected at Mountain (16, 16)
+[13:55:52] Survivor signal survivor_2 detected at Mountain (10, 9)
+[13:55:52] Survivor signal survivor_3 detected at Mountain (13, 2)
+[13:55:52] Survivor signal survivor_4 detected at Hill (8, 15)
+[13:55:52] Terrain analysis: Mountain(65.5%), Hill(14.5%), Flat(13.8%), Water(6.2%), 19 obstacles, average altitude 1198m
+[13:55:52] Drone drone_0 successfully rescued survivor survivor_4
+[13:55:52] Drone drone_0 successfully rescued survivor survivor_2
+[13:55:52] Step 20: 1 drones active, 2 survivors rescued, average battery 67.5%
+[13:55:52] Drone drone_0 successfully rescued survivor survivor_3
+[13:55:53] Drone drone_0 successfully rescued survivor survivor_0
+[13:56:50] Charging station station_0 deployed on Flat terrain at (1, 4)
+[13:56:50] Drone drone_0 deployed on Flat at (0, 3)
+[13:56:50] Drone drone_1 deployed on Flat at (0, 4)
+[13:56:50] Survivor signal survivor_0 detected at Water (2, 6)
+[13:56:50] Survivor signal survivor_1 detected at Mountain (1, 2)
+[13:56:50] Survivor signal survivor_2 detected at Water (2, 8)
+[13:56:50] Terrain analysis: Mountain(55.6%), Hill(11.8%), Flat(15.3%), Water(17.4%), 7 obstacles, average altitude 1221m
+[13:56:50] Drone drone_0 successfully rescued survivor survivor_1
+[13:56:50] Drone drone_1 successfully rescued survivor survivor_0
+[13:56:50] Drone drone_0 rescue failed, poor environmental conditions
+[13:56:50] Drone drone_1 successfully rescued survivor survivor_2
+[13:56:50] ✅ Drone drone_0 returned to base. Mission complete! Battery 70.6%
+[13:56:50] ✅ Drone drone_1 returned to base. Mission complete! Battery 67.0%
+[13:58:10] Charging station station_0 deployed on Flat terrain at (0, 0)
+[13:58:10] Drone drone_0 deployed on Flat at (0, 0)
+[13:58:10] Survivor signal survivor_0 detected at Flat (5, 5)
+[13:58:10] Survivor signal survivor_1 detected at Flat (4, 7)
+[13:58:10] Terrain analysis: Flat(21.3%), Mountain(36.4%), Hill(27.1%), Water(15.1%), 11 obstacles, average altitude 1687m
+[13:58:10] Drone drone_0 successfully rescued survivor survivor_0
+[13:58:10] Drone drone_0 successfully rescued survivor survivor_1
+[13:58:11] ✅ Drone drone_0 returned to base. Mission complete! Battery 83.6%
+[13:58:11] Charging station station_0 deployed on Flat terrain at (18, 19)
+[13:58:11] Drone drone_0 deployed on Flat at (17, 18)
+[13:58:11] Survivor signal survivor_0 detected at Flat (3, 15)
+[13:58:11] Survivor signal survivor_1 detected at Flat (9, 15)
+[13:58:11] Survivor signal survivor_2 detected at Mountain, near Debris (14, 9)
+[13:58:11] Survivor signal survivor_3 detected at Hill (9, 11)
+[13:58:11] Survivor signal survivor_4 detected at Hill (8, 10)
+[13:58:11] Terrain analysis: Mountain(57.5%), Hill(17.5%), Flat(19.0%), Water(6.0%), 19 obstacles, average altitude 945m
+[13:58:11] Drone drone_0 successfully rescued survivor survivor_2
+[13:58:11] Drone drone_0 successfully rescued survivor survivor_3
+[13:58:11] Drone drone_0 rescue failed, poor environmental conditions
+[13:58:11] Drone drone_0 successfully rescued survivor survivor_4
+[13:58:11] Step 20: 1 drones active, 3 survivors rescued, average battery 76.4%
+[13:58:11] Drone drone_0 successfully rescued survivor survivor_1
+[14:00:15] Charging station station_0 deployed on Flat terrain at (12, 1)
+[14:00:15] Drone drone_0 deployed on Flat at (11, 0)
+[14:00:15] Survivor signal survivor_0 detected at Mountain (7, 2)
+[14:00:15] Survivor signal survivor_1 detected at Flat (4, 13)
+[14:00:15] Terrain analysis: Mountain(26.2%), Hill(11.1%), Flat(32.0%), Water(30.7%), 11 obstacles, average altitude 1099m
+[14:00:15] Drone drone_0 rescue failed, poor environmental conditions
+[14:00:15] Drone drone_0 successfully rescued survivor survivor_0
+[14:00:15] Drone drone_0 successfully rescued survivor survivor_1
+[14:00:15] Step 20: 1 drones active, 2 survivors rescued, average battery 77.4%
+[14:00:15] ✅ Drone drone_0 returned to base. Mission complete! Battery 70.5%
+[14:00:15] Charging station station_0 deployed on Flat terrain at (2, 17)
+[14:00:15] Drone drone_0 deployed on Water at (1, 16)
+[14:00:15] Survivor signal survivor_0 detected at Flat (4, 8)
+[14:00:15] Survivor signal survivor_1 detected at Mountain (7, 5)
+[14:00:15] Survivor signal survivor_2 detected at Mountain (19, 12)
+[14:00:15] Survivor signal survivor_3 detected at Hill, near Vehicle (5, 5)
+[14:00:15] Survivor signal survivor_4 detected at Mountain (15, 13)
+[14:00:15] Terrain analysis: Water(8.5%), Flat(15.8%), Hill(13.2%), Mountain(62.5%), 20 obstacles, average altitude 1579m
+[14:00:16] Drone drone_0 rescue failed, poor environmental conditions
+[14:00:16] Drone drone_0 rescue failed, poor environmental conditions
+[14:00:16] Drone drone_0 successfully rescued survivor survivor_0
+[14:00:16] Drone drone_0 successfully rescued survivor survivor_3
+[14:00:17] Drone drone_0 successfully rescued survivor survivor_1
+[14:00:17] Step 20: 0 drones active, 3 survivors rescued, average battery 65.6%
+[14:00:47] Charging station station_0 deployed on Flat terrain at (2, 16)
+[14:00:47] Charging station station_1 deployed on Flat terrain at (7, 14)
+[14:00:47] Drone drone_0 deployed on Flat at (1, 15)
+[14:00:47] Drone drone_1 deployed on Flat at (1, 16)
+[14:00:47] Drone drone_2 deployed on Water at (1, 17)
+[14:00:47] Survivor signal survivor_0 detected at Hill (16, 16)
+[14:00:47] Survivor signal survivor_1 detected at Flat (5, 11)
+[14:00:47] Survivor signal survivor_2 detected at Hill (9, 12)
+[14:00:47] Survivor signal survivor_3 detected at Flat (10, 19)
+[14:00:47] Survivor signal survivor_4 detected at Mountain (10, 2)
+[14:00:47] Terrain analysis: Mountain(53.8%), Hill(20.0%), Flat(18.8%), Water(7.5%), 19 obstacles, average altitude 1237m
+[14:07:53] Charging station station_0 deployed on Flat terrain at (8, 19)
+[14:07:53] Charging station station_1 deployed on Flat terrain at (14, 13)
+[14:07:53] Drone drone_0 deployed on Hill,Wind at (7, 18)
+[14:07:53] Drone drone_1 deployed on Hill,Wind at (7, 19)
+[14:07:53] Drone drone_2 deployed on Flat,Wind at (8, 18)
+[14:07:53] Survivor signal survivor_0 detected at Flat (15, 12)
+[14:07:53] Survivor signal survivor_1 detected at Mountain (9, 1)
+[14:07:53] Survivor signal survivor_2 detected at Water (16, 13)
+[14:07:53] Survivor signal survivor_3 detected at Flat (10, 19)
+[14:07:53] Survivor signal survivor_4 detected at Mountain (2, 15)
+[14:07:53] Terrain analysis: Mountain(70.2%), Hill(6.2%), Flat(12.0%), Water(11.5%), 19 obstacles, average altitude 1505m

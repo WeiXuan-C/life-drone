@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Simple MCP Server Starter
 Fixed version that works with FastMCP's run() method
@@ -6,6 +7,15 @@ Fixed version that works with FastMCP's run() method
 
 import sys
 import os
+import io
+
+# Fix Windows console encoding for Unicode characters
+if sys.platform == 'win32':
+    try:
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
+    except:
+        pass
 
 # Add current directory to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -34,12 +44,22 @@ def main():
     # Create FastMCP server
     mcp = FastMCP("Drone Control Server")
     
-    print("🚁 Drone Control Server")
-    print("=" * 60)
-    print(f"📡 FastMCP Available: {FASTMCP_AVAILABLE}")
-    print(f"🔧 Drone Registry: {len(drone_registry.drones)} drones initialized")
-    print(f"🎯 Survivors: {len(drone_registry.survivors)} targets available")
-    print(f"⚡ Charging Stations: {len(drone_registry.charging_stations)} stations")
+    # Only print if running interactively (not as subprocess)
+    if sys.stdout.isatty():
+        try:
+            print("🚁 Drone Control Server")
+            print("=" * 60)
+            print(f"📡 FastMCP Available: {FASTMCP_AVAILABLE}")
+            print(f"🔧 Drone Registry: {len(drone_registry.drones)} drones initialized")
+            print(f"🎯 Survivors: {len(drone_registry.survivors)} targets available")
+            print(f"⚡ Charging Stations: {len(drone_registry.charging_stations)} stations")
+        except UnicodeEncodeError:
+            print("Drone Control Server")
+            print("=" * 60)
+            print(f"FastMCP Available: {FASTMCP_AVAILABLE}")
+            print(f"Drone Registry: {len(drone_registry.drones)} drones initialized")
+            print(f"Survivors: {len(drone_registry.survivors)} targets available")
+            print(f"Charging Stations: {len(drone_registry.charging_stations)} stations")
     
     # Register tools
     @mcp.tool()
@@ -68,29 +88,56 @@ def main():
         return return_to_base(drone_id)
     
     @mcp.tool()
+    def rescue_survivor_tool(drone_id: str, x: int, y: int):
+        """Rescue survivor at specified position"""
+        from mcp_server.drone_tools import rescue_survivor
+        return rescue_survivor(drone_id, (x, y))
+    
+    @mcp.tool()
     def get_mission_status_tool():
         """Get overall mission statistics"""
         return get_mission_status()
     
-    print("\n📋 Available MCP Tools:")
-    print("   1. discover_drones_tool() - Get list of available drones")
-    print("   2. get_battery_status_tool(drone_id) - Check drone battery level")
-    print("   3. move_to_tool(drone_id, x, y) - Move drone to coordinates")
-    print("   4. thermal_scan_tool(drone_id) - Scan for survivors")
-    print("   5. return_to_base_tool(drone_id) - Send drone to charging station")
-    print("   6. get_mission_status_tool() - Get mission statistics")
-    
-    print(f"\n🚀 Starting MCP server...")
-    print("🛑 Press Ctrl+C to stop the server")
-    print("=" * 60)
+    try:
+        print("\n📋 Available MCP Tools:")
+        print("   1. discover_drones_tool() - Get list of available drones")
+        print("   2. get_battery_status_tool(drone_id) - Check drone battery level")
+        print("   3. move_to_tool(drone_id, x, y) - Move drone to coordinates")
+        print("   4. thermal_scan_tool(drone_id) - Scan for survivors")
+        print("   5. return_to_base_tool(drone_id) - Send drone to charging station")
+        print("   6. rescue_survivor_tool(drone_id, x, y) - Rescue survivor at position")
+        print("   7. get_mission_status_tool() - Get mission statistics")
+        
+        print(f"\n🚀 Starting MCP server...")
+        print("🛑 Press Ctrl+C to stop the server")
+        print("=" * 60)
+    except UnicodeEncodeError:
+        print("\nAvailable MCP Tools:")
+        print("   1. discover_drones_tool() - Get list of available drones")
+        print("   2. get_battery_status_tool(drone_id) - Check drone battery level")
+        print("   3. move_to_tool(drone_id, x, y) - Move drone to coordinates")
+        print("   4. thermal_scan_tool(drone_id) - Scan for survivors")
+        print("   5. return_to_base_tool(drone_id) - Send drone to charging station")
+        print("   6. rescue_survivor_tool(drone_id, x, y) - Rescue survivor at position")
+        print("   7. get_mission_status_tool() - Get mission statistics")
+        
+        print(f"\nStarting MCP server...")
+        print("Press Ctrl+C to stop the server")
+        print("=" * 60)
     
     # Start the server
     try:
         mcp.run()
     except KeyboardInterrupt:
-        print("\n🛑 Server stopped by user")
+        try:
+            print("\n🛑 Server stopped by user")
+        except:
+            print("\nServer stopped by user")
     except Exception as e:
-        print(f"\n❌ Server error: {e}")
+        try:
+            print(f"\n❌ Server error: {e}")
+        except:
+            print(f"\nServer error: {e}")
 
 if __name__ == "__main__":
     main()

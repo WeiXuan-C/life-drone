@@ -56,33 +56,33 @@ class TerrainCell:
         self.wind_direction = 0.0  # Wind direction (degrees)
         
     def get_movement_cost(self, drone_type: str = "standard") -> float:
-        """Calculate movement cost"""
+        """Calculate movement cost - REDUCED for better mission completion"""
         base_cost = {
-            TerrainType.FLAT: 1.0,
-            TerrainType.HILL: 1.5,
-            TerrainType.MOUNTAIN: 3.0,
-            TerrainType.WATER: 1.2,  # Drones can fly over but risky
-            TerrainType.FOREST: 1.8,
-            TerrainType.DESERT: 2.0,
-            TerrainType.SWAMP: 2.5,
-            TerrainType.URBAN: 1.6,
-            TerrainType.CLIFF: 4.0,
-            TerrainType.VALLEY: 1.3
+            TerrainType.FLAT: 0.5,        # Reduced from 1.0
+            TerrainType.HILL: 0.8,        # Reduced from 1.5
+            TerrainType.MOUNTAIN: 1.5,    # Reduced from 3.0
+            TerrainType.WATER: 0.6,       # Reduced from 1.2
+            TerrainType.FOREST: 0.9,      # Reduced from 1.8
+            TerrainType.DESERT: 1.0,      # Reduced from 2.0
+            TerrainType.SWAMP: 1.2,       # Reduced from 2.5
+            TerrainType.URBAN: 0.8,       # Reduced from 1.6
+            TerrainType.CLIFF: 2.0,       # Reduced from 4.0
+            TerrainType.VALLEY: 0.7       # Reduced from 1.3
         }
         
-        cost = base_cost.get(self.terrain_type, 1.0)
+        cost = base_cost.get(self.terrain_type, 0.5)
         
-        # Height impact
-        height_factor = 1.0 + (self.height / 1000.0) * 0.5  # 50% increase per 1000m
+        # Height impact - REDUCED
+        height_factor = 1.0 + (self.height / 1000.0) * 0.2  # Reduced from 0.5 to 0.2
         cost *= height_factor
         
-        # Weather impact
+        # Weather impact - REDUCED
         weather_multiplier = {
             WeatherCondition.CLEAR: 1.0,
-            WeatherCondition.RAIN: 1.3,
-            WeatherCondition.WIND: 1.2,
-            WeatherCondition.FOG: 1.8,
-            WeatherCondition.STORM: 3.0
+            WeatherCondition.RAIN: 1.1,   # Reduced from 1.3
+            WeatherCondition.WIND: 1.1,   # Reduced from 1.2
+            WeatherCondition.FOG: 1.3,    # Reduced from 1.8
+            WeatherCondition.STORM: 1.8   # Reduced from 3.0
         }
         cost *= weather_multiplier.get(self.weather, 1.0)
         
@@ -245,34 +245,27 @@ class TerrainGenerator:
                 cell = terrain[y][x]
                 relative_height = (cell.height - min_height) / height_range if height_range > 0 else 0
                 
-                # Assign terrain based on relative height
-                if relative_height < 0.1:
-                    # Lowland
-                    terrain_options = [TerrainType.WATER, TerrainType.SWAMP, TerrainType.VALLEY]
-                    cell.terrain_type = random.choice(terrain_options)
-                elif relative_height < 0.3:
-                    # Flatland
-                    terrain_options = [TerrainType.FLAT, TerrainType.FOREST, TerrainType.URBAN]
-                    weights = [0.5, 0.3, 0.2]
-                    cell.terrain_type = random.choices(terrain_options, weights=weights)[0]
-                elif relative_height < 0.6:
-                    # Hills
-                    terrain_options = [TerrainType.HILL, TerrainType.FOREST, TerrainType.DESERT]
-                    weights = [0.6, 0.3, 0.1]
-                    cell.terrain_type = random.choices(terrain_options, weights=weights)[0]
-                elif relative_height < 0.8:
-                    # Mountains
-                    terrain_options = [TerrainType.MOUNTAIN, TerrainType.CLIFF]
-                    weights = [0.8, 0.2]
-                    cell.terrain_type = random.choices(terrain_options, weights=weights)[0]
+                # Assign terrain based on relative height (简化为山河地形)
+                if relative_height < 0.15:
+                    # 低地 - 河流/水域
+                    cell.terrain_type = TerrainType.WATER
+                elif relative_height < 0.35:
+                    # 平地
+                    cell.terrain_type = TerrainType.FLAT
+                elif relative_height < 0.55:
+                    # 丘陵
+                    cell.terrain_type = TerrainType.HILL
+                elif relative_height < 0.75:
+                    # 山地
+                    cell.terrain_type = TerrainType.MOUNTAIN
                 else:
-                    # High mountains
+                    # 高山
                     cell.terrain_type = TerrainType.MOUNTAIN
     
     @staticmethod
     def _add_obstacles(terrain: List[List[TerrainCell]], width: int, height: int):
         """Add obstacles"""
-        obstacle_density = 0.15  # 15% of cells have obstacles
+        obstacle_density = 0.05  # 5% of cells have obstacles (减少障碍物)
         num_obstacles = int(width * height * obstacle_density)
         
         for _ in range(num_obstacles):
@@ -303,14 +296,14 @@ class TerrainGenerator:
     @staticmethod
     def _set_weather_conditions(terrain: List[List[TerrainCell]], width: int, height: int):
         """Set weather conditions"""
-        # Create weather zones
-        weather_zones = random.randint(1, 3)
+        # 简化天气系统 - 大部分区域晴朗
+        weather_zones = random.randint(0, 1)  # 减少天气区域
         
         for _ in range(weather_zones):
             center_x = random.randint(0, width - 1)
             center_y = random.randint(0, height - 1)
-            radius = random.randint(3, 8)
-            weather = random.choice(list(WeatherCondition))
+            radius = random.randint(2, 5)  # 减小天气影响范围
+            weather = random.choice([WeatherCondition.CLEAR, WeatherCondition.WIND])  # 只使用晴朗和微风
             
             for y in range(max(0, center_y - radius), min(height, center_y + radius + 1)):
                 for x in range(max(0, center_x - radius), min(width, center_x + radius + 1)):

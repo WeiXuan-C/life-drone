@@ -31,16 +31,6 @@ class RescueAgent:
         
         # Initialize memory system
         self.memory = MissionMemory()
-        
-        # Agent state
-        self.agent_id = "rescue_agent_001"
-        self.status = "ready"
-        self.current_mission = None
-        
-        print(f"✅ RescueAgent initialized with mandatory LangGraph workflow")
-        print(f"🤖 Agent ID: {self.agent_id}")
-        print(f"🧠 LLM Model: {model_name}")
-        print(f"🔄 LangGraph Workflow: Active")
     
     def process_ui_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """

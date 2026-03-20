@@ -58,6 +58,26 @@ class EnhancedDroneAgent(Agent):
             self.log_reasoning("Battery depleted", "Drone crashed", "emergency_landing", "System shutdown")
             return
         
+        # CRITICAL: Check if we have enough battery to return to charging station BEFORE any action
+        nearest_station_pos = self.find_nearest_charging_station()
+        if nearest_station_pos and self.status not in ["charging", "emergency_return"]:
+            distance_to_station = self.calculate_terrain_distance(nearest_station_pos)
+            # Add 30% safety margin for terrain complexity
+            required_battery = distance_to_station * 1.3 + 5
+            
+            # If battery is getting low, prioritize returning to charging station
+            if self.battery <= required_battery + 10:  # +10 extra buffer
+                if self.status != "charging":
+                    self.model.release_survivor_assignment(self.unique_id)
+                    self.status = "charging"
+                    self.target = nearest_station_pos
+                    self.log_reasoning(
+                        f"Battery {self.battery:.1f}% approaching minimum for return ({required_battery:.1f}%)",
+                        "Prioritize charging",
+                        "return_to_station",
+                        f"Distance to station: {distance_to_station:.1f}"
+                    )
+        
         # Get current terrain information
         current_terrain = self.get_current_terrain()
         
@@ -275,13 +295,27 @@ class EnhancedDroneAgent(Agent):
         """Make final decision"""
         current_terrain = self.get_current_terrain()
         
-        # Emergency handling
-        if self.battery <= 15:
-            # Release any survivor assignment when going to emergency mode
-            self.model.release_survivor_assignment(self.unique_id)
-            self.status = "emergency_return"
-            self.target = self.find_nearest_charging_station()
-            return "Battery extremely low, emergency return to charging station"
+        # Check if we have enough battery to return to nearest charging station
+        nearest_station_pos = self.find_nearest_charging_station()
+        if nearest_station_pos:
+            distance_to_station = self.calculate_terrain_distance(nearest_station_pos)
+            # Add 20% safety margin for terrain complexity
+            required_battery = distance_to_station * 1.2 + 5  # +5 for safety buffer
+            
+            # Emergency handling - not enough battery to return
+            if self.battery <= required_battery:
+                # Release any survivor assignment when going to emergency mode
+                self.model.release_survivor_assignment(self.unique_id)
+                self.status = "emergency_return"
+                self.target = nearest_station_pos
+                return f"Battery critical ({self.battery:.1f}%), emergency return to charging station (need {required_battery:.1f})"
+        else:
+            # No charging station found, use simple threshold
+            if self.battery <= 15:
+                # Release any survivor assignment when going to emergency mode
+                self.model.release_survivor_assignment(self.unique_id)
+                self.status = "emergency_return"
+                return "Battery extremely low, no charging station found"
         
         # Severe weather handling
         if current_terrain and current_terrain.weather == WeatherCondition.STORM:
@@ -297,7 +331,7 @@ class EnhancedDroneAgent(Agent):
         
         # Normal mission decision
         if self.status == "charging":
-            if self.battery >= 80:
+            if self.battery >= 90:  # Increased from 80 to 90 for better mission completion
                 self.status = "idle"
                 return "Charging complete, ready for mission"
             else:
@@ -309,35 +343,65 @@ class EnhancedDroneAgent(Agent):
             closest_survivor = min(survivors, key=lambda s: self.calculate_terrain_distance(s.pos))
             distance = self.calculate_terrain_distance(closest_survivor.pos)
             
-            # Evaluate if there's enough battery to complete rescue
-            estimated_cost = distance * 2 + 20  # Round trip + rescue operation
+            # Calculate battery needed for complete rescue mission
+            # Need to: go to survivor + rescue + return to charging station
+            distance_to_station = self.calculate_terrain_distance(nearest_station_pos) if nearest_station_pos else 10
+            
+            # Estimate: to survivor + rescue operation + to station (with 30% safety margin)
+            estimated_cost = (distance + 10 + distance_to_station) * 1.3
+            
             if self.battery > estimated_cost:
                 # Assign this survivor to this drone to prevent conflicts
                 self.model.assign_survivor_to_drone(self.unique_id, closest_survivor.unique_id)
                 self.target = closest_survivor.pos
                 self.status = "rescue_mission"
-                return f"Execute rescue mission to {closest_survivor.unique_id}, target distance {distance:.1f}"
+                return f"Execute rescue mission to {closest_survivor.unique_id}, distance {distance:.1f}, estimated cost {estimated_cost:.1f}"
             else:
                 # Release any survivor assignment when switching to charging
                 self.model.release_survivor_assignment(self.unique_id)
                 self.status = "charging"
-                self.target = self.find_nearest_charging_station()
-                return "Insufficient battery to complete rescue, charging first"
+                self.target = nearest_station_pos
+                return f"Insufficient battery ({self.battery:.1f}) for rescue (need {estimated_cost:.1f}), charging first"
         
-        # Area scanning
+        # CRITICAL: No survivors found - check if mission is complete
+        # If 100% confirmed no survivors remain, return to starting point (charging station)
+        all_survivors = [agent for agent in self.model.custom_agents 
+                        if isinstance(agent, SimpleSurvivorAgent)]
+        unrescued_survivors = [s for s in all_survivors if not s.found]
+        
+        if len(unrescued_survivors) == 0:
+            # Mission complete! All survivors rescued, return to base
+            if nearest_station_pos and self.pos != nearest_station_pos:
+                self.model.release_survivor_assignment(self.unique_id)
+                self.status = "mission_complete_return"
+                self.target = nearest_station_pos
+                return f"Mission complete! All {len(all_survivors)} survivors rescued. Returning to base at {nearest_station_pos}"
+            elif self.pos == nearest_station_pos:
+                # Already at base
+                self.status = "mission_complete"
+                return "Mission complete! All survivors rescued. Drone at base."
+            else:
+                # No charging station, just go idle
+                self.status = "mission_complete"
+                return "Mission complete! All survivors rescued."
+        
+        # Area scanning - still searching for survivors
         self.status = "area_scan"
-        return "Execute area scan mission"
+        return f"Execute area scan mission - {len(unrescued_survivors)} survivors still missing"
     
     def execute_decision(self):
         """Execute decision"""
         if self.status == "charging":
             self.handle_charging()
-        elif self.status in ["rescue_mission", "emergency_return"]:
+        elif self.status in ["rescue_mission", "emergency_return", "mission_complete_return"]:
             self.handle_movement()
         elif self.status == "area_scan":
             self.handle_area_scan()
         elif self.status == "weather_hold":
             self.handle_weather_hold()
+        elif self.status == "mission_complete":
+            # Mission complete, drone stays at base
+            pass
     
     def handle_movement(self):
         """Handle movement"""
@@ -349,20 +413,54 @@ class EnhancedDroneAgent(Agent):
             terrain = self.model.terrain
             self.planned_path = PathfindingSystem.a_star_pathfinding(terrain, self.pos, self.target)
             self.current_path_index = 0
+            
+            # If no path found, try to find alternative target
+            if not self.planned_path:
+                if self.status == "emergency_return":
+                    # Try to find any charging station
+                    stations = self.find_charging_stations()
+                    if stations:
+                        # Try each station until we find a reachable one
+                        for station in sorted(stations, key=lambda s: self.calculate_terrain_distance(s.pos)):
+                            test_path = PathfindingSystem.a_star_pathfinding(terrain, self.pos, station.pos)
+                            if test_path:
+                                self.target = station.pos
+                                self.planned_path = test_path
+                                self.current_path_index = 0
+                                break
+                
+                # If still no path, we're stuck
+                if not self.planned_path:
+                    self.status = "idle"
+                    self.target = None
+                    return
         
         # Move along planned path
         if self.planned_path and self.current_path_index < len(self.planned_path):
             next_pos = self.planned_path[self.current_path_index]
             
             # Check terrain at next position
-            if self.can_move_to(next_pos):
+            terrain_cell = self.get_terrain_at(next_pos)
+            move_cost = terrain_cell.get_movement_cost() if terrain_cell else 0.5
+            
+            # For emergency return, allow movement even with very low battery
+            can_move = False
+            if self.status == "emergency_return":
+                # In emergency, allow movement if we have ANY battery
+                can_move = (move_cost != float('inf') and self.battery > 0.1)
+            else:
+                can_move = self.can_move_to(next_pos)
+            
+            if can_move:
                 old_pos = self.pos
                 self.model.grid.move_agent(self, next_pos)
                 
                 # Calculate movement cost
-                terrain_cell = self.get_terrain_at(next_pos)
-                move_cost = terrain_cell.get_movement_cost() if terrain_cell else 2.0
                 self.battery -= move_cost
+                
+                # Prevent negative battery
+                if self.battery < 0:
+                    self.battery = 0
                 
                 # Update statistics
                 distance = math.sqrt((next_pos[0] - old_pos[0])**2 + (next_pos[1] - old_pos[1])**2)
@@ -385,26 +483,35 @@ class EnhancedDroneAgent(Agent):
                            if hasattr(agent, 'unique_id') and 'station' in str(agent.unique_id)]
         
         if charging_stations:
-            charge_rate = 10
+            charge_rate = 15  # Increased from 10 to 15 for faster charging
             # Terrain may affect charging efficiency
             current_terrain = self.get_current_terrain()
             if current_terrain and current_terrain.weather == WeatherCondition.STORM:
-                charge_rate = 5  # Severe weather affects charging
+                charge_rate = 8  # Severe weather affects charging (increased from 5)
             
+            old_battery = self.battery
             self.battery = min(self.max_battery, self.battery + charge_rate)
+            
+            # Log charging progress
+            if self.battery >= 80 and old_battery < 80:
+                self.model.log_event(f"Drone {self.unique_id} charging complete at {charging_stations[0].unique_id}")
         else:
             # Not at charging station, need to move to charging station
             self.target = self.find_nearest_charging_station()
             if self.target:
                 self.handle_movement()
+            else:
+                # No charging station found - log warning
+                if hasattr(self.model, 'step_count') and self.model.step_count % 20 == 0:
+                    self.model.log_event(f"⚠️ Drone {self.unique_id} cannot find charging station, battery {self.battery:.1f}%")
     
     def handle_area_scan(self):
         """Handle area scanning"""
         current_terrain = self.get_current_terrain()
         scan_efficiency = current_terrain.get_scan_efficiency() if current_terrain else 0.5
         
-        # Scan surrounding area for survivors
-        scan_cost = 1.0 / scan_efficiency  # Lower efficiency, higher cost
+        # Scan surrounding area for survivors - REDUCED cost
+        scan_cost = 0.5 / scan_efficiency  # Reduced from 1.0 to 0.5
         self.battery -= scan_cost
         
         # Find survivors within scan range
@@ -433,7 +540,7 @@ class EnhancedDroneAgent(Agent):
     def handle_weather_hold(self):
         """Handle severe weather waiting"""
         # Wait in severe weather, consume small amount of battery to maintain systems
-        self.battery -= 0.5
+        self.battery -= 0.3  # Reduced from 0.5 to 0.3
         
         # Check if weather has improved
         current_terrain = self.get_current_terrain()
@@ -463,11 +570,24 @@ class EnhancedDroneAgent(Agent):
                     self.failed_attempts += 1
                     self.model.log_event(f"Drone {self.unique_id} rescue failed, poor environmental conditions")
         
+        elif self.status == "emergency_return":
+            # Reached charging station in emergency mode
+            self.status = "charging"
+            self.model.log_event(f"Drone {self.unique_id} reached charging station in emergency mode, battery {self.battery:.1f}%")
+        
+        elif self.status == "mission_complete_return":
+            # Reached base after mission completion
+            self.status = "mission_complete"
+            self.model.log_event(f"✅ Drone {self.unique_id} returned to base. Mission complete! Battery {self.battery:.1f}%")
+        
         # Clear target and path
         self.target = None
         self.planned_path = []
         self.current_path_index = 0
-        self.status = "idle"
+        
+        # If not in charging mode or mission complete, go idle
+        if self.status not in ["charging", "emergency_return", "mission_complete"]:
+            self.status = "idle"
     
     def update_status(self, current_terrain: TerrainCell):
         """Update status"""
@@ -534,6 +654,13 @@ class EnhancedDroneAgent(Agent):
         """Find charging stations"""
         stations = [agent for agent in self.model.custom_agents 
                    if hasattr(agent, 'unique_id') and 'station' in str(agent.unique_id)]
+        
+        # Debug: log found stations
+        if hasattr(self.model, 'step_count') and self.model.step_count % 50 == 0:
+            station_ids = [s.unique_id for s in stations]
+            if len(station_ids) > 0:
+                self.model.log_event(f"Drone {self.unique_id} detected {len(stations)} charging stations: {station_ids}")
+        
         return stations
     
     def find_nearest_charging_station(self):

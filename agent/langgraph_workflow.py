@@ -1,6 +1,20 @@
 """
 LangGraph Workflow Implementation - Drone Rescue Mission Orchestration
 Uses state graphs to manage complex rescue mission workflows
+
+KEY FEATURES:
+- Dynamic tool selection via LLM reasoning (no hardcoded workflows)
+- Real-time tool discovery via MCP protocol
+- Adaptive planning based on mission context
+- No hardcoded drone IDs or action sequences
+
+WORKFLOW STAGES:
+1. Mission Analysis - Understand objectives and constraints
+2. Resource Discovery - Use MCP to discover available drones/tools
+3. Dynamic Planning - LLM reasons about next action based on context
+4. Action Execution - Execute chosen tool via MCP
+5. Progress Monitoring - Evaluate results and decide next step
+6. Results Evaluation - Final mission assessment
 """
 
 from typing import Dict, List, Any, Optional, TypedDict
@@ -10,12 +24,14 @@ from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
 from langchain_core.tools import tool
 from langchain_ollama import ChatOllama
 import json
+import sys
+import os
+
+# Add parent directory to path for MCP client import
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from .memory import MissionMemory
-from mcp_server.drone_tools import (
-    discover_drones, get_battery_status, move_to, 
-    thermal_scan, rescue_survivor, return_to_base
-)
+from mcp_client.client import get_mcp_client
 
 
 class RescueState(TypedDict):
@@ -26,11 +42,10 @@ class RescueState(TypedDict):
     drone_status: Dict[str, Any]
     survivors_found: List[Dict[str, Any]]
     current_phase: str  # "planning", "execution", "monitoring", "completion"
-    next_action: Optional[Dict[str, Any]]  # Changed from str to Dict for action details
-    planned_actions: List[Dict[str, Any]]  # List of all planned actions
-    action_index: int  # Current action index in planned_actions
-    decision: Optional[str]  # Added for workflow decisions
-    memory_context: List[str]
+    next_action: Optional[Dict[str, Any]]  # Next action determined by reasoning
+    planned_actions: List[Dict[str, Any]]  # History of all actions taken
+    decision: Optional[str]  # Workflow decision: continue/replan/evaluate
+    memory_context: List[str]  # Recent context for reasoning
     failure_count: int  # Track consecutive failures
     max_failures: int  # Maximum allowed failures before giving up
 
@@ -55,31 +70,18 @@ class LangGraphRescueWorkflow:
         )
         self.memory = MissionMemory()
         
-        # 定义可用工具
-        self.tools = [
-            self._create_tool_function("discover_drones", discover_drones),
-            self._create_tool_function("get_battery_status", get_battery_status),
-            self._create_tool_function("move_to", move_to),
-            self._create_tool_function("thermal_scan", thermal_scan),
-            self._create_tool_function("rescue_survivor", rescue_survivor),
-            self._create_tool_function("return_to_base", return_to_base),
-        ]
+        # Initialize MCP client for direct tool calls
+        self.mcp_client = get_mcp_client()
         
-        self.tool_node = ToolNode(self.tools)
+        # Connect to MCP server
+        if not self.mcp_client.connect():
+            raise RuntimeError("Failed to connect to MCP server. Please ensure MCP server is running.")
+        
+        # No tool wrappers needed! We'll call MCP client directly
+        # This eliminates the double-wrapping problem
         
         # 构建状态图
         self.workflow = self._build_workflow()
-    
-    def _create_tool_function(self, name: str, func):
-        """将 MCP 工具转换为 LangGraph 兼容的工具"""
-        @tool
-        def tool_wrapper(**kwargs):
-            """Tool wrapper for MCP functions"""
-            return func(**kwargs)
-        
-        # Set the tool name manually
-        tool_wrapper.name = name
-        return tool_wrapper
     
     def _build_workflow(self) -> StateGraph:
         """构建 LangGraph 工作流程图"""
@@ -174,277 +176,321 @@ class LangGraphRescueWorkflow:
         return state
     
     def discover_resources(self, state: RescueState) -> RescueState:
-        """Stage 2: Discover available resources (drones, equipment, etc.)"""
+        """Stage 2: Discover available resources via MCP discovery mechanism"""
         
-        print("🔍 Stage 2: Resource Discovery")
+        print("🔍 Stage 2: Dynamic Resource Discovery (via MCP)")
         
-        # Discover drones
-        drone_result = discover_drones()
-        
-        if drone_result["success"]:
-            state["available_drones"] = drone_result["drones"]
+        # Use MCP discovery to find available drones (not hardcoded!)
+        try:
+            drone_result = self.mcp_client.call_tool("discover_drones")
             
-            # 获取每个无人机的状态
-            drone_status = {}
-            for drone_id in state["available_drones"]:
-                status = get_battery_status(drone_id=drone_id)
-                drone_status[drone_id] = status
-            
-            state["drone_status"] = drone_status
-            
-            message = f"Discovered {len(state['available_drones'])} drones"
-            state["messages"].append(AIMessage(content=message))
-            self.memory.add_event(message)
+            if drone_result.get("success") and "drones" in drone_result:
+                state["available_drones"] = drone_result["drones"]
+                
+                print(f"✅ Discovered {len(state['available_drones'])} drones via MCP discovery")
+                
+                # Get battery status for each discovered drone
+                drone_status = {}
+                for drone_id in state["available_drones"]:
+                    try:
+                        status = self.mcp_client.call_tool("get_battery_status", drone_id=drone_id)
+                        if status.get("success"):
+                            drone_status[drone_id] = status
+                    except Exception as e:
+                        print(f"⚠️  Failed to get status for {drone_id}: {e}")
+                
+                state["drone_status"] = drone_status
+                
+                # Update memory context
+                state["memory_context"].append(
+                    f"Discovered {len(state['available_drones'])} drones: {state['available_drones']}"
+                )
+                
+                message = f"Discovered {len(state['available_drones'])} drones via MCP discovery"
+                state["messages"].append(AIMessage(content=message))
+                self.memory.add_event(message)
+            else:
+                error_msg = "Failed to discover drones via MCP"
+                print(f"❌ {error_msg}")
+                state["messages"].append(AIMessage(content=error_msg))
+                state["memory_context"].append(error_msg)
+                
+        except Exception as e:
+            error_msg = f"Exception during resource discovery: {str(e)}"
+            print(f"❌ {error_msg}")
+            state["messages"].append(AIMessage(content=error_msg))
+            state["memory_context"].append(error_msg)
         
         state["current_phase"] = "mission_planning"
         return state
     
     def plan_mission(self, state: RescueState) -> RescueState:
-        """Stage 3: Develop detailed mission execution plan"""
+        """Stage 3: Use reasoning to determine next action dynamically"""
         
-        print("📋 Stage 3: Mission Planning")
+        print("📋 Stage 3: Dynamic Mission Planning (Reasoning-based)")
         
+        # Get available tools from MCP discovery
+        available_tools = self.mcp_client.get_available_tools()
+        tool_descriptions = []
+        
+        if available_tools and "tools" in available_tools:
+            for tool in available_tools["tools"]:
+                tool_desc = f"- {tool['name']}: {tool.get('description', 'No description')}"
+                if 'inputSchema' in tool and 'properties' in tool['inputSchema']:
+                    params = ', '.join(tool['inputSchema']['properties'].keys())
+                    tool_desc += f" (params: {params})"
+                tool_descriptions.append(tool_desc)
+        
+        # Build reasoning prompt with discovered tools
         planning_prompt = f"""
-        Based on the following information, develop a rescue plan:
+        You are a rescue mission commander. Use reasoning to determine the NEXT SINGLE ACTION.
         
         Mission Objective: {state['mission_goal']}
         Available Drones: {state['available_drones']}
         Drone Status: {state['drone_status']}
+        Survivors Found So Far: {len(state['survivors_found'])}
+        Previous Actions Taken: {len(state.get('planned_actions', []))}
         
-        Available action types (only use the following actions):
-        1. thermal_scan - Thermal imaging scan to search for survivors (requires at least 5% battery)
-        2. move_to - Move drone to specified position (parameters: x, y coordinates)
-        3. rescue_survivor - Rescue survivor at specified position (parameters: x, y coordinates, requires at least 10% battery)
-        4. return_to_base - Return to base for charging
+        Available Tools (discovered via MCP):
+        {chr(10).join(tool_descriptions) if tool_descriptions else "No tools available"}
         
-        Develop a multi-drone coordination plan, focusing on:
-        1. First deploy healthy drones to search areas for scanning
-        2. Immediately arrange rescue after discovering survivors
-        3. Only drones with insufficient battery (<20%) should return to base
-        4. Prioritize using move_to and thermal_scan for searching
-        5. Ensure coverage of different search areas
+        Recent Context:
+        {chr(10).join(state.get('memory_context', [])[-3:]) if state.get('memory_context') else "No previous context"}
         
-        Develop action plans for each available drone, reply in JSON format:
-        {{"actions": [
-            {{"action": "move_to", "drone_id": "drone_A", "parameters": {{"x": 5, "y": 8}}, "priority": 1}}, 
-            {{"action": "thermal_scan", "drone_id": "drone_A", "parameters": {{}}, "priority": 2}},
-            {{"action": "move_to", "drone_id": "drone_B", "parameters": {{"x": 12, "y": 15}}, "priority": 1}},
-            {{"action": "thermal_scan", "drone_id": "drone_B", "parameters": {{}}, "priority": 2}}
-        ]}}
+        Based on the current situation, reason about:
+        1. What is the most important next step to achieve the mission goal?
+        2. Which tool should be used and why?
+        3. Which drone should execute this action (consider battery levels)?
+        4. What parameters are needed for this tool?
         
-        Important: Prioritize search missions, only use return_to_base when battery is critically low
-        Note: action field can only be thermal_scan, move_to, rescue_survivor, or return_to_base
+        Reply in JSON format with your reasoning and the next action:
+        {{
+            "reasoning": "Explain why this action is chosen",
+            "tool_name": "exact_tool_name_from_mcp",
+            "drone_id": "selected_drone_id",
+            "parameters": {{"param1": "value1"}},
+            "expected_outcome": "What you expect to happen"
+        }}
+        
+        Important: Choose ONE action at a time. Do not plan multiple steps ahead.
         """
         
         response = self.llm.invoke([HumanMessage(content=planning_prompt)])
         
         try:
             plan = json.loads(response.content)
-            state["planned_actions"] = plan.get("actions", [])
-        except:
-            # Create default plan for each available drone
-            planned_actions = []
-            search_positions = [(5, 8), (12, 15), (18, 6), (3, 12), (15, 3)]
             
-            for i, drone_id in enumerate(state["available_drones"][:5]):
-                drone_status = state["drone_status"].get(drone_id, {})
-                battery = drone_status.get("battery_level", 0)
-                
-                if battery < 20:  # Only return to base if battery below 20%
-                    # Low battery, return to base
-                    planned_actions.append({
-                        "action": "return_to_base",
-                        "drone_id": drone_id,
-                        "parameters": {},
-                        "priority": 1
-                    })
-                else:
-                    # Move to search position, scan, rescue survivors if found
-                    if i < len(search_positions):
-                        pos = search_positions[i]
-                        planned_actions.extend([
-                            {
-                                "action": "move_to",
-                                "drone_id": drone_id,
-                                "parameters": {"x": pos[0], "y": pos[1]},
-                                "priority": 1
-                            },
-                            {
-                                "action": "thermal_scan",
-                                "drone_id": drone_id,
-                                "parameters": {},
-                                "priority": 2
-                            }
-                            # Note: Rescue actions will be dynamically added after scanning discovers survivors
-                        ])
+            # Store reasoning in memory
+            reasoning = plan.get("reasoning", "No reasoning provided")
+            self.memory.add_event(f"Reasoning: {reasoning}")
             
-            state["planned_actions"] = planned_actions
-        
-        # Set first batch of actions to execute
-        state["next_action"] = state["planned_actions"][0] if state["planned_actions"] else None
-        state["action_index"] = 0
+            # Create single action from reasoning
+            next_action = {
+                "tool_name": plan.get("tool_name"),
+                "drone_id": plan.get("drone_id"),
+                "parameters": plan.get("parameters", {}),
+                "reasoning": reasoning,
+                "expected_outcome": plan.get("expected_outcome", "")
+            }
+            
+            state["next_action"] = next_action
+            state["planned_actions"].append(next_action)  # Track all actions taken
+            
+            print(f"🧠 Reasoning: {reasoning}")
+            print(f"🎯 Next action: {next_action['tool_name']} with {next_action['drone_id']}")
+            
+        except Exception as e:
+            print(f"⚠️  Failed to parse reasoning response: {e}")
+            # Fallback: ask for tool discovery
+            state["next_action"] = {
+                "tool_name": "discover_drones",
+                "drone_id": None,
+                "parameters": {},
+                "reasoning": "Fallback to discovery",
+                "expected_outcome": "Get available resources"
+            }
         
         state["current_phase"] = "execution"
-        self.memory.add_event(f"Mission plan completed, planning to execute {len(state['planned_actions'])} actions")
+        self.memory.add_event(f"Planned next action: {state['next_action']['tool_name']}")
         
         return state
     
     def execute_action(self, state: RescueState) -> RescueState:
-        """Stage 4: Execute specific actions"""
+        """Stage 4: Execute action via dynamic MCP tool call"""
         
-        print("🎯 Stage 4: Action Execution")
+        print("🎯 Stage 4: Dynamic Action Execution (via MCP)")
         
         if not state["next_action"]:
             state["current_phase"] = "evaluation"
-            state["decision"] = "evaluate"  # Force evaluation when no action available
-            message = "No executable actions, mission ended"
+            state["decision"] = "evaluate"
+            message = "No action to execute, moving to evaluation"
             state["messages"].append(AIMessage(content=message))
             self.memory.add_event(message)
             return state
         
         action = state["next_action"]
-        action_name = action["action"]
+        tool_name = action.get("tool_name")
+        drone_id = action.get("drone_id")
+        parameters = action.get("parameters", {})
         
-        # Execute corresponding tool
-        if action_name == "thermal_scan":
-            result = thermal_scan(drone_id=action["drone_id"])
-        elif action_name == "move_to":
-            result = move_to(
-                drone_id=action["drone_id"],
-                x=action["parameters"].get("x", 0),
-                y=action["parameters"].get("y", 0)
-            )
-        elif action_name == "rescue_survivor":
-            result = rescue_survivor(
-                drone_id=action["drone_id"],
-                survivor_position=(
-                    action["parameters"].get("x", 0),
-                    action["parameters"].get("y", 0)
-                )
-            )
-        elif action_name == "return_to_base":
-            result = return_to_base(drone_id=action["drone_id"])
-        else:
-            result = {"success": False, "error": f"Unknown action: {action_name}"}
+        print(f"🔧 Executing tool: {tool_name}")
+        print(f"📋 Parameters: {parameters}")
         
-        # 记录结果
-        if result.get("success"):
-            message = f"行动成功：{action_name} ({action['drone_id']}) - {result.get('message', '')}"
-            state["failure_count"] = 0  # Reset failure count on success
+        # Dynamic tool call via MCP client
+        try:
+            # Build parameters for MCP call
+            mcp_params = {}
             
-            # If survivors found, record positions and add rescue actions
-            if action_name == "thermal_scan" and result.get("survivors_detected", 0) > 0:
-                survivors = result.get("positions", [])
-                for pos in survivors:
-                    state["survivors_found"].append({
-                        "position": pos, 
-                        "drone_id": action["drone_id"],
-                        "detected_time": result.get("scan_time", 0)
-                    })
-                    
-                    # 动态添加救援行动到计划中
-                    rescue_action = {
-                        "action": "rescue_survivor",
-                        "drone_id": action["drone_id"],
-                        "parameters": {"x": pos[0], "y": pos[1]},
-                        "priority": 3
-                    }
-                    
-                    # 在当前行动之后插入救援行动
-                    action_index = state.get("action_index", 0)
-                    planned_actions = state.get("planned_actions", [])
-                    planned_actions.insert(action_index + 1, rescue_action)
-                    state["planned_actions"] = planned_actions
-                    
-                    print(f"🚨 Survivor found at {pos}, rescue action added")
+            # Add drone_id if present
+            if drone_id:
+                mcp_params["drone_id"] = drone_id
             
-            # If survivor rescue successful, update status
-            elif action_name == "rescue_survivor":
-                survivor_pos = (action["parameters"].get("x", 0), action["parameters"].get("y", 0))
-                # Update survivor status to rescued
-                for survivor in state["survivors_found"]:
-                    if survivor["position"] == list(survivor_pos):
-                        survivor["rescued"] = True
-                        survivor["rescue_time"] = result.get("rescue_time", 0)
-                        break
-                print(f"✅ Successfully rescued survivor at {survivor_pos}")
-        else:
-            message = f"行动失败：{action_name} ({action['drone_id']}) - {result.get('error', '')}"
-            state["failure_count"] += 1  # Increment failure count
+            # Merge additional parameters
+            mcp_params.update(parameters)
+            
+            # Call MCP tool dynamically
+            result = self.mcp_client.call_tool(tool_name, **mcp_params)
+            
+            # Process result
+            if result.get("success"):
+                message = f"✅ Tool {tool_name} succeeded: {result.get('message', '')}"
+                state["failure_count"] = 0
+                
+                # Handle tool-specific results
+                # For thermal_scan: record survivors
+                if "survivors_detected" in result and result["survivors_detected"] > 0:
+                    survivors = result.get("positions", [])
+                    for pos in survivors:
+                        state["survivors_found"].append({
+                            "position": pos,
+                            "drone_id": drone_id,
+                            "detected_time": result.get("scan_time", 0),
+                            "rescued": False
+                        })
+                    print(f"🚨 Found {len(survivors)} survivors!")
+                    
+                    # Update memory context for next reasoning
+                    state["memory_context"].append(
+                        f"Discovered {len(survivors)} survivors at positions {survivors}"
+                    )
+                
+                # For rescue_survivor: mark as rescued
+                elif tool_name == "rescue_survivor" and result.get("success"):
+                    survivor_pos = [parameters.get("x"), parameters.get("y")]
+                    for survivor in state["survivors_found"]:
+                        if survivor["position"] == survivor_pos:
+                            survivor["rescued"] = True
+                            survivor["rescue_time"] = result.get("rescue_time", 0)
+                            break
+                    print(f"✅ Rescued survivor at {survivor_pos}")
+                    
+                    state["memory_context"].append(
+                        f"Successfully rescued survivor at {survivor_pos}"
+                    )
+                
+                # For discover_drones: update available drones
+                elif tool_name == "discover_drones":
+                    if "drones" in result:
+                        state["available_drones"] = result["drones"]
+                        state["memory_context"].append(
+                            f"Discovered {len(result['drones'])} drones: {result['drones']}"
+                        )
+                
+                # For battery status: update drone status
+                elif tool_name == "get_battery_status":
+                    if drone_id and "battery_level" in result:
+                        if "drone_status" not in state:
+                            state["drone_status"] = {}
+                        state["drone_status"][drone_id] = result
+                        state["memory_context"].append(
+                            f"Drone {drone_id} battery: {result['battery_level']}%"
+                        )
+                
+            else:
+                message = f"❌ Tool {tool_name} failed: {result.get('error', 'Unknown error')}"
+                state["failure_count"] += 1
+                state["memory_context"].append(f"Failed: {tool_name} - {result.get('error', '')}")
+            
+            state["messages"].append(AIMessage(content=message))
+            self.memory.add_event(message)
+            
+        except Exception as e:
+            error_msg = f"❌ Exception executing {tool_name}: {str(e)}"
+            print(error_msg)
+            state["messages"].append(AIMessage(content=error_msg))
+            state["memory_context"].append(error_msg)
+            state["failure_count"] += 1
+            self.memory.add_event(error_msg)
         
-        state["messages"].append(AIMessage(content=message))
-        self.memory.add_event(message)
-        
-        # Move to next action
-        action_index = state.get("action_index", 0) + 1
-        planned_actions = state.get("planned_actions", [])
-        
-        if action_index < len(planned_actions):
-            state["next_action"] = planned_actions[action_index]
-            state["action_index"] = action_index
-            state["decision"] = "continue"  # Continue executing next action
-            print(f"📋 Preparing to execute next action ({action_index + 1}/{len(planned_actions)})")
-        else:
-            state["next_action"] = None
-            state["action_index"] = len(planned_actions)
-            state["decision"] = "evaluate"  # All actions completed, enter evaluation stage
-            print("✅ All planned actions completed")
+        # Clear next_action to force re-planning
+        state["next_action"] = None
+        state["decision"] = "continue"  # Continue to monitoring/re-planning
         
         return state
     
     def monitor_progress(self, state: RescueState) -> RescueState:
-        """Stage 5: Monitor mission progress"""
+        """Stage 5: Monitor progress and decide next step via reasoning"""
         
-        print("📊 Stage 5: Progress Monitoring")
+        print("📊 Stage 5: Progress Monitoring & Reasoning")
         
-        # Check if there are more actions to execute
-        planned_actions = state.get("planned_actions", [])
-        action_index = state.get("action_index", 0)
-        has_more_actions = action_index < len(planned_actions)
-        
-        # Evaluate current progress
+        # Evaluate current mission state
         progress_prompt = f"""
-        Evaluate current rescue mission progress:
+        You are monitoring a rescue mission. Analyze the current state and decide the next step.
         
         Mission Objective: {state['mission_goal']}
+        Available Drones: {state['available_drones']}
         Survivors Found: {len(state['survivors_found'])}
-        Available Drones: {len(state['available_drones'])}
+        Survivors Rescued: {sum(1 for s in state['survivors_found'] if s.get('rescued', False))}
         Consecutive Failures: {state['failure_count']}
-        Remaining Planned Actions: {len(planned_actions) - action_index}
+        Actions Taken: {len(state.get('planned_actions', []))}
         
-        Determine whether to:
-        1. Continue current plan (continue) - Only when there are remaining actions and no consecutive failures
-        2. Replan (replan) - When there are failures but can still try
-        3. End mission (evaluate) - When too many consecutive failures or all actions completed
+        Recent Context:
+        {chr(10).join(state.get('memory_context', [])[-5:]) if state.get('memory_context') else "No context"}
         
-        Note: If consecutive failures exceed 2, should choose evaluate to end mission.
-        If no remaining actions, should choose evaluate to end mission.
+        Analyze the situation and decide:
+        1. Should we continue with a new action? (if mission not complete and no critical failures)
+        2. Should we replan? (if strategy needs adjustment)
+        3. Should we evaluate and end? (if mission complete or too many failures)
         
-        Reply with only one word: continue/replan/evaluate
+        Reply in JSON format:
+        {{
+            "analysis": "Your analysis of current situation",
+            "decision": "continue/replan/evaluate",
+            "reason": "Why you made this decision"
+        }}
+        
+        Decision criteria:
+        - "continue": Mission ongoing, need more actions to achieve goal
+        - "replan": Current approach not working, need new strategy
+        - "evaluate": Mission complete (all survivors rescued) OR too many failures (>= {state['max_failures']})
         """
         
         response = self.llm.invoke([HumanMessage(content=progress_prompt)])
-        decision = response.content.strip().lower()
         
-        # Force evaluation if too many failures or no more actions
-        if state["failure_count"] >= state["max_failures"]:
-            decision = "evaluate"
-            print(f"⚠️  {state['failure_count']} consecutive failures, forcing mission end")
-        elif not has_more_actions:
-            decision = "evaluate"
-            print("✅ All planned actions completed, ending mission")
-        
-        if decision not in ["continue", "replan", "evaluate"]:
-            decision = "evaluate"  # Default to evaluate
-        
-        print(f"📋 Monitoring decision: {decision}")
-        
-        # Store the decision for should_continue method
-        state["decision"] = decision
-        
-        # Clear next_action if we're not continuing with the current plan
-        if decision != "continue":
-            state["next_action"] = None
+        try:
+            analysis = json.loads(response.content)
+            decision = analysis.get("decision", "evaluate").lower()
+            reason = analysis.get("reason", "No reason provided")
+            
+            print(f"🧠 Analysis: {analysis.get('analysis', '')}")
+            print(f"📋 Decision: {decision} - {reason}")
+            
+            # Override decision if failure threshold exceeded
+            if state["failure_count"] >= state["max_failures"]:
+                decision = "evaluate"
+                reason = f"Exceeded maximum failures ({state['max_failures']})"
+                print(f"⚠️  Forcing evaluation: {reason}")
+            
+            # Store decision
+            state["decision"] = decision
+            state["memory_context"].append(f"Monitoring decision: {decision} - {reason}")
+            self.memory.add_event(f"Progress monitoring: {decision} - {reason}")
+            
+        except Exception as e:
+            print(f"⚠️  Failed to parse monitoring response: {e}")
+            # Default to replan if uncertain
+            state["decision"] = "replan"
+            state["memory_context"].append("Monitoring failed, defaulting to replan")
         
         return state
     
@@ -475,9 +521,9 @@ class LangGraphRescueWorkflow:
         return state
     
     def run_mission(self, mission_goal: str) -> Dict[str, Any]:
-        """Run complete rescue mission workflow"""
+        """Run complete rescue mission workflow with dynamic reasoning"""
         
-        print(f"🚁 Starting LangGraph rescue workflow")
+        print(f"🚁 Starting LangGraph rescue workflow (Reasoning-based)")
         print(f"📋 Mission objective: {mission_goal}")
         print("=" * 50)
         
@@ -491,7 +537,6 @@ class LangGraphRescueWorkflow:
             current_phase="analysis",
             next_action=None,
             planned_actions=[],
-            action_index=0,
             decision=None,
             memory_context=[],
             failure_count=0,

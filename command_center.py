@@ -94,12 +94,6 @@ class CentralCommandCenter:
         # Home base configuration
         self.home_base_position = (10, 10)  # Default home base position
         self.emergency_recall_active = False
-        
-        print("🏢 Central Command Center initialized")
-        print(f"🏠 Home Base established at {self.home_base_position}")
-        print("📡 Ready to coordinate drone operations")
-        self.mission_memory.add_event("Central Command Center operational")
-        self.mission_memory.add_event(f"Home Base established at {self.home_base_position}")
     
     def register_drone(self, drone_info: DroneInfo) -> bool:
         """Register a new drone with the command center"""
